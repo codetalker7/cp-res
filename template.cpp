@@ -76,14 +76,13 @@ int main(){
 
     //for testcases, use the below format
     /*
-        ll t; //testcases
-        scanf("%lld" , &t);
-        while(t > 0){
-            solve(); //write a separate solve function
-            t--;
-        }
+    ll t; //testcases
+    cin >> t;
+    while(t > 0){
+    	solve(); //write a separate solve function
+    	t--;
+    }
     */
-    cout << "hello";
     cerr << "time taken : " << (float)clock() / CLOCKS_PER_SEC << "seconds" << "\n";
     return 0;
 }
