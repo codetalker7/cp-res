@@ -1,6 +1,7 @@
 /*
     template-by: codetalker7
     editor: sublime text 3
+    Codeforces 1490C
 */
 #include<iostream>
 #include<vector>
@@ -53,7 +54,19 @@ template <class T> T modinv (T a , T m , T &x , T &y){T g = extgcd(a , m , x , y
 //define global variables here
 
 void solve(){
-
+    ll x; cin >> x;
+    ll temp = cbrt(x/2);
+    
+    for (ll i = 1; i <= temp; i++){
+        double temp1 = cbrt(x - i * i * i);
+        double temp2 = int(temp1);
+        if (temp1 == temp2){
+            cout << "YES" << "\n";
+            return;
+        }
+    }
+    cout << "NO" << "\n";
+    return;
 }
 
 //main function
@@ -75,14 +88,14 @@ int main(){
 #endif
 
     //for testcases, use the below format
-    /*
+    
     ll t; //testcases
     cin >> t;
     while(t > 0){
     	solve(); //write a separate solve function
     	t--;
     }
-    */
+    
     cerr << "time taken : " << (float)clock() / CLOCKS_PER_SEC << "seconds" << "\n";
     return 0;
 }
