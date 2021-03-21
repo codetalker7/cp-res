@@ -52,8 +52,80 @@ template <class T> T modinv (T a , T m , T &x , T &y){T g = extgcd(a , m , x , y
 template <class T> T signed_floor(T a , T b){if (a >= 0 && b >= 0) return a/b; else if (a < 0 & b < 0) return (-a)/(-b); else if (a < 0 & b >= 0){if (a % b == 0) return -((-a)/b); else return -((-a)/b) - 1;} else if (a >= 0 && b < 0){if(a % b == 0) return -(a/(-b)); else return -(a/(-b)) - 1;}}
 //define global variables here
 
-void solve(ll mcase){
+ll grid[301][301];
+ll used[301][301];
 
+void solve(ll mcase){
+    ll R , C;
+    cin >> R >> C;
+
+    //final ans
+    ll ans = 0;
+
+    //input grid and multiset
+    multiset <pair <ll , pair <ll , ll> > > myset;
+    for (ll i = 1; i <= R; i++){
+        for (ll j = 1; j <= C; j++){
+            cin >> grid[i][j];
+            used[i][j] = 0;
+            myset.insert({-grid[i][j] , {i , j}});
+        }
+    }
+    multiset <pair <ll , pair <ll , ll> > >::iterator it;
+    while(myset.size() > 0){
+        pair <ll , pair <ll , ll> > temp = *myset.begin();
+        myset.erase(myset.begin());
+
+        ll g = -temp.first , x = temp.second.first , y = temp.second.second;
+        used[x][y] = 1;
+
+        if (x - 1 >= 1 && used[x - 1][y] == 0){
+            it = myset.find({-grid[x - 1][y] , {x - 1 , y}});
+            ll g1 = -(*it).first;
+
+            if (g1 < g){
+                myset.erase(it);
+                ans += (g - 1) - g1;
+                grid[x - 1][y] = (g - 1);
+                myset.insert({-((g - 1)) , {x - 1 , y}});
+            }
+        }
+        if (x + 1 <= R && used[x + 1][y] == 0){
+            it = myset.find({-grid[x + 1][y] , {x + 1 , y}});
+            ll g1 = -(*it).first;
+
+            if (g1 < g){
+                myset.erase(it);
+                ans += (g - 1) - g1;
+                grid[x + 1][y] = (g - 1);
+                myset.insert({-((g - 1)) , {x + 1 , y}});
+            }
+        }
+        if (y - 1 >= 1 && used[x][y - 1] == 0){
+            it = myset.find({-grid[x][y - 1] , {x , y - 1}});
+            ll g1 = -(*it).first;
+
+            if (g1 < g){
+                myset.erase(it);
+                ans += (g - 1) - g1;
+                grid[x][y - 1] = (g - 1);
+                myset.insert({-((g - 1)) , {x , y - 1}});
+            }
+        }
+        if (y + 1 <= C && used[x][y + 1] == 0){
+            it = myset.find({-grid[x][y + 1] , {x , y + 1}});
+            ll g1 = -(*it).first;
+
+            if (g1 < g){
+                myset.erase(it);
+                ans += (g - 1) - g1;
+                grid[x][y + 1] = (g - 1);
+                myset.insert({-((g - 1)) , {x , y + 1}});
+            }
+        }
+    }
+
+    cout << "Case #" << mcase << ": " << ans << "\n";
 }
 
 //main function
@@ -75,7 +147,6 @@ int main(){
 #endif
 
     //for testcases, use the below format
-    /*
     ll t , mcase = 1; //testcases
     cin >> t;
     while(t > 0){
@@ -83,7 +154,7 @@ int main(){
     	t--;
     	mcase++;
     }
-    */
     cerr << "time taken : " << (float)clock() / CLOCKS_PER_SEC << "seconds" << "\n";
     return 0;
 }
+

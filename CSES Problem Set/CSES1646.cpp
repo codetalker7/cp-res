@@ -1,6 +1,7 @@
 /*
     template-by: codetalker7
     editor: sublime text 3
+    CSES1646
 */
 #include<iostream>
 #include<vector>
@@ -52,7 +53,7 @@ template <class T> T modinv (T a , T m , T &x , T &y){T g = extgcd(a , m , x , y
 template <class T> T signed_floor(T a , T b){if (a >= 0 && b >= 0) return a/b; else if (a < 0 & b < 0) return (-a)/(-b); else if (a < 0 & b >= 0){if (a % b == 0) return -((-a)/b); else return -((-a)/b) - 1;} else if (a >= 0 && b < 0){if(a % b == 0) return -(a/(-b)); else return -(a/(-b)) - 1;}}
 //define global variables here
 
-void solve(ll mcase){
+void solve(){
 
 }
 
@@ -76,14 +77,32 @@ int main(){
 
     //for testcases, use the below format
     /*
-    ll t , mcase = 1; //testcases
+    ll t; //testcases
     cin >> t;
     while(t > 0){
-    	solve(mcase); //write a separate solve function
+    	solve(); //write a separate solve function
     	t--;
-    	mcase++;
     }
     */
+    ll n , q;
+    cin >> n >> q;
+
+    vll arr , pref;
+    arr.push_back(-1);
+    pref.push_back(0);
+
+
+    for (ll i = 1; i <= n; i++){
+        arr.push_back(-1);
+        cin >> arr[i];
+        pref.push_back(pref[i - 1] + arr[i]);
+    }
+
+    for (ll i = 1; i <= q; i++){
+        ll a , b;
+        cin >> a >> b;
+        cout << pref[b] - pref[a - 1] << "\n";
+    }
     cerr << "time taken : " << (float)clock() / CLOCKS_PER_SEC << "seconds" << "\n";
     return 0;
 }

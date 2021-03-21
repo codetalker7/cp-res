@@ -53,7 +53,51 @@ template <class T> T signed_floor(T a , T b){if (a >= 0 && b >= 0) return a/b; e
 //define global variables here
 
 void solve(ll mcase){
+    ll N , K;
+    cin >> N >> K;
 
+    //taking the input
+    string mstring;
+    cin >> mstring;
+
+    ll mcount = 0;
+    for (ll i = 0; i <= (N - 1)/2; i++){
+        if (mstring[i] != mstring[N - 1 - i])
+            mcount++;
+    }
+
+    ll min_req = 0 , i = 0 , temp = mcount;
+
+    if (mcount > K){
+        while (mcount > K){
+            for (ll j = i; j <= (N - 1)/2; j++){
+                if (j == N - 1 - j)
+                    break;
+                if (mstring[j] != mstring[N - 1 - j]){
+                    min_req++;
+                    mcount--;
+                    i = j + 1;
+                    break;
+                }
+            }
+        }
+    }
+    else if (mcount < K){
+        while (mcount < K){
+            for (ll j = i; j <= (N - 1)/2; j++){
+                if (j == N - 1 - j)
+                    break;
+                if (mstring[j] == mstring[N - 1 - j]){
+                    min_req++;
+                    mcount++;
+                    i = j + 1;
+                    break;
+                }
+            }
+        }
+    }
+
+    cout << "Case #" << mcase << ": " << min_req << "\n";
 }
 
 //main function
@@ -75,7 +119,7 @@ int main(){
 #endif
 
     //for testcases, use the below format
-    /*
+
     ll t , mcase = 1; //testcases
     cin >> t;
     while(t > 0){
@@ -83,7 +127,8 @@ int main(){
     	t--;
     	mcase++;
     }
-    */
+
     cerr << "time taken : " << (float)clock() / CLOCKS_PER_SEC << "seconds" << "\n";
     return 0;
 }
+

@@ -1,6 +1,7 @@
 /*
     template-by: codetalker7
     editor: sublime text 3
+    problem: KickStart 2020 Round A-Allocation
 */
 #include<iostream>
 #include<vector>
@@ -53,7 +54,25 @@ template <class T> T signed_floor(T a , T b){if (a >= 0 && b >= 0) return a/b; e
 //define global variables here
 
 void solve(ll mcase){
+    ll N , B;
+    cin >> N >> B;
 
+    vll marr;
+    for (ll i = 0; i < N; i++){
+        ll ai; cin >> ai;
+        marr.push_back(ai);
+    }
+    sort(marr.begin() , marr.end());
+    ll mcount = 0;
+    for (ll i = 0; i < N; i++){
+        if (B - marr[i] < 0)
+            break;
+        else {
+            B -= marr[i];
+            mcount++;
+        }
+    }
+    cout << "Case #" << mcase << ": " << mcount << "\n";
 }
 
 //main function
@@ -75,7 +94,7 @@ int main(){
 #endif
 
     //for testcases, use the below format
-    /*
+
     ll t , mcase = 1; //testcases
     cin >> t;
     while(t > 0){
@@ -83,7 +102,7 @@ int main(){
     	t--;
     	mcase++;
     }
-    */
+
     cerr << "time taken : " << (float)clock() / CLOCKS_PER_SEC << "seconds" << "\n";
     return 0;
 }
