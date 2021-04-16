@@ -1,4 +1,4 @@
-# Steps to use (in Linux)
+# Steps to use
 
 If you have Sublime Text installed, you can use these commands (which are based on the `subl` command line tool that Sublime Text uses). There is a default `template.cpp` file that can be used as a template. To make a new file named `<filename>.cpp` out of this template, simply run the following command.
 ```
