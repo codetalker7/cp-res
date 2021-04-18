@@ -1,7 +1,3 @@
-/*
-    template-by: codetalker7
-    editor: sublime text 3
-*/
 #include<iostream>
 #include<vector>
 #include<string>

@@ -1,4 +1,18 @@
 #!/bin/bash
-cat template.cpp > $1.cpp
+
+# write the file info as top comments
+NOW=$( date '+%F %H:%M:%S' )
+
+printf "
+/*\n\
+\t template by: codetalker7\n\
+\t editor: sublime text 3\n\
+\t file name: $1\n\
+\t date created: $NOW\n\
+*/\n\
+" > $1.cpp
+
+# append template to the file created
+cat template.cpp >> $1.cpp
 subl $1.cpp
 
