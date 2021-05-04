@@ -2,8 +2,8 @@
 /*
 	 template by: codetalker7
 	 editor: sublime text 3
-	 file name: MSTICK
-	 date created: 2021-05-02 18:56:41
+	 file name: CF1515B
+	 date created: 2021-05-03 19:07:54
 */
 #include<iostream>
 #include<vector>
@@ -57,7 +57,36 @@ template <class T> pair<T,T> log_base_2(T n){T temp = 1 , k = 0; while(temp <= n
 //define global variables here
 
 void solve(ll mcase){
+	ll n;
+	cin >> n;
 
+	ll flag1 = 0 , flag2 = 0;
+	if (n % 2 == 0) {
+		ll n1 = n / 2;
+		//check if n1 is a square
+		for (ll t = 1; t * t <= n1; t++){
+			if (n1 == t * t){
+				flag1 = 1;
+				break;
+			}
+		}
+	}
+
+	if (n % 4 == 0) {
+		ll n1 = n / 4;
+		//check if n1 is a square
+		for (ll t = 1; t * t <= n1; t++){
+			if (n1 == t * t){
+				flag2 = 1;
+				break;
+			}
+		}
+	}
+	if (flag1 == 1 || flag2 == 1)
+		cout << "YES\n";
+	else 
+		cout << "NO\n";
+	return;
 }
 
 //main function
@@ -79,7 +108,7 @@ int main(){
 #endif
 
     //for testcases, use the below format
-    /*
+    
     ll t , mcase = 1; //testcases
     cin >> t;
     while(t > 0){
@@ -87,64 +116,7 @@ int main(){
     	t--;
     	mcase++;
     }
-    */
-    ll N; cin >> N;	
-    ll b[100001];
-    for (ll i = 1; i <= N; i++){
-    	cin >> b[i];
-    }
-
-    //making the max and min sparse tables
-    vector <vll> max_sparse(N + 1);
-    vector <vll> min_sparse(N + 1);
-
-    for (ll i = 1; i <= N; i++){
-    	max_sparse[i].push_back(b[i]);
-    	min_sparse[i].push_back(b[i]);
-    }
-
-    for (ll j = 1; j <= 20; j++){
-    	for (ll i = 1; i + (1 << j) - 1 <= N; i++){
-    		//make room in the vectors
-    		max_sparse[i].push_back(-1);
-    		min_sparse[i].push_back(-1);
-
-    		max_sparse[i][j] = max(max_sparse[i][j - 1] , max_sparse[i + (1 << (j - 1))][j - 1]);
-    		min_sparse[i][j] = min(min_sparse[i][j - 1] , min_sparse[i + (1 << (j - 1))][j - 1]);
-    	}
-    }
-
-    ll Q; cin >> Q;
-    for (ll x = 1; x <= Q; x++){
-    	ll L , R;
-    	cin >> L >> R;
-    	L++; R++;
-
-    	pair <ll , ll> p;
-    	//let m be the minimum in the range [L , R]
-    	p = log_base_2(R - L + 1);
-    	ll m = min(min_sparse[L][p.first] , min_sparse[R - p.second + 1][p.first]);
-
-    	//let M be the maximum in the range [L , R]
-    	ll M = max(max_sparse[L][p.first] , max_sparse[R - p.second + 1][p.first]);
-
-    	ll M1 , M2;
-    	if (1 <= L - 1){
-    		p = log_base_2(L - 1);
-    		M1 = max(max_sparse[1][p.first] , max_sparse[L - 1 - p.second + 1][p.first]);
-    	}
-    	if (R + 1 <= N){
-    		p = log_base_2(N - (R + 1) + 1);
-    		M2 = max(max_sparse[R + 1][p.first] , max_sparse[N- p.second + 1][p.first]);
-    	}
-
-    	float ans = ((float)(M - m))/((float)2);
-    	if (1 <= L - 1)
-    		ans = max(ans , (float)M1);
-    	if (R + 1 <= N)
-    		ans = max(ans , (float)M2);
-    	printf("%.1f\n" , ans + (float)m);
-    }
+    
     cerr << "time taken : " << (float)clock() / CLOCKS_PER_SEC << "seconds" << "\n";
     return 0;
 }

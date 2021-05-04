@@ -2,8 +2,8 @@
 /*
 	 template by: codetalker7
 	 editor: sublime text 3
-	 file name: MSTICK
-	 date created: 2021-05-02 18:56:41
+	 file name: SEAD
+	 date created: 2021-05-04 16:03:48
 */
 #include<iostream>
 #include<vector>
@@ -60,6 +60,36 @@ void solve(ll mcase){
 
 }
 
+void build(vll diff , vll &segTree){
+    ll n = diff.size();
+    for (ll i = 0; i < n; i++){
+        segTree[i + n] = diff[i];
+    }
+    for (ll i = n - 1; i > 0; i--){
+        segTree[i] = max(segTree[i << 1] , segTree[i << 1 | 1]);
+    }
+}
+
+//max query in the range [l , r)
+ll query(vll segTree , ll l , ll r){
+    ll res = -INF, n = segTree.size() / 2;
+    l += n; r += n;
+
+    while (l < r){
+        if (l & 1){
+            res = max(res , segTree[l]); l += 1; l >>= 1;
+        }
+        else 
+            l >>= 1;
+        if (r & 1){
+            res = max(res , segTree[r - 1]); r >>= 1;
+        }
+        else 
+            r >>= 1;
+    }
+    return res;
+}
+
 //main function
 int main(){
     //faster io
@@ -88,62 +118,86 @@ int main(){
     	mcase++;
     }
     */
-    ll N; cin >> N;	
-    ll b[100001];
-    for (ll i = 1; i <= N; i++){
-    	cin >> b[i];
+    //taking the input
+    ll n;
+    cin >> n;
+
+    vll marr(n);
+    for (ll i = 0; i < n; i++)
+        cin >> marr[i];
+
+    ll m; 
+    cin >> m;
+
+    //making the difference array
+    vll diff(n - 1);
+    for (ll i = 0; i < n - 1; i++){
+        diff[i] = marr[i + 1] - marr[i];
     }
 
-    //making the max and min sparse tables
-    vector <vll> max_sparse(N + 1);
-    vector <vll> min_sparse(N + 1);
+    //building the segment tree for diff
+    vll segTree(2 * diff.size());
+    build(diff , segTree);
 
-    for (ll i = 1; i <= N; i++){
-    	max_sparse[i].push_back(b[i]);
-    	min_sparse[i].push_back(b[i]);
-    }
+    //handling the queries
+    for (ll x = 0; x < m; x++){
+        ll t , d;
+        cin >> t >> d;
 
-    for (ll j = 1; j <= 20; j++){
-    	for (ll i = 1; i + (1 << j) - 1 <= N; i++){
-    		//make room in the vectors
-    		max_sparse[i].push_back(-1);
-    		min_sparse[i].push_back(-1);
+        /*
+            Note that for such a t, there is a unique k such that a_k <= t and a_{k + 1} > t. 
+            Using binary search, find this k. Let D[0,...,n - 2] be the difference array.
+            Again using binary search, find the smallest index i<= k such that the range
+            minimum of D in the range [i , k - 1] is atmost d.
+        */
 
-    		max_sparse[i][j] = max(max_sparse[i][j - 1] , max_sparse[i + (1 << (j - 1))][j - 1]);
-    		min_sparse[i][j] = min(min_sparse[i][j - 1] , min_sparse[i + (1 << (j - 1))][j - 1]);
-    	}
-    }
+        //finding k using binary search
+        ll k;
+        if (marr[n - 1] <= t){
+            k = n - 1;
+        }
+        else {
+            ll lo = 0 , hi = n - 1;
+            ll flag = 0;
+            while (lo <= hi){
+                ll mid = lo + (hi - lo + 1)/2;
+                if (marr[mid] <= t && marr[mid + 1] > t){
+                    k = mid;
+                    break;
+                }
+                else if (marr[mid] > t){
+                    hi = mid - 1;
+                }
+                else{
+                    lo = mid;
+                }
+            }
+        }
 
-    ll Q; cin >> Q;
-    for (ll x = 1; x <= Q; x++){
-    	ll L , R;
-    	cin >> L >> R;
-    	L++; R++;
-
-    	pair <ll , ll> p;
-    	//let m be the minimum in the range [L , R]
-    	p = log_base_2(R - L + 1);
-    	ll m = min(min_sparse[L][p.first] , min_sparse[R - p.second + 1][p.first]);
-
-    	//let M be the maximum in the range [L , R]
-    	ll M = max(max_sparse[L][p.first] , max_sparse[R - p.second + 1][p.first]);
-
-    	ll M1 , M2;
-    	if (1 <= L - 1){
-    		p = log_base_2(L - 1);
-    		M1 = max(max_sparse[1][p.first] , max_sparse[L - 1 - p.second + 1][p.first]);
-    	}
-    	if (R + 1 <= N){
-    		p = log_base_2(N - (R + 1) + 1);
-    		M2 = max(max_sparse[R + 1][p.first] , max_sparse[N- p.second + 1][p.first]);
-    	}
-
-    	float ans = ((float)(M - m))/((float)2);
-    	if (1 <= L - 1)
-    		ans = max(ans , (float)M1);
-    	if (R + 1 <= N)
-    		ans = max(ans , (float)M2);
-    	printf("%.1f\n" , ans + (float)m);
+        //finding i using binary search
+        ll lo = 0 , hi = k - 1 , mid;
+        ll flag = 0;
+        while (lo <= hi){
+            mid = lo + (hi - lo)/2;
+            ll y = query(segTree , mid , k);
+            if (y <= d){
+                if (lo == mid){
+                    flag = 1;
+                    break;
+                }
+                else 
+                    hi = mid;
+            }
+            else{
+                lo = mid + 1;
+            }
+        }
+        //if query(segTree , mid , k) <= d
+        if (flag == 1)
+            cout << mid + 1 << "\n";
+        else 
+            cout << k + 1 << "\n";
+        
     }
     cerr << "time taken : " << (float)clock() / CLOCKS_PER_SEC << "seconds" << "\n";
     return 0;

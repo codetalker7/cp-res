@@ -2,8 +2,8 @@
 /*
 	 template by: codetalker7
 	 editor: sublime text 3
-	 file name: MSTICK
-	 date created: 2021-05-02 18:56:41
+	 file name: RICHSTR
+	 date created: 2021-05-04 14:31:41
 */
 #include<iostream>
 #include<vector>
@@ -55,9 +55,86 @@ template <class T> T modinv (T a , T m , T &x , T &y){T g = extgcd(a , m , x , y
 template <class T> T signed_floor(T a , T b){if (a >= 0 && b >= 0) return a/b; else if (a < 0 & b < 0) return (-a)/(-b); else if (a < 0 & b >= 0){if (a % b == 0) return -((-a)/b); else return -((-a)/b) - 1;} else if (a >= 0 && b < 0){if(a % b == 0) return -(a/(-b)); else return -(a/(-b)) - 1;}}
 template <class T> pair<T,T> log_base_2(T n){T temp = 1 , k = 0; while(temp <= n){temp <<= 1; k++;} temp >>= 1; k--; return {k , temp};}
 //define global variables here
+vll segTree;
+
+void build(vll marr , ll n){
+	for (ll i = 0; i < n; i++){
+		segTree[i + n] = marr[i];
+	}
+	for (ll i = n - 1; i > 0; i--){
+		segTree[i] = max(segTree[i << 1] , segTree[i << 1 | 1]);
+	}
+}
+
+//range max in the range [l , r)
+ll query(ll n , ll l , ll r){
+	ll res = 0;
+	l += n; r += n;
+	while (l < r){
+		//if l is a right child
+		if (l & 1){
+			res = max(res , segTree[l]); l += 1; l >>= 1;
+		}
+		else 
+			l >>= 1;
+		//if r is a right child
+		if (r & 1){
+			res = max(res , segTree[r - 1]); r >>= 1;
+		}
+		else 
+			r >>= 1;
+	}
+	return res;
+}
 
 void solve(ll mcase){
+	//taking the input
+	ll N , Q;
+	cin >> N >> Q;
 
+	string str;
+	cin >> str;
+
+	//precomputing the new array
+	vll marr(max((ll)0 , N - 2));
+	for (ll i = 0; i < max((ll)0 , N - 2); i++){
+		//checking for xxy
+		if (str[i] == str[i + 1])
+			marr[i] = 1;
+		//checking for xyx
+		else if (str[i] == str[i + 2])
+			marr[i] = 1;
+		//checking for yxx
+		else if (str[i + 1] == str[i + 2])
+			marr[i] = 1;
+		else 
+			marr[i] = 0;
+	}
+	//building the segment tree
+	segTree.assign(2 * marr.size() , 0);
+	build(marr , marr.size());
+
+	//handling the queries
+	for (ll counter = 0; counter < Q; counter++){
+		ll L , R;
+		cin >> L >> R;
+		L--; R--;
+
+		/*
+			The answer for a query is YES if and only if the substring
+			contains a subsubstring of the form xxy, xyx or yxx. So, the idea is to
+			index all the three length substrings of str, assign them a value
+			(either 0 or 1), and then check whether atleast one of the substrings belonging to the 
+			interval L , R have value 1. This is equivalent to checking a range max query
+		*/
+		if (R - L + 1 < 3)
+			cout << "NO\n";
+		//if not, L <= R - 2 will always be true. 
+		else if (query(marr.size() , L , R - 1) == 1)
+			cout << "YES\n";
+		else 
+			cout << "NO\n";
+	}
 }
 
 //main function
@@ -79,7 +156,7 @@ int main(){
 #endif
 
     //for testcases, use the below format
-    /*
+    
     ll t , mcase = 1; //testcases
     cin >> t;
     while(t > 0){
@@ -87,64 +164,7 @@ int main(){
     	t--;
     	mcase++;
     }
-    */
-    ll N; cin >> N;	
-    ll b[100001];
-    for (ll i = 1; i <= N; i++){
-    	cin >> b[i];
-    }
-
-    //making the max and min sparse tables
-    vector <vll> max_sparse(N + 1);
-    vector <vll> min_sparse(N + 1);
-
-    for (ll i = 1; i <= N; i++){
-    	max_sparse[i].push_back(b[i]);
-    	min_sparse[i].push_back(b[i]);
-    }
-
-    for (ll j = 1; j <= 20; j++){
-    	for (ll i = 1; i + (1 << j) - 1 <= N; i++){
-    		//make room in the vectors
-    		max_sparse[i].push_back(-1);
-    		min_sparse[i].push_back(-1);
-
-    		max_sparse[i][j] = max(max_sparse[i][j - 1] , max_sparse[i + (1 << (j - 1))][j - 1]);
-    		min_sparse[i][j] = min(min_sparse[i][j - 1] , min_sparse[i + (1 << (j - 1))][j - 1]);
-    	}
-    }
-
-    ll Q; cin >> Q;
-    for (ll x = 1; x <= Q; x++){
-    	ll L , R;
-    	cin >> L >> R;
-    	L++; R++;
-
-    	pair <ll , ll> p;
-    	//let m be the minimum in the range [L , R]
-    	p = log_base_2(R - L + 1);
-    	ll m = min(min_sparse[L][p.first] , min_sparse[R - p.second + 1][p.first]);
-
-    	//let M be the maximum in the range [L , R]
-    	ll M = max(max_sparse[L][p.first] , max_sparse[R - p.second + 1][p.first]);
-
-    	ll M1 , M2;
-    	if (1 <= L - 1){
-    		p = log_base_2(L - 1);
-    		M1 = max(max_sparse[1][p.first] , max_sparse[L - 1 - p.second + 1][p.first]);
-    	}
-    	if (R + 1 <= N){
-    		p = log_base_2(N - (R + 1) + 1);
-    		M2 = max(max_sparse[R + 1][p.first] , max_sparse[N- p.second + 1][p.first]);
-    	}
-
-    	float ans = ((float)(M - m))/((float)2);
-    	if (1 <= L - 1)
-    		ans = max(ans , (float)M1);
-    	if (R + 1 <= N)
-    		ans = max(ans , (float)M2);
-    	printf("%.1f\n" , ans + (float)m);
-    }
+    
     cerr << "time taken : " << (float)clock() / CLOCKS_PER_SEC << "seconds" << "\n";
     return 0;
 }
