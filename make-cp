@@ -9,6 +9,7 @@ printf "
 \t editor: sublime text 3\n\
 \t file name: $1\n\
 \t date created: $NOW\n\
+\t problem link: $2
 */\n\
 " > $1.cpp
 
