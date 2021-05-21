@@ -39,6 +39,13 @@ const ll INF = 1e18;
 const int INFINT = 1e9 + 5;
 const ldb PI = 3.14159265359;
 
+//macros
+/*
+	ssz refers to the signed size of an STL structure, because .size() function
+	returns an unsigned integer
+*/
+#define ssz(x) (int)x.size()
+
 //some useful algos
 template <class T> T mceil(T a, T b){return (a % b == 0) ? a/b : a/b + 1;}
 template <class T> T expo(T base , T exp , T mod){T res = 1;base = base % mod;while (exp > 0){if (exp & 1)res = (res*base) % mod;exp = exp>>1;base = (base*base) % mod;}return res;}
