@@ -37,12 +37,34 @@ input_file.write(str(t) + "\n")
 
 while (t > 0):
 	#change code only here
-    N = random.randint(100000 , 100000);
-    input_file.write(str(N) + "\n")
-    for i in range (1 , N):
-    	input_file.write(str(i) + " " + str(i + 1) + "\n")
+	n = random.randint(1 , 10)
+	m = 20
+	input_file.write(str(n) + " " + str(m) + "\n")
+    
+	mlist = [0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0]
+	for i in range (1 , n + 1):
+		x = 1
+		while (mlist[x] == 1):
+			x = random.randint(1 , 19)
+		mlist[x] = 1
+		if (i == 1):
+			input_file.write(str(x))
+		else:
+			input_file.write(" " + str(x))
+	input_file.write("\n")
+
+	m1list = ['L' , 'R']
+	for i in range (1 , n + 1):
+		y = random.randint(0 , 1)	
+		c = m1list[y]
+		if (i == 1):
+			input_file.write(str(c))
+		else:
+			input_file.write(" " + str(c))
+	input_file.write("\n")
+
 
     #do not change this
-    t = t - 1
+	t = t - 1
 
 
