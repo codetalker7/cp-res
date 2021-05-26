@@ -41,6 +41,7 @@ template <class T> void debug(multiset <T> v){cerr<<"{ ";for(T i: v){debug(i);ce
 template <class T, class V> void debug(map <T, V> v){cerr<<"[ ";for(auto i: v){debug(i);cerr<<" ";}cerr << "]";}
 //debug with a new line at the end
 #define debugln(x) debug(x); cerr << "\n"
+
 //type declarations
 using ll = long long int;
 using ull = unsigned long long int;
