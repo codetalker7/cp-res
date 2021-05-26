@@ -22,6 +22,25 @@
 #include<assert.h>
 using namespace std;
 
+//debugging functions
+//var_name is used to give the variable name
+void debug(char x){cerr << x;}
+void debug(int x){cerr << x;}
+void debug(unsigned int x){cerr << x;}
+void debug(long long x){cerr << x;}
+void debug(unsigned long long x){cerr << x;}
+void debug(long double x){cerr << x;}
+void debug(double x){cerr << x;}
+void debug(string x){cerr << x;}
+void debug(float x){cerr << x;}
+
+template <class T, class V> void debug(pair <T, V> x){cerr << "(" << x.first << "," << x.second << ")";}
+template <class T> void debug(vector <T> v){cerr<<"[ ";for(T i: v){debug(i);cerr<<" ";}cerr << "]";}
+template <class T> void debug(set <T> v){cerr<<"{ ";for(T i: v){debug(i);cerr<<" ";}cerr << "}";}
+template <class T> void debug(multiset <T> v){cerr<<"{ ";for(T i: v){debug(i);cerr<<" ";}cerr << "}";}
+template <class T, class V> void debug(map <T, V> v){cerr<<"[ ";for(auto i: v){debug(i);cerr<<" ";}cerr << "]";}
+//debug with a new line at the end
+#define debugln(x) debug(x); cerr << "\n"
 //type declarations
 using ll = long long int;
 using ull = unsigned long long int;
