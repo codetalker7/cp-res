@@ -1,3 +1,11 @@
+
+/*
+	 template by: codetalker7
+	 editor: sublime text 3
+	 file name: CF1528A
+	 date created: 2021-05-27 15:18:34
+	 problem link: 
+*/
 #include<iostream>
 #include<vector>
 #include<string>
@@ -20,7 +28,6 @@
 #include<chrono>
 #include<climits>
 #include<assert.h>
-#include<random>
 using namespace std;
 
 //debugging functions
@@ -76,9 +83,45 @@ template <class T> T modinv (T a , T m , T &x , T &y){T g = extgcd(a , m , x , y
 template <class T> T signed_floor(T a , T b){if (a >= 0 && b >= 0) return a/b; else if (a < 0 & b < 0) return (-a)/(-b); else if (a < 0 & b >= 0){if (a % b == 0) return -((-a)/b); else return -((-a)/b) - 1;} else if (a >= 0 && b < 0){if(a % b == 0) return -(a/(-b)); else return -(a/(-b)) - 1;}}
 template <class T> pair<T,T> log_base_2(T n){T temp = 1 , k = 0; while(temp <= n){temp <<= 1; k++;} temp >>= 1; k--; return {k , temp};}
 //define global variables here
+vll color, dp0, dp1;
+vector <pair <ll , ll> > ranges;
+vector <vll> adj;
+
+void dfs_dp(ll s){
+	color[s] = 1;
+	for (auto v : adj[s]){
+		if (color[v] == 0){
+			dfs_dp(v);
+			dp0[s] += max(abs(ranges[s].first - ranges[v].first) + dp0[v] , abs(ranges[s].first - ranges[v].second) + dp1[v]);
+			dp1[s] += max(abs(ranges[s].second - ranges[v].first) + dp0[v] , abs(ranges[s].second - ranges[v].second) + dp1[v]);
+		}
+	}
+}
 
 void solve(ll mcase){
+	ll n;
+	cin >> n;
 
+	vll blank;
+	ranges.assign(n + 1 , {-1 , -1});
+	color.assign(n + 1, 0);
+	dp0.assign(n + 1 , 0);
+	dp1.assign(n + 1 , 0);
+	adj.assign(n + 1 , blank);
+
+	for (ll i = 1; i <= n; i++){
+		cin >> ranges[i].first >> ranges[i].second;
+	}
+	for (ll i = 1; i <= n - 1; i++){
+		ll u , v;
+		cin >> u >> v;
+
+		adj[u].push_back(v);
+		adj[v].push_back(u);
+	}	
+
+	dfs_dp(1);
+	cout << max(dp0[1] , dp1[1]) << "\n";
 }
 
 //main function
@@ -98,20 +141,9 @@ int main(){
     FILE* err = freopen("error.txt", "w" , stderr);
     FILE* out = freopen("output.txt", "w" , stdout);
 #endif
-    /*
-        Uncomment the next line to use the
-        Mersenne Twister Random Number 
-        Generator, with the current system 
-        time as the seed. 
-        The first line is for 32-bit
-        Second line is for 64-bit
-    */
-    //mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
-    //mt19937_64 rng(chrono::steady_clock::now().time_since_epoch().count());
-
 
     //for testcases, use the below format
-    /*
+    
     ll t , mcase = 1; //testcases
     cin >> t;
     while(t > 0){
@@ -119,7 +151,8 @@ int main(){
     	t--;
     	mcase++;
     }
-    */
+    
+    
     cerr << "time taken : " << (float)clock() / CLOCKS_PER_SEC << "seconds" << "\n";
     return 0;
 }
