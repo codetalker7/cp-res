@@ -1,3 +1,11 @@
+
+/*
+	 template by: codetalker7
+	 editor: sublime text 3
+	 file name: TLAPM
+	 date created: 2021-05-23 21:44:17
+	 problem link: https://www.codechef.com/COOK129B/problems/TLAPM
+*/
 #include<iostream>
 #include<vector>
 #include<string>
@@ -21,26 +29,6 @@
 #include<climits>
 #include<assert.h>
 using namespace std;
-
-//debugging functions
-//var_name is used to give the variable name
-void debug(char x){cerr << x;}
-void debug(int x){cerr << x;}
-void debug(unsigned int x){cerr << x;}
-void debug(long long x){cerr << x;}
-void debug(unsigned long long x){cerr << x;}
-void debug(long double x){cerr << x;}
-void debug(double x){cerr << x;}
-void debug(string x){cerr << x;}
-void debug(float x){cerr << x;}
-
-template <class T, class V> void debug(pair <T, V> x){cerr << "(" << x.first << "," << x.second << ")";}
-template <class T> void debug(vector <T> v){cerr<<"[ ";for(T i: v){debug(i);cerr<<" ";}cerr << "]";}
-template <class T> void debug(set <T> v){cerr<<"{ ";for(T i: v){debug(i);cerr<<" ";}cerr << "}";}
-template <class T> void debug(multiset <T> v){cerr<<"{ ";for(T i: v){debug(i);cerr<<" ";}cerr << "}";}
-template <class T, class V> void debug(map <T, V> v){cerr<<"[ ";for(auto i: v){debug(i);cerr<<" ";}cerr << "]";}
-//debug with a new line at the end
-#define debugln(x) debug(x); cerr << "\n"
 
 //type declarations
 using ll = long long int;
@@ -75,9 +63,35 @@ template <class T> T modinv (T a , T m , T &x , T &y){T g = extgcd(a , m , x , y
 template <class T> T signed_floor(T a , T b){if (a >= 0 && b >= 0) return a/b; else if (a < 0 & b < 0) return (-a)/(-b); else if (a < 0 & b >= 0){if (a % b == 0) return -((-a)/b); else return -((-a)/b) - 1;} else if (a >= 0 && b < 0){if(a % b == 0) return -(a/(-b)); else return -(a/(-b)) - 1;}}
 template <class T> pair<T,T> log_base_2(T n){T temp = 1 , k = 0; while(temp <= n){temp <<= 1; k++;} temp >>= 1; k--; return {k , temp};}
 //define global variables here
+vll blank;
+vector <vll> grid(1001 , blank);
 
 void solve(ll mcase){
+    ll x1 , y1 , x2 , y2;
+    cin >> x1 >> y1 >> x2 >> y2;
 
+    ll ans = 0;
+    for (ll i = x1; i <= x2; i++){
+        ans += grid[i][y1];
+    }
+    for (ll j = y1 + 1; j <= y2; j++){
+        ans += grid[x2][j];
+    }
+    cout << ans << "\n";
+}
+
+void make_grid(){
+    for (ll i = 1; i <= 1000; i++){
+        grid[i].push_back(-1);
+        
+        grid[i].push_back(i*(i + 1)/2);
+        ll gap = i;
+
+        for (ll j = 2; j <= 1000; j++){
+            grid[i].push_back(grid[i][j - 1] + gap);
+            gap++;
+        }
+    }
 }
 
 //main function
@@ -99,7 +113,9 @@ int main(){
 #endif
 
     //for testcases, use the below format
-    /*
+    
+    make_grid();
+
     ll t , mcase = 1; //testcases
     cin >> t;
     while(t > 0){
@@ -107,8 +123,6 @@ int main(){
     	t--;
     	mcase++;
     }
-    */
-    
     cerr << "time taken : " << (float)clock() / CLOCKS_PER_SEC << "seconds" << "\n";
     return 0;
 }

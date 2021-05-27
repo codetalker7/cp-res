@@ -1,3 +1,11 @@
+
+/*
+	 template by: codetalker7
+	 editor: sublime text 3
+	 file name: CSUBS
+	 date created: 2021-05-23 21:57:05
+	 problem link: https://www.codechef.com/COOK129B/problems/CSUBS
+*/
 #include<iostream>
 #include<vector>
 #include<string>
@@ -21,26 +29,6 @@
 #include<climits>
 #include<assert.h>
 using namespace std;
-
-//debugging functions
-//var_name is used to give the variable name
-void debug(char x){cerr << x;}
-void debug(int x){cerr << x;}
-void debug(unsigned int x){cerr << x;}
-void debug(long long x){cerr << x;}
-void debug(unsigned long long x){cerr << x;}
-void debug(long double x){cerr << x;}
-void debug(double x){cerr << x;}
-void debug(string x){cerr << x;}
-void debug(float x){cerr << x;}
-
-template <class T, class V> void debug(pair <T, V> x){cerr << "(" << x.first << "," << x.second << ")";}
-template <class T> void debug(vector <T> v){cerr<<"[ ";for(T i: v){debug(i);cerr<<" ";}cerr << "]";}
-template <class T> void debug(set <T> v){cerr<<"{ ";for(T i: v){debug(i);cerr<<" ";}cerr << "}";}
-template <class T> void debug(multiset <T> v){cerr<<"{ ";for(T i: v){debug(i);cerr<<" ";}cerr << "}";}
-template <class T, class V> void debug(map <T, V> v){cerr<<"[ ";for(auto i: v){debug(i);cerr<<" ";}cerr << "]";}
-//debug with a new line at the end
-#define debugln(x) debug(x); cerr << "\n"
 
 //type declarations
 using ll = long long int;
@@ -77,7 +65,42 @@ template <class T> pair<T,T> log_base_2(T n){T temp = 1 , k = 0; while(temp <= n
 //define global variables here
 
 void solve(ll mcase){
+    ll N , K;
+    cin >> N >> K;
 
+    //taking the input
+    vll A(N + 1 , -1);
+
+    for (ll i = 1; i <= N; i++){
+        cin >> A[i];
+    }
+
+    ll final_ans = 0;
+
+    for (ll i = 1; i <= K; i++){
+        ll total = 0 , curr_max = -INF;
+        map <ll , ll> freq;
+        map <ll , ll>::iterator it;
+        for (ll j = i; j <= N; j += K){
+            total++;
+
+            it = freq.find(A[j]);
+            if (it == freq.end()){
+                freq[A[j]] = 1;
+                if (curr_max < 1){
+                    curr_max = 1;
+                }
+            }
+            else{
+                (*it).second++;
+                if (curr_max < (*it).second){
+                    curr_max = (*it).second;
+                }
+            }
+        }
+        final_ans += total - curr_max;
+    }
+    cout << final_ans << "\n";
 }
 
 //main function
@@ -99,7 +122,7 @@ int main(){
 #endif
 
     //for testcases, use the below format
-    /*
+    
     ll t , mcase = 1; //testcases
     cin >> t;
     while(t > 0){
@@ -107,7 +130,6 @@ int main(){
     	t--;
     	mcase++;
     }
-    */
     
     cerr << "time taken : " << (float)clock() / CLOCKS_PER_SEC << "seconds" << "\n";
     return 0;

@@ -1,3 +1,11 @@
+
+/*
+	 template by: codetalker7
+	 editor: sublime text 3
+	 file name: Smaller-Strings
+	 date created: 2021-05-23 16:55:16
+	 problem link: https://codingcompetitions.withgoogle.com/kickstart/round/0000000000435c44/00000000007ebe5e
+*/
 #include<iostream>
 #include<vector>
 #include<string>
@@ -21,26 +29,6 @@
 #include<climits>
 #include<assert.h>
 using namespace std;
-
-//debugging functions
-//var_name is used to give the variable name
-void debug(char x){cerr << x;}
-void debug(int x){cerr << x;}
-void debug(unsigned int x){cerr << x;}
-void debug(long long x){cerr << x;}
-void debug(unsigned long long x){cerr << x;}
-void debug(long double x){cerr << x;}
-void debug(double x){cerr << x;}
-void debug(string x){cerr << x;}
-void debug(float x){cerr << x;}
-
-template <class T, class V> void debug(pair <T, V> x){cerr << "(" << x.first << "," << x.second << ")";}
-template <class T> void debug(vector <T> v){cerr<<"[ ";for(T i: v){debug(i);cerr<<" ";}cerr << "]";}
-template <class T> void debug(set <T> v){cerr<<"{ ";for(T i: v){debug(i);cerr<<" ";}cerr << "}";}
-template <class T> void debug(multiset <T> v){cerr<<"{ ";for(T i: v){debug(i);cerr<<" ";}cerr << "}";}
-template <class T, class V> void debug(map <T, V> v){cerr<<"[ ";for(auto i: v){debug(i);cerr<<" ";}cerr << "]";}
-//debug with a new line at the end
-#define debugln(x) debug(x); cerr << "\n"
 
 //type declarations
 using ll = long long int;
@@ -75,9 +63,74 @@ template <class T> T modinv (T a , T m , T &x , T &y){T g = extgcd(a , m , x , y
 template <class T> T signed_floor(T a , T b){if (a >= 0 && b >= 0) return a/b; else if (a < 0 & b < 0) return (-a)/(-b); else if (a < 0 & b >= 0){if (a % b == 0) return -((-a)/b); else return -((-a)/b) - 1;} else if (a >= 0 && b < 0){if(a % b == 0) return -(a/(-b)); else return -(a/(-b)) - 1;}}
 template <class T> pair<T,T> log_base_2(T n){T temp = 1 , k = 0; while(temp <= n){temp <<= 1; k++;} temp >>= 1; k--; return {k , temp};}
 //define global variables here
+string S;
+vll is_palindrome;
+
+ll strictly_less(ll i , ll j , ll K){
+    ll lesser_usable = min(K , (ll)(S[i] - 'a'));
+    if (i == j){
+        return lesser_usable % MOD;
+    }
+    ll final_ans = 0;
+    ll mid = (j - i + 1) / 2;
+
+    if ((j - i + 1) % 2 == 0){  
+        final_ans = (final_ans + (lesser_usable % MOD) * expo(K , mid - 1 , MOD) + MOD) % MOD; 
+    }
+    else {
+        final_ans = (final_ans + (lesser_usable % MOD) * expo(K , mid , MOD) + MOD) % MOD;
+    }
+    // now we fix the i and j coordinates to be S[i]
+    if (i + 1 <= j - 1){
+        if (S[j] <= S[i])
+            final_ans = (final_ans + strictly_less(i + 1 , j - 1 , K) + MOD) % MOD;
+        else {
+            if (is_palindrome[i + 1])
+                final_ans = (final_ans + 1 + strictly_less(i + 1 , j - 1 , K) + MOD) % MOD;
+            else 
+                final_ans = (final_ans + strictly_less(i + 1 , j - 1 , K) + MOD) % MOD;
+        }
+    }
+    else {  
+        if (S[j] > S[i])
+            final_ans = (final_ans + 1 + MOD) % MOD;
+    }
+    return final_ans;
+}
+
+void palindrome_check(){
+    ll flag = 1;
+    ll i , j;
+    if (ssz(S) % 2 == 0){
+        i = ssz(S)/2 - 1; 
+        j = i + 1;
+    }
+    else {
+        i = ssz(S)/2;
+        j = i;
+    }   
+    while (i >= 0){
+        if (S[i] != S[j])
+            flag = 0;
+        is_palindrome[i] = flag;
+        i--;
+        j++;
+    }
+}
 
 void solve(ll mcase){
+    ll N , K;
+    cin >> N >> K;
 
+    cin >> S;
+    is_palindrome.assign(N , 0);
+
+    //setting is_palindrome
+    palindrome_check();
+
+    ll ans = strictly_less(0 , N - 1 , K);
+    //if S is a palindrome
+    cout << "Case #" << mcase << ": " << ans << "\n";  
 }
 
 //main function
@@ -99,7 +152,7 @@ int main(){
 #endif
 
     //for testcases, use the below format
-    /*
+    
     ll t , mcase = 1; //testcases
     cin >> t;
     while(t > 0){
@@ -107,7 +160,6 @@ int main(){
     	t--;
     	mcase++;
     }
-    */
     
     cerr << "time taken : " << (float)clock() / CLOCKS_PER_SEC << "seconds" << "\n";
     return 0;

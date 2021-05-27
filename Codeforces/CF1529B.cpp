@@ -1,3 +1,11 @@
+
+/*
+	 template by: codetalker7
+	 editor: sublime text 3
+	 file name: CF1529B
+	 date created: 2021-05-25 16:50:58
+	 problem link: 
+*/
 #include<iostream>
 #include<vector>
 #include<string>
@@ -21,26 +29,6 @@
 #include<climits>
 #include<assert.h>
 using namespace std;
-
-//debugging functions
-//var_name is used to give the variable name
-void debug(char x){cerr << x;}
-void debug(int x){cerr << x;}
-void debug(unsigned int x){cerr << x;}
-void debug(long long x){cerr << x;}
-void debug(unsigned long long x){cerr << x;}
-void debug(long double x){cerr << x;}
-void debug(double x){cerr << x;}
-void debug(string x){cerr << x;}
-void debug(float x){cerr << x;}
-
-template <class T, class V> void debug(pair <T, V> x){cerr << "(" << x.first << "," << x.second << ")";}
-template <class T> void debug(vector <T> v){cerr<<"[ ";for(T i: v){debug(i);cerr<<" ";}cerr << "]";}
-template <class T> void debug(set <T> v){cerr<<"{ ";for(T i: v){debug(i);cerr<<" ";}cerr << "}";}
-template <class T> void debug(multiset <T> v){cerr<<"{ ";for(T i: v){debug(i);cerr<<" ";}cerr << "}";}
-template <class T, class V> void debug(map <T, V> v){cerr<<"[ ";for(auto i: v){debug(i);cerr<<" ";}cerr << "]";}
-//debug with a new line at the end
-#define debugln(x) debug(x); cerr << "\n"
 
 //type declarations
 using ll = long long int;
@@ -77,7 +65,37 @@ template <class T> pair<T,T> log_base_2(T n){T temp = 1 , k = 0; while(temp <= n
 //define global variables here
 
 void solve(ll mcase){
+    ll n;
+    cin >> n;
 
+    vll a(n);
+    for (ll i = 0; i < n; i++){
+        cin >> a[i];
+    }
+    sort(a.begin() , a.end());
+    if (a[0] > 0){
+        cout << 1 << "\n";
+        return;
+    }
+    else if (a[n - 1] <= 0){
+        cout << n << "\n";
+        return;
+    }
+
+    //find the largest index till which array is non-positive
+    ll i = -1 , min_dif = INF;
+    while (i + 1 < n && a[i + 1] <= 0){
+        i++;
+        if (i > 0){
+            min_dif = min(min_dif , a[i] - a[i - 1]);
+        }
+    }
+    if (a[i + 1] <= min_dif){
+        cout << i + 2 << "\n";
+    }
+    else 
+        cout << i + 1 << "\n";
+    return;
 }
 
 //main function
@@ -99,7 +117,7 @@ int main(){
 #endif
 
     //for testcases, use the below format
-    /*
+    
     ll t , mcase = 1; //testcases
     cin >> t;
     while(t > 0){
@@ -107,7 +125,6 @@ int main(){
     	t--;
     	mcase++;
     }
-    */
     
     cerr << "time taken : " << (float)clock() / CLOCKS_PER_SEC << "seconds" << "\n";
     return 0;
