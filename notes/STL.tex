@@ -1,0 +1,415 @@
+\documentclass[12pt,a4paper]{amsart}
+\usepackage{mathtools}% http://ctan.org/pkg/mathtools
+\usepackage{amsfonts}
+\usepackage{amsthm}
+\usepackage[section]{placeins}
+\usepackage{relsize}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amscd}
+\usepackage{caption} 
+\usepackage[utf8]{inputenc}
+\usepackage{setspace}
+\usepackage[mathscr]{eucal}
+\usepackage{indentfirst}
+\usepackage{graphicx}
+\graphicspath{{./images/}}
+
+%preamble for including inkscape figures
+\usepackage{import}
+\usepackage{xifthen}
+\usepackage{pdfpages}
+\usepackage{transparent}
+
+\usepackage{graphics}
+\usepackage{tikz}
+\usepackage{pict2e}
+\usepackage{epic}
+\usepackage{mathrsfs}
+\numberwithin{equation}{section}
+\usepackage[margin=2.8cm]{geometry}
+\usepackage{epstopdf} 
+
+%the following code is for a good table of contents for amsart. Finding it was not easy. for more information, check out the following two links
+%https://tex.stackexchange.com/questions/51760/table-of-contents-with-indents-and-dots
+%https://tex.stackexchange.com/questions/58324/adding-indents-to-the-toc-without-adding-dotted-lines-between-sections
+\makeatletter
+\def\@tocline#1#2#3#4#5#6#7{\relax
+  \ifnum #1>\c@tocdepth % then omit
+  \else
+    \par \addpenalty\@secpenalty\addvspace{#2}%
+    \begingroup \hyphenpenalty\@M
+    \@ifempty{#4}{%
+      \@tempdima\csname r@tocindent\number#1\endcsname\relax
+    }{%
+      \@tempdima#4\relax
+    }%
+    \parindent\z@ \leftskip#3\relax \advance\leftskip\@tempdima\relax
+    \rightskip\@pnumwidth plus4em \parfillskip-\@pnumwidth
+    #5\leavevmode\hskip-\@tempdima
+      \ifcase #1
+       \or\or \hskip 1em \or \hskip 2em \else \hskip 3em \fi%
+      #6\nobreak\relax
+    \dotfill\hbox to\@pnumwidth{\@tocpagenum{#7}}\par
+    \nobreak
+    \endgroup
+  \fi}
+\makeatother
+%table of contents code finished
+
+%packages for adding code. use \begin{lstlisting}\end{lstlisting} environment to write code. In text, can also use \verb|something|
+\usepackage{listings}
+\usepackage{color}
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+\lstset{frame=tb,
+  language=Java,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=none,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=3
+}
+
+%all about hyperlinks. include this package as the final package to avoid any problems
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=cyan,
+}
+    
+%to create a new numbered environment, use the syntax
+%\newtheorem{name}{display}
+%to start renumbering say at every section, add a [section] in the end. To have the same numbering for two environments, do as I did with Lemma below, i.e add [Th] in between.
+
+%let the thoerems have italic text
+\newtheorem{Th}{Theorem}[section]
+\newtheorem{Lemma}[Th]{Lemma}
+\newtheorem{Cor}{Corollary}[Th]
+\newtheorem{Prop}[Th]{Proposition}
+
+%definitions, examples, remarks and exercises will have normal text
+\theoremstyle{definition}
+\newtheorem{Def}{Definition}[section]
+\newtheorem{Ex}{Example}[section]
+\newtheorem{Remark}{Remark}[Th]
+\newtheorem{Exercise}{Exercise}[section]
+
+%using an unnumbered section for solutions
+\newtheorem*{solution}{Solution}
+
+%use the proof environment for writing proofs. I'm using a black square for QED. 
+\renewcommand\qedsymbol{$\blacksquare$}
+
+
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Ztwo}{\mathbb{Z}_2}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\CC}{\mathbb{C}}
+\newcommand{\E}{\mathbb{E}}
+\renewcommand{\P}{\mathbb{P}}
+    
+%package for fonts
+\usepackage{fontspec}
+%main font
+\setmainfont{Chivo}
+
+\begin{document}
+
+\title{Standard Template Library in C++}
+\author{Siddhant Chaudhary}
+\date{December 2020}
+
+\maketitle
+    
+\begin{abstract}
+This is a reference sheet for the STL in C++.
+\end{abstract}
+    
+\tableofcontents
+
+\subsection{Iterators} In all STL classes, we use \textit{iterators} instead of \textit{pointers}. Iterators are used to point to elements in an STL class; for instance, if \verb|v| is a vector, then the iterator \verb|v.begin()| points to the first element of the vector \verb|v|. Iterators work just like pointers; so the first element of the vector \verb|v| will be \verb|*(v.begin())|. To store the iterator in a variable, we can do something like \verb|stl_class::iterator p|. For instance, in maps of the type \verb|map <int , int>|, we can do the following.  
+\begin{lstlisting}
+    map <int , int> mymap;
+    map <int , int>::iterator p; p = mymap.begin();
+    cout << *(p).first; //prints the key of the first element in the map
+\end{lstlisting}
+A similar line can be used to declare iterators for other STL classes.
+
+\subsection{Vector} Consider \verb|vector <int> v|. Then the following are defined.
+\begin{enumerate}
+    \item \verb|v.assign(no_of_elements , val); //initialisation of v|
+    \item \verb|v.size(); //returns the size|
+    \item \verb|v.empty(); // returns whether v is empty|
+    \item \verb|v.front(); // first element|
+    \item \verb|v.back(); // last element|
+    \item \verb|v.push_back(x); // push x in v|
+    \item \verb|v.pop_back(); // pop last element|
+    \item \verb|v.begin(); // iterator to beginning. This is an iterator|
+    \item \verb|v.end(); // iterator to end. NOT the last element. This is an iterator|
+    \item \verb|v.rbegin(); // reverse iterator to beginning, i.e iterator to last element|
+    \item \verb|v.rend(); // reverse iterator to beginning. NOT the first element|
+\end{enumerate}
+\begin{Remark}
+    Consider the iterators \verb|v.end()| and \verb|v.rend()|. In C++, the last element of the vector \verb|v| will be succeeded by a \textit{theoretical last element}. So, the element \verb|*(v.end())| will actually \textit{not} be the last element of \verb|v|; instead, the last element will be \verb|*(v.end() - 1)|. A similar thing holds for the reverse iterator.
+\end{Remark}
+
+\subsection{Queue} Consider \verb|queue <int> myqueue|. Then the following are defined. 
+\begin{enumerate}
+    \item \verb|myqueue.empty()|
+    \item \verb|myqueue.size()|
+    \item \verb|myqueue.front()|
+    \item \verb|myqueue.back()|
+    \item \verb|myqueue.push(x)|
+    \item \verb|myqueue.pop()|
+\end{enumerate}
+
+\subsection{Deque} Consider \verb|deque <int> mydeque|. Then the following are defined; 
+\begin{enumerate}
+    \item \verb|mydeque.assign(no_of_elements , val); //initialisation of mydeque|
+    \item \verb|mydeque.size(); //returns the size|
+    \item \verb|mydeque.empty();|
+    \item \verb|mydeque.front();|
+    \item \verb|mydeque.back();|
+    \item \verb|mydeque.push_back(x);|
+    \item \verb|mydeque.pop_back();|
+    \item \verb|mydeque.push_front(x);|
+    \item \verb|mydeque.pop_front();|
+    \item \verb|mydeque.begin();|
+    \item \verb|mydeque.end();|
+    \item \verb|mydeque.rbegin();|
+    \item \verb|mydeque.rend();|
+\end{enumerate}
+
+\subsection{Set and Multiset} These are implemented as balanced BSTs in C++, and their operations take time $O(\log n)$. Both of these are ordered structures. The operations for \verb|set| and \verb|multiset| are the same. Consider \verb|set <int> myset|. 
+\begin{enumerate}
+    \item \verb|myset.begin()|
+    \item \verb|myset.end()|
+    \item \verb|myset.rbegin()|
+    \item \verb|myset.rend()|
+    \item \verb|myset.empty()|
+    \item \verb|myset.size()|
+    \item \verb|myset.insert(x)|
+    \item \verb|myset.erase(position)| or \verb|myset.erase(value)|. \verb|position| must be an iterator and this erasing takes constant time. \verb|value| must be a value contained in the set, and this erasing takes logarithmic time.
+    \item \verb|myset.find(value)|. Get the iterator (pointer) where the value \verb|value| is stored inside the set. If \verb|value| is not in the set, simply return \verb|set.end()|. Takes logarithmic time.
+\end{enumerate}
+If you want to pass a general comparison function to a \verb|set| or \verb|multiset|, then you can do something like this. 
+
+\begin{lstlisting}
+    struct my_structure{
+        ll x , y , z;
+    };
+
+    class compare_function{
+        public:
+            bool operator()(const my_structure &a , const my_structure &b){
+                //sort on the basis of the first coordinate
+                return a.x < b.x;
+            }
+    };
+    
+    //initialise the set or multiset like this 
+    set <my_structure , compare_function> myset;
+\end{lstlisting}
+
+\subsection{Maps and Unordered Maps} A set that contains key-value pairs, and the keys must be \textit{distinct}. \verb|map| is an ordered set, while \verb|unordered_map| is not ordered; \verb|map| uses the BST data structure, and hence operations are of the order $O(\log n)$. For \verb|unordered_map|, the operations are $O(1)$ on average, since these use hashing. Let \verb|map <int , int> mymap| be a definition. 
+\begin{enumerate}
+    \item \verb|mymap.begin()|
+    \item \verb|mymap.end()|
+    \item \verb|mymap.rbegin()|
+    \item \verb|mymap.rend()|
+    \item \verb|mymap.empty()|
+    \item \verb|mymap.size()|
+    \item \verb|mymap.insert(pair<int , int>(x , y)) //insert the key-value pair (x , y)|
+    \item \verb|mymap.erase(position)| or \verb|myset.erase(key)|. Erasing by \verb|position| takes constant time, while erasing by \verb|key| takes logarithmic time.
+    \item \verb|mymap.find(key)|. Get the iterator to the pair with key attribute equal to \verb|key|.
+\end{enumerate}
+\noindent As usual, we can pass a custom key comparison function to a map. So you can do something like this. 
+
+\begin{lstlisting}
+    struct key_type{
+        ll x , y , z;
+    };
+
+    class compare_function{
+        public:
+            bool operator()(const key_type &a , const key_type &b){
+                return a.x < b.x;
+            }
+    };
+    
+    //initialise the map as follows 
+    map <key_type , mapped_type , compare_function> mymap;
+\end{lstlisting}
+
+\subsection{Priority Queue} Look at this example. 
+    \begin{lstlisting}  
+        struct Node {
+            int x , y , value;
+        };
+        class compare{
+            public: 
+                int operator()(Node &a, Node &b){
+                    return a.value > b.value;
+                }
+        };
+        priority_queue <Node , vector<Node> , compare> myqueue;
+        Node mynode;
+        myqueue.push(Node);
+        myqueue.pop();
+    \end{lstlisting}
+First, only look at the last four lines. We have defined \verb|myqueue| to be a priority queue, which contains values of type \verb|Node|, and the comparison function is \verb|compare|. The class \verb|compare| is just used to say what the comparison function does. You can literally use any comparison function of your choice! 
+
+\begin{Remark}
+    In this case, we will have a min-priority queue. To have a max-priority queue, just invert the inequality in the compare class. 
+\end{Remark}
+
+\noindent The following are defined. 
+\begin{enumerate}
+    \item \verb|myqueue.empty()|
+    \item \verb|myqueue.size()|
+    \item \verb|myqueue.top() // top element|
+    \item \verb|myqueue.push(x) // x must be of type Node|
+    \item \verb|myqueue.pop() // pop the top element|
+\end{enumerate}
+
+\subsection{Bitsets} We will use the following for reference \textcolor{red}{(this is also given in the main document)}.
+
+Declare a \verb|bitset| like this: \verb|bitset <size> mybitset|. Given two bitsets \verb|a| and \verb|b|, the following are defined. 
+\begin{enumerate}
+    \item \verb|a.count() //the number of set bits in a|
+    \item \verb|a[i] //access the i^{th} bit|
+    \item \verb|a.size() //size of the bitset|
+    \item \verb|a.test(pos) //true if bit at position pos is 1, false otherwise|
+    \item \verb|a.any() //test if any bit is set|
+    \item \verb|a.none() //test if no bit is set|
+    \item \verb|a.all() //test if all bits are set|
+    \item \verb|a.set() // set all the bits|
+    \item \verb|a.set(pos)// set the bit at position pos|
+    \item \verb|a.set(pos , val) //set bit at position pos to val|
+    \item \verb|a.reset() //reset all the bits, i.e all the bits to 0|
+    \item \verb|a.reset(pos) // reset the bit at position pos|
+    \item \verb|a.flip() //flip all the bits|
+    \item \verb|a.flip(pos) //flip the bit at position pos|
+\end{enumerate}
+
+The good thing about bitsets is that you can apply the usual bitwise operations to them. We can also construct a bitset from integers or strings, as follows. 
+\begin{lstlisting}
+    bitset<100> a(17);
+    bitset<100> b("1010");
+\end{lstlisting}
+
+\section{Strings in C++} 
+\noindent These are specially defined in the STL. See the \href{http://www.cplusplus.com/reference/string/string/}{documentation} for more information. 
+
+\subsection{scanf and printf with strings} The functions \verb|scanf| and \verb|printf| do not support any C++ class. In particular, we cannot take input using this function to a \verb|string| object. For example, the following code will not make sense.
+\begin{lstlisting}
+    string temp;
+    scanf("%s" , &temp); //will not work
+\end{lstlisting}
+Instead, the following can be used. 
+\begin{lstlisting}
+    char temp1[100];
+    scanf("%s" , &temp1);
+    string temp = temp1; //this works
+\end{lstlisting}
+
+\subsection{Comparing strings} NEVER try to compare two strings using the \verb|==| operator. For instance, both of the below snippets are not encouraged. 
+\begin{lstlisting}
+    char temp1[100]; char temp2[100];
+    if (temp1 == temp2){ \\don't do this
+        ...
+    }
+\end{lstlisting}
+
+\begin{lstlisting}
+    string temp1; string temp2;
+    if (temp1 == temp2){ \\don't do this
+        ...
+    }
+\end{lstlisting}
+Instead, convert the given strings to a \verb|string| object, and then use the \verb|std::string.compare| function. 
+
+\subsection{scanf return values are useful} The \verb|scanf| function returns the number of items of the argument list successfully filled (see \url{https://www.cplusplus.com/reference/cstdio/scanf/}). This means the return value of \verb|scanf| can be very useful in parsing input. For instance, consider the problem \href{https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=623&page=show_problem&problem=166}{UVa230}, in which we have to consider a specific input format. In order to input the whole library of books, we can do something as follows.
+\begin{lstlisting}
+    //taking the library books
+    char title[81], author[81];
+        
+    while(scanf("%s by %s", title, author) == 2){
+        string tit = title, auth = author;
+        //do something
+    }
+\end{lstlisting}
+
+\subsection{memcpy and memset with strings} Using \verb|memcpy| and \verb|memset| with strings is very useful. For example, do something like this. 
+\begin{lstlisting}
+    char my_string[80];
+    memset(my_string, 'a', 80); //my_string becomes aaaa..aa (80 a's)
+    char another_string[80];
+    memcpy(another_string, my_string, 80) //copying my_string to another_string
+\end{lstlisting}
+
+\subsection{String parsing with scanf} In many problems, especially ICPC problems, one has to parse the input in a very specific way. To do this, \verb|scanf| comes in handy, and the \verb|cout| way of input is highly discouraged (as it will make parsin difficult to code). The basic format specifier of \verb|scanf| is as follows. 
+\begin{verbatim}
+    %[*][width][length]specifier
+\end{verbatim}
+\verb|specifier| can take the following values. 
+\begin{enumerate}
+    \item \verb|d|: integer.
+    \item \verb|x|: hexadecmial integer.
+    \item \verb|f|: floating point number.
+    \item \verb|c|: character.
+    \item \verb|s|: any number of non-whitespace characters.
+    \item \verb|p|: pointer.
+    \item \verb|[characters]|: any number of characters specified within the brackets.
+    \item \verb|[^characters]|: any number of characters \textit{not within} the characters specified within the brackets.
+    \item \verb|%%|: a single \verb|%| sign. 
+\end{enumerate}
+Here are the meaning of the optional specifiers. 
+\begin{enumerate}
+    \item The optional specifier \verb|*| indicates that the data is to be read but ignored.
+    \item \verb|width| specifies the maximum number of characters to be read in the current reading operation.
+    \item \verb|length| alters the expected type of the storage pointed by the corresponding argument. \verb|length| has to be one of \verb|hh, h, l, ll, j, z, t, L|. 
+\end{enumerate}
+Some cool examples of string parsing are given below. 
+\begin{lstlisting}
+    scanf("\"%s\"\n"); //reads a string  without whitespace within quotation marks
+    scanf("\"[^\"]\"\n"); //reads a string (with white space possibly) without the " character within quotation marks
+    scanf("[^\n]\n"); //reads a line, without the \n character
+\end{lstlisting}
+
+\section{Random Number Generation}
+\subsection{Reference blog} Check out this reference blog to know more: \url{https://codeforces.com/blog/entry/61587}. 
+
+\subsection{Initialising the Mersenne Twister Generator in C++} To initialise the generator, we will use the current system time as the seed (using a fixed seed is not recommended for competitive programming, as it might results in hacks and someone challenging your code). 
+\begin{lstlisting}
+    mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
+\end{lstlisting}
+Use \verb|mt19937_64| to generate 64-bit numbers. 
+
+\subsection{The uniform integer distribution} To generate a random integer in a given range $[a , b]$ uniformly, you can do the following. 
+\begin{lstlisting}
+    <type> x = uniform_int_distribution<type>(a , b)(rng)
+\end{lstlisting}
+Here \verb|type| must be an integer type (\verb|int|, \verb|long long int| etc). \verb|rng| is the generator that we initialised before. 
+
+\subsection{Random shuffle} To randomly shuffle a vector, you can do something like this. 
+\begin{lstlisting}
+    vector <long long int> v;
+    shuffle(v.begin(), v.end(), rng);
+\end{lstlisting}
+\end{document}
