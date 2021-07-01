@@ -1,0 +1,9 @@
+Page 40 (page 65 of pdf): 
+1-D Array Manipulation: 4-21
+2-D Array Manipulation: 1-16
+C++ STL Algorithm: 1-20
+Bit Manipulation: 1-9
+C++ STL queue and deque: 1-7
+
+
+

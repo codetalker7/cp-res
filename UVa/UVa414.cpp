@@ -1,3 +1,11 @@
+
+/*
+	 template by: codetalker7
+	 editor: sublime text 3
+	 file name: UVa414
+	 date created: 2021-06-30 13:45:16
+	 problem link: 
+*/
 #include<iostream>
 #include<vector>
 #include<string>
@@ -60,15 +68,6 @@ const ll INF = 1e18;
 const int INFINT = 1e9 + 5;
 const ldb PI = 3.14159265359;
 
-//Logical Operators
-#define AND &&
-#define OR ||
-#define NOT(x) !x
-
-//Bit Manipulation
-#define LSB(x) x & (-x) //value of least significant bit
-
-
 //macros
 /*
 	ssz refers to the signed size of an STL structure, because .size() function
@@ -86,8 +85,29 @@ template <class T> T signed_floor(T a , T b){if (a >= 0 && b >= 0) return a/b; e
 template <class T> pair<T,T> log_base_2(T n){T temp = 1 , k = 0; while(temp <= n){temp <<= 1; k++;} temp >>= 1; k--; return {k , temp};}
 //define global variables here
 
-void solve(ll mcase){
+void solve(ll n){
+    vll holes;
+    ll min_holes = INF;
 
+    for (ll i = 0; i < n; i++){
+        char layer[26];
+        scanf("%s\n", layer);
+
+        ll hole = 0;
+        for (ll j = 0; j < 25; j++){
+            if (layer[j] == 'B')
+                hole++;
+        }
+        holes.push_back(hole);
+        if (min_holes > hole)
+            min_holes = hole;
+    }
+
+    ll answer = 0;
+    for (ll i = 0; i < n; i++)
+        answer += holes[i] - min_holes;
+
+    printf("%lld\n", answer);
 }
 
 //main function
@@ -129,6 +149,15 @@ int main(){
     	mcase++;
     }
     */
+    ll n;
+    scanf("%lld", &n);
+    while (n != 0){
+        //solve the test case
+        solve(n);
+
+        //take next input n
+        scanf("%lld", &n);
+    }
     cerr << "time taken : " << (float)clock() / CLOCKS_PER_SEC << "seconds" << "\n";
     return 0;
 }

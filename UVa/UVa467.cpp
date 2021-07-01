@@ -1,3 +1,11 @@
+
+/*
+	 template by: codetalker7
+	 editor: sublime text 3
+	 file name: UVa467
+	 date created: 2021-06-30 21:21:20
+	 problem link: https://onlinejudge.org/index.php?option=onlinejudge&Itemid=8&page=show_problem&problem=408
+*/
 #include<iostream>
 #include<vector>
 #include<string>
@@ -60,15 +68,6 @@ const ll INF = 1e18;
 const int INFINT = 1e9 + 5;
 const ldb PI = 3.14159265359;
 
-//Logical Operators
-#define AND &&
-#define OR ||
-#define NOT(x) !x
-
-//Bit Manipulation
-#define LSB(x) x & (-x) //value of least significant bit
-
-
 //macros
 /*
 	ssz refers to the signed size of an STL structure, because .size() function
@@ -86,8 +85,65 @@ template <class T> T signed_floor(T a , T b){if (a >= 0 && b >= 0) return a/b; e
 template <class T> pair<T,T> log_base_2(T n){T temp = 1 , k = 0; while(temp <= n){temp <<= 1; k++;} temp >>= 1; k--; return {k , temp};}
 //define global variables here
 
-void solve(ll mcase){
+ll parseInput(char input[100], ll arr[11]){
+    ll total = 0;
+    //parsing the input string
+    ll index = 0;
+    while(index < 39){
+        //current character is a number
+        if (input[index] >= '0' && input[index] <= '9'){
+            total++;
+            arr[total] = 10*(input[index] - '0') + (input[index + 1] - '0');
+            index += 2;
+        }
+        else
+            index++;
+    }
+    return total;
+}
 
+void solve(ll mcase, char input[100]){
+    ll cycles[11];  
+    ll total = parseInput(input, cycles);
+
+    //finding the min among all cycle lenghts
+    ll mmin = INF;
+    for (ll i = 1; i <= total; i++){
+        mmin = min(mmin, cycles[i]);
+    }
+
+    //starting time -> 2*mmin
+    //checking the minimum meeting time
+
+    ll meeting_time = -1;
+    for (ll t = 2*mmin; t <= 3600; t++){
+        /*
+            to check if t works, check the following
+            for each 1 <= i <= total: 
+                1) k = t/cycles[i] -> even
+                2) cycles[i]*k - 5 > t
+        */
+        ll flag = 1;
+        for (ll i = 1; i <= total; i++){
+            ll k = t/cycles[i];
+            if (k % 2 != 0 || (k + 1)*cycles[i] - 5 <= t){
+                flag = 0;
+                break;
+            }
+        }
+        if (flag){
+            meeting_time = t;
+            break;
+        }
+    }
+    if (meeting_time != -1){
+        ll minutes = meeting_time/60;
+        ll seconds = meeting_time - 60*minutes;
+        printf("Set %lld synchs again at %lld minute(s) and %lld second(s) after all turning green.\n", mcase, minutes, seconds);
+    }
+    else{
+        printf("Set %lld is unable to synch after one hour.\n", mcase);
+    }
 }
 
 //main function
@@ -120,15 +176,23 @@ int main(){
 
 
     //for testcases, use the below format
-    /*
-    ll t , mcase = 1; //testcases
-    cin >> t;
-    while(t > 0){
-    	solve(mcase); //write a separate solve function
-    	t--;
+    
+    ll mcase = 1; //testcases
+    char input[100];
+
+    //reset the input array
+        for (ll i = 0; i <= 99; i++)
+            input[i] = '[';
+
+    while(scanf("%[^\n]\n", input) == 1){
+    	solve(mcase, input); //write a separate solve function
     	mcase++;
+
+        //reset the input array
+        for (ll i = 0; i <= 99; i++)
+            input[i] = '[';
     }
-    */
+    
     cerr << "time taken : " << (float)clock() / CLOCKS_PER_SEC << "seconds" << "\n";
     return 0;
 }

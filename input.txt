@@ -1,10 +1,1 @@
-"Yo nigga" by Siddhant C.
-"Hell naw" by rashi
-END
-BORROW "Yo nigga"
-BORROW "Hell naw"
-RETURN "Yo nigga"
-SHELVE
-RETURN "Hell naw"
-SHELVE
-END
+12 10

@@ -1,3 +1,11 @@
+
+/*
+	 template by: codetalker7
+	 editor: sublime text 3
+	 file name: UVa394
+	 date created: 2021-06-30 12:59:54
+	 problem link: https://onlinejudge.org/external/3/394.pdf
+*/
 #include<iostream>
 #include<vector>
 #include<string>
@@ -60,15 +68,6 @@ const ll INF = 1e18;
 const int INFINT = 1e9 + 5;
 const ldb PI = 3.14159265359;
 
-//Logical Operators
-#define AND &&
-#define OR ||
-#define NOT(x) !x
-
-//Bit Manipulation
-#define LSB(x) x & (-x) //value of least significant bit
-
-
 //macros
 /*
 	ssz refers to the signed size of an STL structure, because .size() function
@@ -86,8 +85,80 @@ template <class T> T signed_floor(T a , T b){if (a >= 0 && b >= 0) return a/b; e
 template <class T> pair<T,T> log_base_2(T n){T temp = 1 , k = 0; while(temp <= n){temp <<= 1; k++;} temp >>= 1; k--; return {k , temp};}
 //define global variables here
 
-void solve(ll mcase){
+struct reference{
+    ll base, D, size_bytes;
+    ll lower_d[10], upper_d[10];
+    ll C[11];
 
+};
+
+void solve(ll mcase){
+    ll n, r;
+    scanf("%lld %lld", &n, &r);
+
+    map <string, reference> references;
+
+    for (ll i = 1; i <= n; i++){
+        //input the name
+        char name[11];
+        scanf("%s", name);
+
+        //input base, size_bytes and D
+        ll base, bytes, D;
+        scanf("%lld %lld %lld", &base, &bytes, &D);
+
+        //making the new reference object
+        reference new_reference;
+        new_reference.base = base;
+        new_reference.size_bytes = bytes;
+        new_reference.D = D;
+
+        //setting the dimensions
+        for (ll j = 1; j <= D; j++){
+            scanf("%lld %lld", &new_reference.lower_d[j], &new_reference.upper_d[j]);
+
+        }   
+
+        //computing the C values
+        new_reference.C[D] = bytes;
+        for (ll d = D - 1; d >= 1; d--){
+            new_reference.C[d] = new_reference.C[d + 1]*(new_reference.upper_d[d + 1] - new_reference.lower_d[d + 1] + 1);
+        }
+        new_reference.C[0] = base;
+        for (ll d = 1; d <= D; d++){
+            new_reference.C[0] -= new_reference.C[d]*new_reference.lower_d[d];
+        }
+
+        //setting the map
+        string name_string = name;
+        references[name_string] = new_reference;
+    }
+
+    //handling the queries
+    for (ll i = 1; i <= r; i++){
+        char name[11];
+        scanf("%s", name);
+
+        //getting the answer
+        printf("%s[", name);
+        string name_string = name;
+        reference curr = references[name];
+        ll ans_address = curr.C[0];
+        for (ll d = 1; d <= curr.D; d++){
+            ll curr_d;
+            scanf("%lld", &curr_d);
+            ans_address += curr_d*curr.C[d];
+
+            if (d < curr.D){
+                printf("%lld, ", curr_d);
+            }
+            else
+                printf("%lld]", curr_d);
+        }
+
+        //print the final answer
+        printf(" = %lld\n", ans_address);
+    }
 }
 
 //main function
@@ -129,6 +200,7 @@ int main(){
     	mcase++;
     }
     */
+    solve(1);
     cerr << "time taken : " << (float)clock() / CLOCKS_PER_SEC << "seconds" << "\n";
     return 0;
 }
