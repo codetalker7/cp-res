@@ -1,3 +1,11 @@
+
+/*
+	 template by: codetalker7
+	 editor: sublime text 3
+	 file name: b.cpp
+	 date created: 2021-07-10 20:14:58
+	 problem link: 
+*/
 #include<iostream>
 #include<vector>
 #include<string>
@@ -86,7 +94,49 @@ template <class T> pair<T,T> log_base_2(T n){T temp = 1 , k = 0; while(temp <= n
 //define global variables here
 
 void solve(ll mcase){
+    char inp[27];
+    scanf("%s", inp);
 
+    string s = inp;
+    ll n = ssz(s);
+    vll pos(n);
+
+    for (ll i = 0; i < n; i++){
+        if (s[i] - 'a' >= n){
+            printf("No\n");
+            return;
+        }
+        pos[s[i] - 'a'] = i;
+    }
+
+    deque <ll> q;
+    for (ll i = 0; i < n; i++){
+        if (i == 0){
+            q.push_back(0);
+        }
+        else{
+            if (pos[i] < pos[i - 1]){
+                q.push_front(i);
+            }
+            else{
+                q.push_back(i);
+            }
+        }
+    }
+
+    ll flag = 1;
+    for (ll i = 0; i < n; i++){
+        if (q[i] != s[i] - 'a'){
+            flag = 0;
+            break;
+        }
+    }
+
+    if (flag){
+        printf("Yes\n");
+    }
+    else
+        printf("No\n");
 }
 
 //main function
@@ -119,7 +169,7 @@ int main(){
 
 
     //for testcases, use the below format
-    /*
+    
     ll t , mcase = 1; //testcases
     scanf("%lld\n", &t);
     while(t > 0){
@@ -127,7 +177,7 @@ int main(){
     	t--;
     	mcase++;
     }
-    */
+    
     cerr << "time taken : " << (float)clock() / CLOCKS_PER_SEC << "seconds" << "\n";
     return 0;
 }

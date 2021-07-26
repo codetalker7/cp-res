@@ -1,3 +1,11 @@
+
+/*
+	 template by: codetalker7
+	 editor: sublime text 3
+	 file name: CF1550C.cpp
+	 date created: 2021-07-17 21:41:54
+	 problem link: 
+*/
 #include<iostream>
 #include<vector>
 #include<string>
@@ -84,9 +92,86 @@ template <class T> T modinv (T a , T m , T &x , T &y){T g = extgcd(a , m , x , y
 template <class T> T signed_floor(T a , T b){if (a >= 0 && b >= 0) return a/b; else if (a < 0 & b < 0) return (-a)/(-b); else if (a < 0 & b >= 0){if (a % b == 0) return -((-a)/b); else return -((-a)/b) - 1;} else if (a >= 0 && b < 0){if(a % b == 0) return -(a/(-b)); else return -(a/(-b)) - 1;}}
 template <class T> pair<T,T> log_base_2(T n){T temp = 1 , k = 0; while(temp <= n){temp <<= 1; k++;} temp >>= 1; k--; return {k , temp};}
 //define global variables here
+ll a[200000 + 1];
+//dp[i] contains the number of good subarrays from index i onwards
+ll dp[200000 + 1];
 
 void solve(ll mcase){
+    ll n;
+    scanf("%lld", &n);
 
+    for (ll i = 0; i < n; i++){
+        scanf("%lld", &a[i]);
+    }
+
+    if (n == 1){
+        printf("%lld\n", (ll)1);
+        return;
+    }
+
+    //initialising dp
+    dp[n - 1] = n - 1;
+    dp[n - 2] = n - 1;
+
+    //computing dp for other indexes
+    for(ll i = n - 3; i >= 0; i--){
+        /*
+            compute the smallest index j such that there is a monotonic 
+            sequence i -> k -> j for some i < k < j. Clearly, i + 2 <= j <= n - 1
+        */
+        /*
+            only need to check subsequences of length 4
+        */
+        //if 1,2,3 is monotonic
+        if (
+                (a[i] <= a[i + 1] AND a[i + 1] <= a[i + 2]) 
+                    OR 
+                (a[i] >= a[i + 1] AND a[i + 1] >= a[i + 2]) 
+            ){
+            dp[i] = i + 1;
+            continue;
+        }
+        if (i + 3 >= n){
+            dp[i] = i + 2;
+            continue;
+        }
+
+        //if 1,2,4 is monotonic
+        if (
+                (a[i] <= a[i + 1] AND a[i + 1] <= a[i + 3]) 
+                    OR 
+                (a[i] >= a[i + 1] AND a[i + 1] >= a[i + 3]) 
+            ){
+            dp[i] = i + 2;
+            continue;
+        }
+
+        //if 1,3,4 is monotonic
+        if (
+                (a[i] <= a[i + 2] AND a[i + 2] <= a[i + 3]) 
+                    OR 
+                (a[i] >= a[i + 2] AND a[i + 2] >= a[i + 3]) 
+            ){
+            dp[i] = i + 2;
+            continue;
+        }
+
+        //if 2,3,4 is monotonic
+        if (
+                (a[i + 1] <= a[i + 2] AND a[i + 2] <= a[i + 3]) 
+                    OR 
+                (a[i + 1] >= a[i + 2] AND a[i + 2] >= a[i + 3]) 
+            ){
+            dp[i] = i + 2;
+            continue;
+        }
+        dp[i] = i + 3;
+    }
+    ll ans = 0;
+    for(ll i = 0; i < n; i++){
+        ans += dp[i] - i + 1;
+    }
+    printf("%lld\n", ans);
 }
 
 //main function
@@ -119,7 +204,7 @@ int main(){
 
 
     //for testcases, use the below format
-    /*
+    
     ll t , mcase = 1; //testcases
     scanf("%lld\n", &t);
     while(t > 0){
@@ -127,7 +212,7 @@ int main(){
     	t--;
     	mcase++;
     }
-    */
+    
     cerr << "time taken : " << (float)clock() / CLOCKS_PER_SEC << "seconds" << "\n";
     return 0;
 }

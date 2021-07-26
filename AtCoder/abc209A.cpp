@@ -1,3 +1,11 @@
+
+/*
+	 template by: codetalker7
+	 editor: sublime text 3
+	 file name: a.cpp
+	 date created: 2021-07-10 17:30:19
+	 problem link: 
+*/
 #include<iostream>
 #include<vector>
 #include<string>
@@ -86,7 +94,15 @@ template <class T> pair<T,T> log_base_2(T n){T temp = 1 , k = 0; while(temp <= n
 //define global variables here
 
 void solve(ll mcase){
+    ll a, b;
+    scanf("%lld %lld", &a, &b);
 
+    if (b < a){
+        printf("0\n");
+    }
+    else{
+        printf("%lld\n", b - a + 1);
+    }
 }
 
 //main function
@@ -128,6 +144,7 @@ int main(){
     	mcase++;
     }
     */
+    solve(1);
     cerr << "time taken : " << (float)clock() / CLOCKS_PER_SEC << "seconds" << "\n";
     return 0;
 }

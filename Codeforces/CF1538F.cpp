@@ -1,3 +1,11 @@
+
+/*
+	 template by: codetalker7
+	 editor: sublime text 3
+	 file name: CF1538F
+	 date created: 2021-07-02 17:36:19
+	 problem link: 
+*/
 #include<iostream>
 #include<vector>
 #include<string>
@@ -86,7 +94,52 @@ template <class T> pair<T,T> log_base_2(T n){T temp = 1 , k = 0; while(temp <= n
 //define global variables here
 
 void solve(ll mcase){
+    ll l, r;
+    scanf("%lld %lld", &l, &r);
 
+    vll digits_l, digits_r;
+    //making digits_r
+    while(r > 0){
+        digits_r.push_back(r % 10);
+        r /= 10;
+    }
+
+    //making digits_l
+    while(l > 0){
+        digits_l.push_back(l % 10);
+        l /= 10;
+    }
+
+    //putting zero for the remaining digits for l
+    while (ssz(digits_l) < ssz(digits_r))
+        digits_l.push_back(0);
+
+    ll n = ssz(digits_r) - 1;
+    ll times_changed = 0, ans = 0; 
+    for (ll i = n; i >= 0; i--){
+        if (i == n){
+            ans += digits_r[n] - digits_l[n];
+            times_changed = digits_r[n] - digits_l[n];
+        }
+        else{
+            if (times_changed == 0){
+                ans += digits_r[i] - digits_l[i];
+                times_changed = digits_r[i] - digits_l[i];
+            }
+            else{
+                ll curr_times_changed = 0;
+                if (digits_l[i] != 0){
+                    curr_times_changed += 10 - digits_l[i];
+                    times_changed--;
+                }   
+                curr_times_changed += times_changed*10;
+                curr_times_changed += digits_r[i] - 0;
+                times_changed = curr_times_changed;
+                ans += curr_times_changed;
+            }
+        }
+    }
+    printf("%lld\n", ans);
 }
 
 //main function
@@ -119,7 +172,7 @@ int main(){
 
 
     //for testcases, use the below format
-    /*
+    
     ll t , mcase = 1; //testcases
     scanf("%lld\n", &t);
     while(t > 0){
@@ -127,7 +180,7 @@ int main(){
     	t--;
     	mcase++;
     }
-    */
+    
     cerr << "time taken : " << (float)clock() / CLOCKS_PER_SEC << "seconds" << "\n";
     return 0;
 }

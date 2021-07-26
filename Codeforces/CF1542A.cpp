@@ -1,3 +1,11 @@
+
+/*
+	 template by: codetalker7
+	 editor: sublime text 3
+	 file name: CF1542A.cpp
+	 date created: 2021-07-03 18:35:43
+	 problem link: 
+*/
 #include<iostream>
 #include<vector>
 #include<string>
@@ -84,9 +92,25 @@ template <class T> T modinv (T a , T m , T &x , T &y){T g = extgcd(a , m , x , y
 template <class T> T signed_floor(T a , T b){if (a >= 0 && b >= 0) return a/b; else if (a < 0 & b < 0) return (-a)/(-b); else if (a < 0 & b >= 0){if (a % b == 0) return -((-a)/b); else return -((-a)/b) - 1;} else if (a >= 0 && b < 0){if(a % b == 0) return -(a/(-b)); else return -(a/(-b)) - 1;}}
 template <class T> pair<T,T> log_base_2(T n){T temp = 1 , k = 0; while(temp <= n){temp <<= 1; k++;} temp >>= 1; k--; return {k , temp};}
 //define global variables here
+ll a[201];
 
 void solve(ll mcase){
+    ll n;
+    scanf("%lld", &n);
 
+    ll odd = 0;
+    for (ll i = 1; i <= 2*n; i++){
+        ll ai;
+        scanf("%lld", &ai);
+
+        if (ai % 2 != 0)
+            odd++;
+    }
+    if (odd == n){
+        printf("Yes\n");
+    }
+    else
+        printf("No\n");
 }
 
 //main function
@@ -119,7 +143,7 @@ int main(){
 
 
     //for testcases, use the below format
-    /*
+    
     ll t , mcase = 1; //testcases
     scanf("%lld\n", &t);
     while(t > 0){
@@ -127,7 +151,7 @@ int main(){
     	t--;
     	mcase++;
     }
-    */
+    
     cerr << "time taken : " << (float)clock() / CLOCKS_PER_SEC << "seconds" << "\n";
     return 0;
 }

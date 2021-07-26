@@ -1,3 +1,11 @@
+
+/*
+	 template by: codetalker7
+	 editor: sublime text 3
+	 file name: d.cpp
+	 date created: 2021-07-10 18:36:10
+	 problem link: 
+*/
 #include<iostream>
 #include<vector>
 #include<string>
@@ -84,9 +92,94 @@ template <class T> T modinv (T a , T m , T &x , T &y){T g = extgcd(a , m , x , y
 template <class T> T signed_floor(T a , T b){if (a >= 0 && b >= 0) return a/b; else if (a < 0 & b < 0) return (-a)/(-b); else if (a < 0 & b >= 0){if (a % b == 0) return -((-a)/b); else return -((-a)/b) - 1;} else if (a >= 0 && b < 0){if(a % b == 0) return -(a/(-b)); else return -(a/(-b)) - 1;}}
 template <class T> pair<T,T> log_base_2(T n){T temp = 1 , k = 0; while(temp <= n){temp <<= 1; k++;} temp >>= 1; k--; return {k , temp};}
 //define global variables here
+vll blank;
+vector <vll> adj;
+vll depth;
+ll timer;
+vll tin, tout; //discovery and finish times
+vector <vll> up;
+ll l;
+
+void dfs(ll v, ll p, ll n){
+    tin[v] = ++timer;
+    up[v][0] = p;
+
+    for (ll i = 1; i <= l; i++){
+        up[v][i] = up[up[v][i - 1]][i - 1];
+    }
+
+    for (auto u : adj[v]){
+        if (u != p){
+            depth[u] = depth[v] + 1;
+            dfs(u, v, n);
+        }
+    }
+    tout[v] = ++timer;
+}
+
+bool is_ancestor(ll u, ll v){
+    return tin[u] <= tin[v] && tout[u] >= tout[v];  
+}
+
+ll lca(ll u, ll v){
+    if (is_ancestor(u, v))
+        return u;
+    if (is_ancestor(v, u))
+        return v;
+    for (ll i = l; i >= 0; i--){
+        if (!is_ancestor(up[u][i], v))
+            u = up[u][i];
+    }
+    return up[u][0];
+}
+
+void preprocess(ll root, ll n){
+    tin.resize(n);
+    depth.resize(n);
+    tout.resize(n); 
+    timer = 0;
+    for (ll i = 0; i < n; i++)
+        depth[i] = 0;
+
+    l = log_base_2(n).first;
+    up.assign(n, vll(l + 1));
+    dfs(root, root, n);
+}
 
 void solve(ll mcase){
+    ll n, q;
+    scanf("%lld %lld", &n, &q);
 
+    adj.assign(n, blank);
+    for (ll i = 1; i <= n - 1; i++){
+        ll a, b;
+        scanf("%lld %lld", &a, &b);
+
+        //zero based indexing
+        a--; b--;   
+        adj[a].push_back(b);
+        adj[b].push_back(a);
+    }   
+
+    preprocess(0, n);
+
+    //handling the queries
+    for (ll Q = 1; Q <= q; Q++){
+        ll ci, di;
+        scanf("%lld %lld", &ci, &di);
+        //zero based indexing
+        ci--; di--;
+
+        //compute the lca
+        ll lc = lca(ci, di);
+
+        ll dist = (depth[ci] - depth[lc]) + (depth[di] - depth[lc]);
+        if (dist % 2 == 0){
+            printf("Town\n");
+        }
+        else
+            printf("Road\n");
+    }
 }
 
 //main function
@@ -128,6 +221,7 @@ int main(){
     	mcase++;
     }
     */
+    solve(1);
     cerr << "time taken : " << (float)clock() / CLOCKS_PER_SEC << "seconds" << "\n";
     return 0;
 }

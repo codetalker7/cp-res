@@ -1,3 +1,11 @@
+
+/*
+	 template by: codetalker7
+	 editor: sublime text 3
+	 file name: d.cpp
+	 date created: 2021-07-17 18:11:21
+	 problem link: 
+*/
 #include<iostream>
 #include<vector>
 #include<string>
@@ -84,9 +92,68 @@ template <class T> T modinv (T a , T m , T &x , T &y){T g = extgcd(a , m , x , y
 template <class T> T signed_floor(T a , T b){if (a >= 0 && b >= 0) return a/b; else if (a < 0 & b < 0) return (-a)/(-b); else if (a < 0 & b >= 0){if (a % b == 0) return -((-a)/b); else return -((-a)/b) - 1;} else if (a >= 0 && b < 0){if(a % b == 0) return -(a/(-b)); else return -(a/(-b)) - 1;}}
 template <class T> pair<T,T> log_base_2(T n){T temp = 1 , k = 0; while(temp <= n){temp <<= 1; k++;} temp >>= 1; k--; return {k , temp};}
 //define global variables here
+ll a[1001][1001];
+ll dp_right_down[1001][1001];
+ll dp_left_down[1001][1001];
 
 void solve(ll mcase){
+    ll h, w, c;
+    scanf("%lld %lld %lld", &h, &w, &c);
 
+    for (ll i = 1; i <= h; i++){
+        for (ll j = 1; j <= w; j++){
+            scanf("%lld", &a[i][j]);
+            dp_right_down[i][j] = INF;
+            dp_left_down[i][j] = INF;
+        }
+    }
+    //final answer
+    ll ans = INF;
+
+    //calculating dp_right_down
+    for (ll i = h; i >= 1; i--){
+        for (ll j = w; j >= 1; j--){
+            if (j == w && i == h){
+                dp_right_down[h][w] = a[h][w];
+            }
+            else{   
+                if (i + 1 <= h){
+                    dp_right_down[i][j] = min(dp_right_down[i][j], c + dp_right_down[i + 1][j]);
+                }
+                if (j + 1 <= w){
+                    dp_right_down[i][j] = min(dp_right_down[i][j], c + dp_right_down[i][j + 1]);
+                }
+                //update answer
+                ans = min(ans, a[i][j] + dp_right_down[i][j]);
+
+                //the path that ends there
+                dp_right_down[i][j] = min(dp_right_down[i][j], a[i][j]);
+            }
+        }
+    }
+
+    //calculating dp_left_down
+    for (ll i = h; i >= 1; i--){
+        for (ll j = 1; j <= w; j++){
+            if (j == 1 && i == h){
+                dp_left_down[h][1] = a[h][1];
+            }
+            else{   
+                if (i + 1 <= h){
+                    dp_left_down[i][j] = min(dp_left_down[i][j], c + dp_left_down[i + 1][j]);
+                }
+                if (j - 1 >= 1){
+                    dp_left_down[i][j] = min(dp_left_down[i][j], c + dp_left_down[i][j - 1]);
+                }
+                //update answer
+                ans = min(ans, a[i][j] + dp_left_down[i][j]);
+
+                //the path that ends there
+                dp_left_down[i][j] = min(dp_left_down[i][j], a[i][j]);
+            }
+        }
+    }
+    printf("%lld\n", ans);
 }
 
 //main function
@@ -128,6 +195,7 @@ int main(){
     	mcase++;
     }
     */
+    solve(1);
     cerr << "time taken : " << (float)clock() / CLOCKS_PER_SEC << "seconds" << "\n";
     return 0;
 }

@@ -1,3 +1,11 @@
+
+/*
+	 template by: codetalker7
+	 editor: sublime text 3
+	 file name: CF1511B
+	 date created: 2021-07-01 22:41:39
+	 problem link: https://codeforces.com/contest/1511/B
+*/
 #include<iostream>
 #include<vector>
 #include<string>
@@ -68,6 +76,7 @@ const ldb PI = 3.14159265359;
 //Bit Manipulation
 #define LSB(x) x & (-x) //value of least significant bit
 
+
 //macros
 /*
 	ssz refers to the signed size of an STL structure, because .size() function
@@ -84,9 +93,40 @@ template <class T> T modinv (T a , T m , T &x , T &y){T g = extgcd(a , m , x , y
 template <class T> T signed_floor(T a , T b){if (a >= 0 && b >= 0) return a/b; else if (a < 0 & b < 0) return (-a)/(-b); else if (a < 0 & b >= 0){if (a % b == 0) return -((-a)/b); else return -((-a)/b) - 1;} else if (a >= 0 && b < 0){if(a % b == 0) return -(a/(-b)); else return -(a/(-b)) - 1;}}
 template <class T> pair<T,T> log_base_2(T n){T temp = 1 , k = 0; while(temp <= n){temp <<= 1; k++;} temp >>= 1; k--; return {k , temp};}
 //define global variables here
+    
+ll get_digits(ll x){
+    ll digits = 0, curr = x;
+    while (curr > 0){
+        digits++;
+        curr /= 10;
+    }
+    return digits;
+}
 
 void solve(ll mcase){
+    ll a, b, c;
+    cin >> a >> b >> c;
 
+    ll counter = 1, base = 1;
+    while (counter < c){
+        counter++;
+        base *= 10;
+    }
+
+    ll num1 = base, num2 = base;
+    ll digit1 = c, digit2 = c;
+
+    while (digit1 < a){
+        num1 *= 2;
+        digit1 = get_digits(num1);
+    }
+
+    while (digit2 < b){
+        num2 *= 3;
+        digit2 = get_digits(num2);
+    }    
+
+    cout << num1 << " " << num2 << "\n";
 }
 
 //main function
@@ -119,15 +159,15 @@ int main(){
 
 
     //for testcases, use the below format
-    /*
+    
     ll t , mcase = 1; //testcases
-    scanf("%lld\n", &t);
+    cin >> t;
     while(t > 0){
     	solve(mcase); //write a separate solve function
     	t--;
     	mcase++;
     }
-    */
+    
     cerr << "time taken : " << (float)clock() / CLOCKS_PER_SEC << "seconds" << "\n";
     return 0;
 }

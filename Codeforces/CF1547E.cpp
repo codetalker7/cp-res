@@ -1,3 +1,11 @@
+
+/*
+	 template by: codetalker7
+	 editor: sublime text 3
+	 file name: e.cpp
+	 date created: 2021-07-10 21:19:05
+	 problem link: 
+*/
 #include<iostream>
 #include<vector>
 #include<string>
@@ -56,7 +64,7 @@ using ldb = long double;
 
 //constants
 const ll MOD = 1000000007;
-const ll INF = 1e18;
+const ll INF = 1e17;
 const int INFINT = 1e9 + 5;
 const ldb PI = 3.14159265359;
 
@@ -84,9 +92,66 @@ template <class T> T modinv (T a , T m , T &x , T &y){T g = extgcd(a , m , x , y
 template <class T> T signed_floor(T a , T b){if (a >= 0 && b >= 0) return a/b; else if (a < 0 & b < 0) return (-a)/(-b); else if (a < 0 & b >= 0){if (a % b == 0) return -((-a)/b); else return -((-a)/b) - 1;} else if (a >= 0 && b < 0){if(a % b == 0) return -(a/(-b)); else return -(a/(-b)) - 1;}}
 template <class T> pair<T,T> log_base_2(T n){T temp = 1 , k = 0; while(temp <= n){temp <<= 1; k++;} temp >>= 1; k--; return {k , temp};}
 //define global variables here
+ll t[300000 + 1];  
+ll has_ac[300000 + 1];
+ll dpl[300000 + 1];
+ll dpr[300000 + 1];
 
 void solve(ll mcase){
+    ll n, k;
+    scanf("%lld %lld", &n, &k);
 
+    memset(has_ac, (ll)0, (n + 1)*sizeof(ll));
+
+    for (ll i = 1; i <= k; i++){
+        ll ai; 
+        scanf("%lld", &ai);
+        has_ac[ai] = i;
+    }
+    for (ll i = 1; i <= k; i++)
+        scanf("%lld", &t[i]);
+
+    for (ll i = n; i >= 1; i--){
+        if (has_ac[i] > 0){
+            if (i == n){
+                dpr[i] = t[has_ac[i]];
+            }
+            else{
+                dpr[i] = min(t[has_ac[i]], dpr[i + 1] + 1);
+            }
+        }
+        else{
+            if (i == n){
+                dpr[i] = INF;
+            }
+            else{
+                dpr[i] = dpr[i + 1] + 1;
+            }
+        }
+    }
+
+    for (ll i = 1; i <= n; i++){
+        if (has_ac[i] > 0){
+            if (i == 1){
+                dpl[i] = t[has_ac[i]];
+            }
+            else{
+                dpl[i] = min(t[has_ac[i]], dpl[i - 1] + 1);
+            }
+        }
+        else{
+            if (i == 1){
+                dpl[i] = INF;
+            }
+            else{
+                dpl[i] = dpl[i - 1] + 1;
+            }
+        }
+    }
+    for (ll i = 1; i <= n; i++){
+        printf("%lld ", min(dpl[i], dpr[i]));
+    }
+    printf("\n");
 }
 
 //main function
@@ -119,15 +184,15 @@ int main(){
 
 
     //for testcases, use the below format
-    /*
-    ll t , mcase = 1; //testcases
-    scanf("%lld\n", &t);
-    while(t > 0){
+    
+    ll q , mcase = 1; //testcases
+    scanf("%lld\n", &q);
+    while(q > 0){
     	solve(mcase); //write a separate solve function
-    	t--;
+    	q--;
     	mcase++;
     }
-    */
+    
     cerr << "time taken : " << (float)clock() / CLOCKS_PER_SEC << "seconds" << "\n";
     return 0;
 }

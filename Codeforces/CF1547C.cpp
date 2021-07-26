@@ -1,3 +1,11 @@
+
+/*
+	 template by: codetalker7
+	 editor: sublime text 3
+	 file name: c.cpp
+	 date created: 2021-07-10 20:35:53
+	 problem link: 
+*/
 #include<iostream>
 #include<vector>
 #include<string>
@@ -84,9 +92,104 @@ template <class T> T modinv (T a , T m , T &x , T &y){T g = extgcd(a , m , x , y
 template <class T> T signed_floor(T a , T b){if (a >= 0 && b >= 0) return a/b; else if (a < 0 & b < 0) return (-a)/(-b); else if (a < 0 & b >= 0){if (a % b == 0) return -((-a)/b); else return -((-a)/b) - 1;} else if (a >= 0 && b < 0){if(a % b == 0) return -(a/(-b)); else return -(a/(-b)) - 1;}}
 template <class T> pair<T,T> log_base_2(T n){T temp = 1 , k = 0; while(temp <= n){temp <<= 1; k++;} temp >>= 1; k--; return {k , temp};}
 //define global variables here
+ll a[101];
+ll b[101];
 
 void solve(ll mcase){
+    ll k, n, m;
+    scanf("%lld %lld %lld", &k, &n, &m);
 
+    for (ll i = 1; i <= n; i++){
+        scanf("%lld", &a[i]);
+    }
+
+    for (ll i = 1; i <= m; i++){
+        scanf("%lld", &b[i]);
+    }
+
+    ll i = 1, j = 1, flag = 1;
+    vll common;
+
+    while(i <= n AND j <= m){
+        if (a[i] == 0){
+            i++;
+            k++;
+            common.push_back(0);
+            continue;
+        }
+        if (b[j] == 0){
+            j++;
+            k++;
+            common.push_back(0);
+            continue;
+        }
+        if (a[i] > k){
+            if (b[j] > k){
+                flag = 0;
+                break;
+            }
+            else{
+                common.push_back(b[j]);
+                j++;
+            }
+        }
+        else{
+            common.push_back(a[i]);
+            i++;
+            continue;
+        }
+    }
+    if (flag == 0){
+        printf("-1\n");
+        return;
+    }
+    //completion
+    while (i <= n){
+        if (a[i] == 0){
+            i++;
+            k++;
+            common.push_back(0);
+            continue;
+        }
+        else{
+            if (a[i] > k){
+                flag = 0;
+                break;
+            }
+            else{
+                common.push_back(a[i]);
+                i++;
+            }
+        }
+    }
+    while (j <= m){
+        if (b[j] == 0){
+            j++;
+            k++;
+            common.push_back(0);
+            continue;
+        }
+        else{
+            if (b[j] > k){
+                flag = 0;
+                break;
+            }
+            else{
+                common.push_back(b[j]);
+                j++;
+            }
+        }
+    }
+
+    if (flag == 0){
+        printf("-1\n");
+        return;
+    }
+    else{
+        for (ll i = 0; i < m + n; i++)
+            printf("%lld ", common[i]);
+        printf("\n");
+    }
 }
 
 //main function
@@ -119,7 +222,7 @@ int main(){
 
 
     //for testcases, use the below format
-    /*
+    
     ll t , mcase = 1; //testcases
     scanf("%lld\n", &t);
     while(t > 0){
@@ -127,7 +230,7 @@ int main(){
     	t--;
     	mcase++;
     }
-    */
+    
     cerr << "time taken : " << (float)clock() / CLOCKS_PER_SEC << "seconds" << "\n";
     return 0;
 }

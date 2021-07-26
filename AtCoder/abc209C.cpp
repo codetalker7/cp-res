@@ -1,3 +1,11 @@
+
+/*
+	 template by: codetalker7
+	 editor: sublime text 3
+	 file name: c.cpp
+	 date created: 2021-07-10 17:37:11
+	 problem link: 
+*/
 #include<iostream>
 #include<vector>
 #include<string>
@@ -84,9 +92,45 @@ template <class T> T modinv (T a , T m , T &x , T &y){T g = extgcd(a , m , x , y
 template <class T> T signed_floor(T a , T b){if (a >= 0 && b >= 0) return a/b; else if (a < 0 & b < 0) return (-a)/(-b); else if (a < 0 & b >= 0){if (a % b == 0) return -((-a)/b); else return -((-a)/b) - 1;} else if (a >= 0 && b < 0){if(a % b == 0) return -(a/(-b)); else return -(a/(-b)) - 1;}}
 template <class T> pair<T,T> log_base_2(T n){T temp = 1 , k = 0; while(temp <= n){temp <<= 1; k++;} temp >>= 1; k--; return {k , temp};}
 //define global variables here
+ll a[200000 + 1];
+ll c[200000 + 1];
+ll dp[200000 + 1];
+ll prod_modulo[200000 + 1];
 
 void solve(ll mcase){
+    ll n; 
+    scanf("%lld", &n);
 
+    for (ll i = 1; i <= n; i++){
+        scanf("%lld", &c[i]);
+    }
+    sort(c + 1, c + n + 1);
+
+    //setting prod_modulo
+    for (ll i = 1; i <= n; i++){
+        if (i == 1){
+            prod_modulo[1] = c[1] % MOD;
+        }
+        else{
+            prod_modulo[i] = (prod_modulo[i - 1] * (c[i] % MOD)) % MOD;
+        }
+    }
+
+    //calculating dp
+    for (ll i = 1; i <= n; i++){
+        if (i == 1){
+            dp[1] = c[1] % MOD;
+        }
+        else{
+            if (c[i] < i){
+                dp[i] = 0 % MOD;
+            }
+            else{
+                dp[i] = (dp[i - 1] * (c[i - 1] - (i - 1) + c[i] - c[i - 1]) % MOD) % MOD;
+            }
+        }
+    }
+    printf("%lld\n", dp[n]);
 }
 
 //main function
@@ -128,6 +172,7 @@ int main(){
     	mcase++;
     }
     */
+    solve(1);
     cerr << "time taken : " << (float)clock() / CLOCKS_PER_SEC << "seconds" << "\n";
     return 0;
 }

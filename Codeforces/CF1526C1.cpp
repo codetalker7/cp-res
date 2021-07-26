@@ -1,3 +1,11 @@
+
+/*
+	 template by: codetalker7
+	 editor: sublime text 3
+	 file name: CF1526C1
+	 date created: 2021-07-02 18:18:36
+	 problem link: 
+*/
 #include<iostream>
 #include<vector>
 #include<string>
@@ -84,9 +92,51 @@ template <class T> T modinv (T a , T m , T &x , T &y){T g = extgcd(a , m , x , y
 template <class T> T signed_floor(T a , T b){if (a >= 0 && b >= 0) return a/b; else if (a < 0 & b < 0) return (-a)/(-b); else if (a < 0 & b >= 0){if (a % b == 0) return -((-a)/b); else return -((-a)/b) - 1;} else if (a >= 0 && b < 0){if(a % b == 0) return -(a/(-b)); else return -(a/(-b)) - 1;}}
 template <class T> pair<T,T> log_base_2(T n){T temp = 1 , k = 0; while(temp <= n){temp <<= 1; k++;} temp >>= 1; k--; return {k , temp};}
 //define global variables here
+ll a[2001]; 
+ll dp[2001][2001];  
 
 void solve(ll mcase){
+    ll n;
+    scanf("%lld", &n);
 
+    //taking the potions
+    for(ll i = 1; i <= n; i++){
+        scanf("%lld", &a[i]);
+    }
+
+    //filling in the dp table
+    for (ll i = 1; i <= n; i++){
+        for (ll k = 0; k <= n; k++){
+            if (i == 1){
+                if (k > 1)
+                    dp[1][k] = -INF;
+                else if (k == 0)
+                    dp[1][k] = 0;
+                else {
+                    if (a[1] < 0)
+                        dp[1][1] = -INF;
+                    else 
+                        dp[1][1] = a[1];
+                }
+            }
+            else{
+                if (k == 0)
+                    dp[i][k] = 0;
+                else if (k > i)
+                    dp[i][k] = -INF;
+                else
+                    if (dp[i - 1][k - 1] + a[i] >= 0)
+                        dp[i][k] = max(dp[i - 1][k - 1] + a[i], dp[i - 1][k]);
+                    else
+                        dp[i][k] = dp[i - 1][k];
+            }
+        }
+    }
+    ll ans = 0;
+    for (ll k = 1; k <= n; k++) 
+        if (dp[n][k] >= 0)
+            ans = k;
+    printf("%lld\n", ans);
 }
 
 //main function
@@ -128,6 +178,7 @@ int main(){
     	mcase++;
     }
     */
+    solve(1);
     cerr << "time taken : " << (float)clock() / CLOCKS_PER_SEC << "seconds" << "\n";
     return 0;
 }

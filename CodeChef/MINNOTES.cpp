@@ -1,3 +1,11 @@
+
+/*
+	 template by: codetalker7
+	 editor: sublime text 3
+	 file name: MINNOTES.cpp
+	 date created: 2021-07-03 17:55:38
+	 problem link: https://www.codechef.com/JULY21B/problems/MINNOTES
+*/
 #include<iostream>
 #include<vector>
 #include<string>
@@ -84,9 +92,87 @@ template <class T> T modinv (T a , T m , T &x , T &y){T g = extgcd(a , m , x , y
 template <class T> T signed_floor(T a , T b){if (a >= 0 && b >= 0) return a/b; else if (a < 0 & b < 0) return (-a)/(-b); else if (a < 0 & b >= 0){if (a % b == 0) return -((-a)/b); else return -((-a)/b) - 1;} else if (a >= 0 && b < 0){if(a % b == 0) return -(a/(-b)); else return -(a/(-b)) - 1;}}
 template <class T> pair<T,T> log_base_2(T n){T temp = 1 , k = 0; while(temp <= n){temp <<= 1; k++;} temp >>= 1; k--; return {k , temp};}
 //define global variables here
+ll A[100000];
+ll prefix[100000];
+ll segTree[200000];
+
+void build(ll N){
+    for (ll i = 0; i < N; i++){
+        segTree[i + N] = A[i];
+    }
+    for (ll i = N - 1; i >= 0; i--){
+        segTree[i] = __gcd(segTree[i << 1], segTree[i << 1 | 1]);
+    }
+}
+
+ll query(ll N, ll l, ll r){
+    ll res = 0;
+    l += N; r += N;
+
+    while (l < r){
+        if (l & 1){
+            res = __gcd(res, segTree[l]);
+            l += 1; l >>= 1;
+        }
+        else {
+            l >>= 1;
+        }
+
+        if (r & 1){
+            res = __gcd(res, segTree[r - 1]); r >>= 1;
+        }
+        else{
+            r >>= 1;
+        }
+    }
+
+    return res;
+}
 
 void solve(ll mcase){
+    ll N;
+    scanf("%lld", &N);
 
+    //taking the salaries
+    for (ll i = 0; i < N; i++){
+        scanf("%lld", &A[i]);
+    }
+
+    //boundary case
+    if (N == 1){
+        printf("1\n");
+        return;
+    }
+
+    //make the prefix sums
+    for (ll i = 0; i < N; i++){
+        if (i == 0){
+            prefix[i] = A[i];
+        }
+        else{
+            prefix[i] = A[i] + prefix[i - 1];
+        }
+    }
+
+    //make the gcd tree
+    build(N);
+
+    //getting the answer
+    ll ans = INF;
+    for (ll i = 0; i < N; i++){
+        //make ith salary equal to the gcd of all others
+        if (i == 0){
+            ans = min(ans, 1 + (prefix[N - 1] - prefix[0])/query(N, 1, N));
+        }
+        else if (i == N - 1){
+            ans = min(ans, 1 + (prefix[N - 2])/query(N, 0, N - 1));
+        }
+        else{
+            ll curr_gcd = __gcd(query(N, 0, i), query(N, i + 1, N));
+            ans = min(ans, 1 + prefix[i - 1]/curr_gcd + (prefix[N - 1] - prefix[i])/curr_gcd);
+        }
+    }
+    printf("%lld\n", ans);
 }
 
 //main function
@@ -119,7 +205,7 @@ int main(){
 
 
     //for testcases, use the below format
-    /*
+    
     ll t , mcase = 1; //testcases
     scanf("%lld\n", &t);
     while(t > 0){
@@ -127,7 +213,8 @@ int main(){
     	t--;
     	mcase++;
     }
-    */
+    
+
     cerr << "time taken : " << (float)clock() / CLOCKS_PER_SEC << "seconds" << "\n";
     return 0;
 }

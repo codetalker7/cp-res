@@ -1,3 +1,11 @@
+
+/*
+	 template by: codetalker7
+	 editor: sublime text 3
+	 file name: CF1542C.cpp
+	 date created: 2021-07-03 19:50:47
+	 problem link: 
+*/
 #include<iostream>
 #include<vector>
 #include<string>
@@ -86,7 +94,34 @@ template <class T> pair<T,T> log_base_2(T n){T temp = 1 , k = 0; while(temp <= n
 //define global variables here
 
 void solve(ll mcase){
+    ll n;
+    scanf("%lld", &n);
 
+    ll ans = 0;
+    ll curr = 1, curr_lcm = 1;
+    while(/*# of multiples of lcm(1,2,...,curr) > 0*/
+        n/curr_lcm > 0
+    ){
+        /*
+            -> s = among all such multiples, how many are there
+            which are not divisible by lcm(1,2,...,curr, curr + 1)
+            
+            -> add (curr + 1)*s to the answer
+            -> curr = curr + 1
+        */
+        ll total = n/curr_lcm;
+
+        //multiples of curr_lcm are 1*curr_lcm, ..., total*curr_lcm
+        ll new_lcm = ((curr + 1) * curr_lcm)/__gcd(curr + 1, curr_lcm);
+        ll not_divisible = (total - n/new_lcm) % MOD;
+
+        ans = (ans + ((curr + 1) % MOD) * not_divisible) % MOD;
+
+        //update
+        curr = curr + 1;
+        curr_lcm = new_lcm;
+    }
+    printf("%lld\n", ans);
 }
 
 //main function
@@ -119,7 +154,7 @@ int main(){
 
 
     //for testcases, use the below format
-    /*
+    
     ll t , mcase = 1; //testcases
     scanf("%lld\n", &t);
     while(t > 0){
@@ -127,7 +162,7 @@ int main(){
     	t--;
     	mcase++;
     }
-    */
+    
     cerr << "time taken : " << (float)clock() / CLOCKS_PER_SEC << "seconds" << "\n";
     return 0;
 }

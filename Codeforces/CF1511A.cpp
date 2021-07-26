@@ -1,3 +1,11 @@
+
+/*
+	 template by: codetalker7
+	 editor: sublime text 3
+	 file name: CF1511A
+	 date created: 2021-07-01 22:41:35
+	 problem link: https://codeforces.com/contest/1511/A
+*/
 #include<iostream>
 #include<vector>
 #include<string>
@@ -68,6 +76,7 @@ const ldb PI = 3.14159265359;
 //Bit Manipulation
 #define LSB(x) x & (-x) //value of least significant bit
 
+
 //macros
 /*
 	ssz refers to the signed size of an STL structure, because .size() function
@@ -84,9 +93,23 @@ template <class T> T modinv (T a , T m , T &x , T &y){T g = extgcd(a , m , x , y
 template <class T> T signed_floor(T a , T b){if (a >= 0 && b >= 0) return a/b; else if (a < 0 & b < 0) return (-a)/(-b); else if (a < 0 & b >= 0){if (a % b == 0) return -((-a)/b); else return -((-a)/b) - 1;} else if (a >= 0 && b < 0){if(a % b == 0) return -(a/(-b)); else return -(a/(-b)) - 1;}}
 template <class T> pair<T,T> log_base_2(T n){T temp = 1 , k = 0; while(temp <= n){temp <<= 1; k++;} temp >>= 1; k--; return {k , temp};}
 //define global variables here
+ll r[51];
 
 void solve(ll mcase){
+    ll n;
+    cin >> n;
 
+    ll upvotes = 0;
+
+    for (ll i = 1; i <= n; i++){
+        ll ri; 
+        cin >> ri;
+
+        if (ri == 1 OR ri == 3){
+            upvotes++;
+        }
+    }
+    cout << upvotes << "\n";
 }
 
 //main function
@@ -119,15 +142,15 @@ int main(){
 
 
     //for testcases, use the below format
-    /*
+    
     ll t , mcase = 1; //testcases
-    scanf("%lld\n", &t);
+    cin >> t;
     while(t > 0){
     	solve(mcase); //write a separate solve function
     	t--;
     	mcase++;
     }
-    */
+    
     cerr << "time taken : " << (float)clock() / CLOCKS_PER_SEC << "seconds" << "\n";
     return 0;
 }

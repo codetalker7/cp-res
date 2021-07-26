@@ -1,3 +1,11 @@
+
+/*
+	 template by: codetalker7
+	 editor: sublime text 3
+	 file name: CF1542B.cpp
+	 date created: 2021-07-03 18:39:42
+	 problem link: 
+*/
 #include<iostream>
 #include<vector>
 #include<string>
@@ -86,7 +94,45 @@ template <class T> pair<T,T> log_base_2(T n){T temp = 1 , k = 0; while(temp <= n
 //define global variables here
 
 void solve(ll mcase){
+    ll n, a, b;
+    scanf("%lld %lld %lld", &n, &a, &b);
 
+    if (n == 1){
+        printf("Yes\n");
+        return;
+    }
+
+    if (b == 1){
+        printf("Yes\n");
+        return;
+    }
+
+    set <ll> possible_mod_b;
+    possible_mod_b.insert(1);
+
+    if (a > 1){
+        ll curr = a;
+        while (curr <= 1000000000){
+            possible_mod_b.insert(curr % b);
+            curr *= a;
+        }
+    }
+
+    //checking if n is achievable
+    if (possible_mod_b.find(n % b) != possible_mod_b.end()){
+        ll curr = 1;
+        while (curr % b != n % b){
+            curr *= a;
+        }
+        if (curr <= n){
+            printf("Yes\n");
+        }
+        else{
+            printf("No\n");
+        }
+    }
+    else
+        printf("No\n");
 }
 
 //main function
@@ -119,7 +165,7 @@ int main(){
 
 
     //for testcases, use the below format
-    /*
+    
     ll t , mcase = 1; //testcases
     scanf("%lld\n", &t);
     while(t > 0){
@@ -127,7 +173,7 @@ int main(){
     	t--;
     	mcase++;
     }
-    */
+    
     cerr << "time taken : " << (float)clock() / CLOCKS_PER_SEC << "seconds" << "\n";
     return 0;
 }

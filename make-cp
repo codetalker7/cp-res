@@ -11,9 +11,9 @@ printf "
 \t date created: $NOW\n\
 \t problem link: $2
 */\n\
-" > $1.cpp
+" > $1
 
 # append template to the file created
-cat template.cpp >> $1.cpp
-subl $1.cpp
+cat template.cpp >> $1
+subl $1
 

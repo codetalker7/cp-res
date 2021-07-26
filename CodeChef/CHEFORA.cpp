@@ -1,3 +1,11 @@
+
+/*
+	 template by: codetalker7
+	 editor: sublime text 3
+	 file name: CHEFORA.cpp
+	 date created: 2021-07-06 01:56:32
+	 problem link: https://www.codechef.com/JULY21B/problems/CHEFORA
+*/
 #include<iostream>
 #include<vector>
 #include<string>
@@ -84,9 +92,81 @@ template <class T> T modinv (T a , T m , T &x , T &y){T g = extgcd(a , m , x , y
 template <class T> T signed_floor(T a , T b){if (a >= 0 && b >= 0) return a/b; else if (a < 0 & b < 0) return (-a)/(-b); else if (a < 0 & b >= 0){if (a % b == 0) return -((-a)/b); else return -((-a)/b) - 1;} else if (a >= 0 && b < 0){if(a % b == 0) return -(a/(-b)); else return -(a/(-b)) - 1;}}
 template <class T> pair<T,T> log_base_2(T n){T temp = 1 , k = 0; while(temp <= n){temp <<= 1; k++;} temp >>= 1; k--; return {k , temp};}
 //define global variables here
+ll chefora_nos[100000 + 1];
+vector <vll> chefora_vector(6);
+
+ll prefix[100000 + 1];
+    
+void generate_cheforas(){
+    ll curr_generated = 0;
+    //putting 1 digit numbers, i.e k = 0
+    chefora_vector[0].push_back(0);
+    for (ll i = 1; i <= 9; i++){
+        chefora_vector[0].push_back(i);
+        curr_generated++;
+        chefora_nos[curr_generated] = i;
+    }
+
+    //generating other cheforas
+    //d = 2k + 1
+    for (ll k = 1; k <= 5; k++){
+        ll curr_num = 0;
+        for (ll i = 1; i <= 9; i++){
+            ll adder_1 = i + i*pow(10, 2*k);
+            curr_num += adder_1;
+
+            for (ll knot = 0; knot <= k - 1; knot++){
+                for (ll m = 0; m < ssz(chefora_vector[knot]); m++){
+                    ll smaller_num = chefora_vector[knot][m];
+
+                    //its size is 2*knot + 1
+                    ll adder_2 = smaller_num*pow(10, k - knot);
+                    curr_num += adder_2;
+
+                    //at this point, add curr_num
+                    curr_generated++;
+                    chefora_vector[k].push_back(curr_num);
+                    chefora_nos[curr_generated] = curr_num;
+
+                    //if curr_generated = 100000, return
+                    if (curr_generated == 100000){
+                        return;
+                    }
+
+                    //reset curr_num
+                    curr_num -= adder_2;
+                }   
+            }
+            //reset curr_num
+            curr_num -= adder_1;
+        }
+    }
+} 
 
 void solve(ll mcase){
+    ll Q;
+    scanf("%lld", &Q);
 
+    //generating the first 10^5 chefora numbers
+    //a chefora number is just a palindrome
+    generate_cheforas();
+
+    //computing the prefix sums 
+    for (ll i = 1; i <= 100000; i++){
+        if (i == 1){
+            prefix[1] = chefora_nos[1];
+        }
+        else
+            prefix[i] = chefora_nos[i] + prefix[i - 1];
+    }
+
+    //handling the queries
+    for (ll q = 1; q <= Q; q++){
+        ll l, r;
+        scanf("%lld %lld", &l, &r);
+
+        printf("%lld\n", expo(chefora_nos[l], prefix[r] - prefix[l], MOD));
+    }
 }
 
 //main function
@@ -128,6 +208,7 @@ int main(){
     	mcase++;
     }
     */
+    solve(1);
     cerr << "time taken : " << (float)clock() / CLOCKS_PER_SEC << "seconds" << "\n";
     return 0;
 }

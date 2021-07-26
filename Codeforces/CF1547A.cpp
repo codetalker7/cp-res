@@ -1,3 +1,11 @@
+
+/*
+	 template by: codetalker7
+	 editor: sublime text 3
+	 file name: a.cpp
+	 date created: 2021-07-10 20:16:16
+	 problem link: 
+*/
 #include<iostream>
 #include<vector>
 #include<string>
