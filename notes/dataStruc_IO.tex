@@ -57,29 +57,34 @@
 \makeatother
 %table of contents code finished
 
-%packages for adding code. use \begin{lstlisting}\end{lstlisting} environment to write code. In text, can also use \verb|something|
+%packages for adding code. use \begin{lstlisting}[language=C++]\end{lstlisting} environment to write code. In text, can also use \verb|something|
 \usepackage{listings}
 \usepackage{color}
-\definecolor{dkgreen}{rgb}{0,0.6,0}
-\definecolor{gray}{rgb}{0.5,0.5,0.5}
-\definecolor{mauve}{rgb}{0.58,0,0.82}
-
-\lstset{frame=tb,
-  language=Java,
-  aboveskip=3mm,
-  belowskip=3mm,
-  showstringspaces=false,
-  columns=flexible,
-  basicstyle={\small\ttfamily},
-  numbers=none,
-  numberstyle=\tiny\color{gray},
-  keywordstyle=\color{blue},
-  commentstyle=\color{dkgreen},
-  stringstyle=\color{mauve},
-  breaklines=true,
-  breakatwhitespace=true,
-  tabsize=3
+\usepackage{listings}
+\usepackage{xcolor}
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
 }
+\lstset{style=mystyle}
 
 %all about hyperlinks. include this package as the final package to avoid any problems
 \usepackage{hyperref}
@@ -126,7 +131,7 @@
 %package for fonts
 \usepackage{fontspec}
 %main font
-\setmainfont{Chivo}
+%\setmainfont{Chivo}
 
 \begin{document}
 
@@ -147,7 +152,7 @@ This is a collection of code snippets and various other things that I use in com
 
 \section{Basic IO and Code Environment}
 \noindent First and foremost, include these statements at the top of your code:
-    \begin{lstlisting}
+    \begin{lstlisting}[language=C++]
         #include <bits/stdc++.h>
         using namespace std; 
         typedef long long int ll
@@ -157,7 +162,7 @@ and here is the reason why: this header has everything you will ever need in a c
 \noindent Now, I will discuss about how I go about IO in contests. Instead of using the generic \verb|cin| method, I use the \verb|printf| and \verb|scanf| methods from C, which are much more flexible and quicker (it is important that you master input/output for contests). 
 
 \noindent The use of \verb|printf| is easy. A code snippet for \verb|scanf| is given below.
-\begin{lstlisting}
+\begin{lstlisting}[language=C++]
     char name[50]; int age;
     scanf("%s %d" , name , &age);
     printf("The name is %s and the age is %d" , name , age);
@@ -165,19 +170,19 @@ and here is the reason why: this header has everything you will ever need in a c
 An importnat thing to be noted is the \verb|&| in the argument for \verb|scanf|; \verb|scanf| requires pointer arguments. Because \verb|name| is already a pointer (we have defined it as an array), we don't put an \verb|&| before it.
 
 To redirect input/output to files, the following two lines of code do the trick: 
-    \begin{lstlisting}
+    \begin{lstlisting}[language=C++]
         freopen("input.in" , "r" , stdin);
         freopen("output.out" , "w" , stdout);
     \end{lstlisting}
 Finally, to make I/O faster, you can add the following two lines to the beginning of the code.
 
-\begin{lstlisting}
+\begin{lstlisting}[language=C++]
     ios::sync_with_stdio(0);
     cin.tie(0);
 \end{lstlisting}
 
 \noindent Sometimes the input is given in a way in which we have to manually detect the \textit{end of file}. Suppose are input file is \verb|input.in|, and we want to give the output a file named \verb|output.out|. Then, we can do something as given below. 
-\begin{lstlisting}
+\begin{lstlisting}[language=C++]
     //program to copy contents of input.in to a new file 
     //named output.out
     
@@ -196,7 +201,7 @@ You can check out the \href{http://www.cplusplus.com/reference/cstdio/fseek/}{do
 
 \subsection{Auto Keyword} This is one of the most important keywords for \textit{range based loops} in C++. The following example should be clear. 
 
-\begin{lstlisting}
+\begin{lstlisting}[language=C++]
     vector <int> a;
     a.push_back(0);
     a.push_back(1);
@@ -220,7 +225,7 @@ Then, \verb|y| will \textit{not} be 0. Instead, it will be a different integer, 
 \subsection{Arrays over vectors!} In contests, always try to use arrays over vectors as much as possible. This is because arrays are much faster in terms of time as compared to vectors. 
 
 \subsection{memset, memcpy} Two of the most useful functions in cpp. \verb|memset| is used to set values, like so. 
-\begin{lstlisting}
+\begin{lstlisting}[language=C++]
     //memset(void * ptr, int value, size_t num)
     //replace the first num bytes pointed to by ptr by value 
     char str[] = "almost every programmer should know memset!";
@@ -231,7 +236,7 @@ Then, \verb|y| will \textit{not} be 0. Instead, it will be a different integer, 
 
 \verb|memcpy| works as follows. 
 
-\begin{lstlisting}
+\begin{lstlisting}[language=C++]
     //memcpy( void * destination, const void * source, size_t num )
     //copy num bytes from source to desination
 \end{lstlisting}
@@ -265,19 +270,19 @@ To create a \verb|long long| bit mask, just do \verb|1LL << k|.
 
 \section{Sorting}
 \subsection{The Sort Function} As an example, we can sort a \verb|vector| in C++ as follows. 
-\begin{lstlisting}
+\begin{lstlisting}[language=C++]
     vector <int> v = {4 , 2 , 5 , 3 , 5 , 8 , 3};
     sort(v.begin() , v.end());
 \end{lstlisting}
 \verb|v.begin()| returns a pointer to the first element of the vector \verb|v|, and \verb|v.end()| returns a pointer to the theoretical element that follows the last element of the vector \verb|v|. To sort in the reverse order, we can do the following. 
-\begin{lstlisting}
+\begin{lstlisting}[language=C++]
     vector <int> v = {4 , 2 , 5 , 3 , 5 , 8 , 3};
     sort(v.rbegin() , v.rend());
 \end{lstlisting}
 \verb|v.rbegin()| and \verb|v.rend()| refer to \textit{reverse pointers}. 
 
 \subsection{Comparison Operators in C++} In C++, whenever there is a need for a \textit{ordering} on a particular data structure, we can define a \textit{comparison operator} that can be used for the ordering. For instance, consider the following. 
-\begin{lstlisting}
+\begin{lstlisting}[language=C++]
     struct name_of_structure{
         int x , y;
         bool operator < (const name_of_structure &p){
@@ -289,7 +294,7 @@ To create a \verb|long long| bit mask, just do \verb|1LL << k|.
 Above, we have made a new structure \verb|name_of_structure| which has a comparison operator \verb|<| that sorts first by the $x$-coordinate, then by the $y$-coordinate.
 
 \subsection{Comparison Functions} We can also pass a comparison function as an argument to \verb|sort|. For example we can do the following to compare strings in length-lexicographic order.
-\begin{lstlisting}
+\begin{lstlisting}[language=C++]
     bool comp(string a , string b){
         if (a.size() == b.size()) return a < b;
         else return a.size() < b.size();
@@ -300,7 +305,7 @@ Above, we have made a new structure \verb|name_of_structure| which has a compari
 
 \subsection{Binary Search} Here is a simple way of implementing binary search. 
 
-\begin{lstlisting}
+\begin{lstlisting}[language=C++]
     int ans = -1;
     while(lo <= hi){
         int mid = lo + (hi - lo)/2;
@@ -320,7 +325,7 @@ Above, we have made a new structure \verb|name_of_structure| which has a compari
 \subsection{Binary Searching the Answer} Sometimes we are given a problem in which we can binary search the answer in a given interval $[L , R]$. For any $x\in [L , R]$, suppose the predicate $\phi(x)$ indicates whether $x$ is a valid solution to our answer or not. Also, suppose the problem has the following structure: $$\phi(x)\text{ is false for some $x\in[L , R]$}\implies \phi(y)\text{ is false for all }y\ge x$$
 Then, we can use binary search to find the \textit{largest} value of $x$ for which $\phi(x)$ is true. The idea is this: for the given interval $[L , R]$, we take $x = \frac{L + R}{2}$ and test whether $\phi(x)$ is true or not. If it is true, we put $L = x$. If not, we put $R = x - 1$. Then we recursively do the procedure on the next interval. Clearly, this takes logarithmic time.  
 
-\begin{lstlisting}
+\begin{lstlisting}[language=C++]
     /*
         In this pseudocode, mid will hold the final candidate value. The boolean variable flag represents whether or not phi(mid) is true for the final value of mid or not. 
     */
@@ -353,7 +358,7 @@ We can obviously apply this technique to the case where we have the following pr
 $$\phi(x)\text{ is false for some }x\in[L , R]\implies \phi(y)\text{ is false for all }y\le x$$
 and we can find the \textit{smallest} value of $x$ for which $\phi(x)$ is true. The pseudocode for that case is as follows. 
 
-\begin{lstlisting}
+\begin{lstlisting}[language=C++]
     /*
         In this pseudocode, mid will hold the final candidate value. The boolean variable flag represents whether or not phi(mid) is true for the final value of mid or not. 
     */
@@ -388,7 +393,7 @@ and we can find the \textit{smallest} value of $x$ for which $\phi(x)$ is true. 
 
 \subsection{DSUs} DSU stands for \textit{Disjoint Set Union}. The idea is to maintain a collection of disjoint sets and have the ability to take the union of two sets efficiently. The most effective way of implementing these is using binary trees, and using two heuristics known as \textit{union by rank} and \textit{path compression}. The code snippet for doing this is given below. 
 
-\begin{lstlisting}
+\begin{lstlisting}[language=C++]
     //par[k] is the parent of the element k
     //root uses path compression
     int root(int x){
@@ -410,7 +415,7 @@ and we can find the \textit{smallest} value of $x$ for which $\phi(x)$ is true. 
 Finding the root of the element \verb|k| takes time $\alpha(n)$, where $\alpha$ is a very slowly growing function called the \textit{Inverse Ackermann Function} and $n$ is the number of elements.
 
 \subsection{Sparse Tables: Precomputation} Suppose we have an array \verb|A[1,...,N]|. Then, precomputation is done as follows.
-\begin{lstlisting}
+\begin{lstlisting}[language=C++]
     //K must satisfy K >= floor(log_2(N))
     int sparse_table[N][K]
     
@@ -424,7 +429,7 @@ Finding the root of the element \verb|k| takes time $\alpha(n)$, where $\alpha$ 
 Here $f$ depends upon the type of query. For taking the minimum, $f$ will be the minimum function for example. 
 
 \subsection{Sparse Tables: Range Sum} For range sum, the function $f$ above will be the sum of the arguments. To get the sum of a range, we do the following. 
-\begin{lstlisting}
+\begin{lstlisting}[language=C++]
     long long sum = 0;
     for (int j = K; j >= 0; j--){
         if ((1 << j) <= R - L + 1){
@@ -443,7 +448,7 @@ $$\verb|min(sparse_table[L][j] , sparse_table[R - (1 << j) + 1][j])|$$
 
 \subsection{Recursive Segment Trees} Here is the recursive implementation of segment trees. 
 
-\begin{lstlisting}
+\begin{lstlisting}[language=C++]
     void build(ll array[] , ll tree[] , ll node , ll start , ll end){
         //leaf node
         if (start == end){
@@ -528,7 +533,7 @@ $$\verb|min(sparse_table[L][j] , sparse_table[R - (1 << j) + 1][j])|$$
 
 \begin{Ex}[\textbf{Range Sum Queries}]
     \textcolor{red}{(More information at \href{https://codeforces.com/blog/entry/18051}{this} link)}Suppose we are given an array \verb|A[1,...,n]| and we want to quickly find the sum in the range \verb|A[i,...,j]| efficiently, while also providing a way of updating values in the array (this is an example of a dynamic data structure). First, suppose $n$ is a power of $2$. Then we can make a binary tree out of this array: the leaves will be the array elements; the parent of two adjacent leaves will contain the sum of the two leaves, and this trend will continue upwards. To find the sum in a range, we just need to sum the values in the parents. This is done as in the following code snippet.
-    \begin{lstlisting}
+    \begin{lstlisting}[language=C++]
         int array[n]; //this is our array, index starts at 0
         int segTree[2n]; //length of segment tree will be 2n
         void build(){
@@ -564,11 +569,64 @@ $$\verb|min(sparse_table[L][j] , sparse_table[R - (1 << j) + 1][j])|$$
     The basic idea of the range query is easy; we compute bottom up in the tree.
 \end{Ex}
 
+\section{Binary Indexed Trees}
+\subsection{Point Update, Range Queries} Here is the general idea.    
+\begin{enumerate}
+    \item We have an array \verb|A[1,...,n]|. We want to compute range sum queries with point updates.
+    \item We maintain a n array $\verb|FT[1,...,n]|$ such that \verb|FT[i]| stores the sum of the array items in the range \verb|[i - LS(i) + 1,i]|, where \verb|LS(i) = i & (-i)| (the least significant bit of \verb|i|). Hence \verb|FT[1,...,n]| can be computed in $O(n)$ time.
+    \item To compute the sum in the range \verb|[1,n]|, we do the following: we sum all the elements \verb|FT[n], FT[n'], FT[n'']|, and so on, where \verb|n' = n - LS(n)|, i.e each time we strip off the least significant bit.
+    \item To update the value of \verb|A[k]|, we update the values of \verb|A[k],A[k'], A[k'']|, where \verb|k' = k + LS(k)|, i.e each time we add the least significant bit. 
+    \item Any range sum query in the range \verb|[a, b]| is then equal to \verb|[1, b] - [1, a]|. 
+\end{enumerate}
+Below is the implementation of this. 
+\begin{lstlisting}[language=C++]
+    //the array is A[1],...,A[n]
+    int A[n + 1];
+    //the tree is FT[1],...,FT[n]
+    int FT[n + 1];
+    
+    int LS(int x){
+        return x & (-x);
+    }
+    
+    void build(){
+        //computing the prefix sums
+        int prefix[n + 1];
+        prefix[0] = 0;
+        for (int i = 1; i <= n; i++){
+            prefix[i] = prefix[i - 1] + A[i];
+        }
+        
+        //computing the Fenwick Tree
+        for (int i = 1; i <= n; i++){
+            //sum in the range [i - LS(i) + 1, i]
+            FT[i] = prefix[i] - prefix[i - LS(i)];
+        }
+    }
+    //get the sum in the range [1,n]
+    void sum(int n){
+        int sum = 0;
+        for (int i = n; i > 0; i -= LS(i))
+            sum += FT[i];
+        return sum;
+    }
+    
+    //get the sum in the range [a, b]
+    void query(int a, int b){
+        return sum(b) - (a == 1 ? 0 : sum(a - 1));
+    }
+    //update operation, where value is incremented by v
+    void update(int k, int v){
+        for (int i = k; i <= n; i += LS(i))
+            FT[i] += v; 
+    }
+\end{lstlisting}
+
 \section{Graph Algorithms}
 
 \subsection{BFS} Here is the implementation. 
 
-\begin{lstlisting}
+\begin{lstlisting}[language=C++]
     vector<vector<int>> adj;  // adjacency list representation
     int n; // number of nodes
     int s; // source vertex
@@ -596,7 +654,7 @@ $$\verb|min(sparse_table[L][j] , sparse_table[R - (1 << j) + 1][j])|$$
 
 \subsection{DFS} Here is the implementation. 
 
-\begin{lstlisting}
+\begin{lstlisting}[language=C++]
     vector<vector<int>> adj; // graph represented as an adjacency list
     int n; // number of vertices
 
@@ -638,7 +696,7 @@ Then, a tree edge $(u , v)$ is a bridge if and only if $\textsf{low}(v) > d(u)$,
 
 \subsection{Euler Tour} The following pseudo-code is a good implementation to find an Euler Tour.
 
-\begin{lstlisting}
+\begin{lstlisting}[language=C++]
     stack St;
     put start vertex in St;
     until St is empty
@@ -656,7 +714,7 @@ Then, a tree edge $(u , v)$ is a bridge if and only if $\textsf{low}(v) > d(u)$,
 
 \subsection{Dijkstra Using set} The advantage here is that \verb|set| in C++ allows the \textit{delete} operation, while \verb|priority_queue| does not. 
 
-\begin{lstlisting}
+\begin{lstlisting}[language=C++]
     const int INF = 1000000000;
     vector<vector<pair<int, int>>> adj;
 
@@ -689,7 +747,7 @@ Then, a tree edge $(u , v)$ is a bridge if and only if $\textsf{low}(v) > d(u)$,
 
 \subsection{Dijkstra using priority queue} Here, a drawback is that unlike sets, the STL \verb|priority_queue| does \textit{not} support deleting (or updating ) elements, but heaps support these operations in theory. 
 
-\begin{lstlisting}
+\begin{lstlisting}[language=C++]
     const int INF = 1000000000;
     vector<vector<pair<int, int>>> adj;
 
@@ -725,7 +783,7 @@ Then, a tree edge $(u , v)$ is a bridge if and only if $\textsf{low}(v) > d(u)$,
 
 \subsection{Bellman-Ford Usual} Here is the usual implementation of Bellman-Ford. 
 
-\begin{lstlisting}
+\begin{lstlisting}[language=C++]
     struct edge
     {
         int a, b, cost;
@@ -749,7 +807,7 @@ Then, a tree edge $(u , v)$ is a bridge if and only if $\textsf{low}(v) > d(u)$,
 
 \subsection{Bellman-Ford Optimised} There is an optimised version of Bellman-Ford, which is given below. Instead of relaxing edges for $n - 1$ rounds, we relax the edges until they can be. In some graphs, this is a great improvement in speed. 
 
-\begin{lstlisting}
+\begin{lstlisting}[language=C++]
     struct edge
     {
         int a, b, cost;
@@ -786,7 +844,7 @@ The above method makes sure that if no relaxation is being done, then just stop 
 
 \subsection{Floyd-Warshall} In the following implementation, we initialise \verb|d[i][i] = 0| for all $i$. 
 
-\begin{lstlisting}
+\begin{lstlisting}[language=C++]
     for (int k = 1; k <= n; ++k) {
         for (int i = 1; i <= n; ++i) {
             for (int j = 1; j <= n; ++j) {
@@ -802,7 +860,7 @@ The above method makes sure that if no relaxation is being done, then just stop 
 \section{MSTs}
 \subsection{Prim's for dense graphs $O(n^2)$} In this implementation of Prim, we store, for each \textit{non-selected vertex} (i.e a vertex which hasn't been yet included in the MST), the minimum weight edge to an already selected vertex. After adding an edge, we update this minimum weight edge for each vertex. So, the overall complexity is $O(n^2)$.
 
-\begin{lstlisting}
+\begin{lstlisting}[language=C++]
     int n;
     vector<vector<int>> adj; // adjacency matrix of graph
     const int INF = 1000000000; // weight INF means there is no edge
@@ -850,7 +908,7 @@ The above method makes sure that if no relaxation is being done, then just stop 
 
 \subsection{Prim's for sparse graphs $O(m\,\mathsf{log\,}n)$} This is the same implementation as above, the only difference being we use either a \verb|set| or a \verb|priority_queue| to find the minimum weight edge, and to update the minimum weights. In this implementation, the minimum weight can be found in $O(\mathsf{log\,}n)$ steps, but updating the weights takes $O(n\,\mathsf{log\,}n)$ time. The total time taken will be $O(m\mathsf{\,log\,}n)$, which is better than the previous implementation for sparse graphs. 
 
-\begin{lstlisting}
+\begin{lstlisting}[language=C++]
     const int INF = 1000000000;
 
     struct Edge {
@@ -905,7 +963,7 @@ The above method makes sure that if no relaxation is being done, then just stop 
 \end{enumerate}
 This clearly takes time $O(m\mathsf{\,log\,}n)$.
 
-\begin{lstlisting}
+\begin{lstlisting}[language=C++]
     //assuming that the DSU has been implemented as usual
     struct Edge {
         int u, v, weight;
@@ -946,7 +1004,7 @@ Then, given any two vertices \verb|v1| and \verb|v2|, $\verb|LCA(v1,v2)|$ is the
 
 \subsection{LCA using Binary Lifting} The idea here is to use sparse tables. So suppose we are given a tree $G$ with $N$ vertices with root \verb|root|. Let $l = \mathsf{log}_2(N)$. For each \verb|i| between $1$ and $N$ and for each \verb|j| between $1$ and $l$, let \verb|up[i][j]| be the $2^{j}$th ancestor of $i$ (if it doesn't exist, we simply let it be \verb|root|). So, \verb|up[i][0]| is the parent node of \verb|i|. Clearly, the array \verb|up| can be easily calculated in $O(N\mathsf{log\,}N)$ preprocessing. Using DFS, we also compute the discovery and finishing times of each vertex. Then, the LCA can be found as follows (see \href{https://cp-algorithms.com/graph/lca_binary_lifting.html}{this} link for an explanation).
 
-\begin{lstlisting}
+\begin{lstlisting}[language=C++]
     int N, l;
     vector<vector<int>> adj;
 
@@ -1007,7 +1065,7 @@ Then if $f(a) \le f(b)$, the minimum is in the range $[x_L , b]$; otherwise it i
 
 \subsection{Sieve of Eratosthenes} This is a very simple algorithm to find \textit{all} primes upto $n$. We make an array \verb|sieve[x]| such that for any $1\le x\le n$, $\verb|sieve[x] = 1|$ if and only if $x$ is a prime. Here is the code snippet. 
 
-\begin{lstlisting}
+\begin{lstlisting}[language=C++]
     for (x = 2; x <= n; x++){
         sieve[x] = 1;
     }
@@ -1021,7 +1079,7 @@ This algorithm takes time $O(n\textsf{loglog }n)$
 
 \subsection{Smallest Prime Factor using the Sieve} Using the Sieve, we can also compute the \textit{smallest prime factor} of all numbers upto a given number $n$. Using this, we can easily obtain the prime factorisation of \textit{any} number in the range efficiently. The code is as follows. 
 
-\begin{lstlisting}
+\begin{lstlisting}[language=C++]
     for (x = 2; x <= n; x++){
         sieve[x] = 1;
         smallest_prime_factor[x] = 0;
@@ -1039,7 +1097,7 @@ This algorithm takes time $O(n\textsf{loglog }n)$
 
 \subsection{Precomputing Factors Using Sieve} Using the Sieve, we can also precompute factors of all numbers upto a given limit. Consider a positive integer $M$. To precompute factors of all integers upto $M$, we can do the following. 
 
-\begin{lstlisting}
+\begin{lstlisting}[language=C++]
     //let factors be a vector of vectors
     for (ll i = 1; i <= M; i++){
         for (ll j = i; j <= M; j += i){
@@ -1052,12 +1110,12 @@ This takes time
 $$M(1 + 1/2 + 1/3 + ... + 1/M) = O(M\mathsf{\,log\,}M)$$
 
 \subsection{GCD} C++ has an inbuilt function for this, based on the Euclidean Algorithm.
-\begin{lstlisting}
+\begin{lstlisting}[language=C++]
     int d =  __gcd(a , b); //returns the gcd of a , b
 \end{lstlisting}
 
 \subsection{Modular Exponentiation} Here is the code for modular exponentiation. 
-\begin{lstlisting}
+\begin{lstlisting}[language=C++]
     template <class T> T expo(T base , T exp , T mod){
         T res = 1;
         base = base % mod;
@@ -1077,7 +1135,7 @@ $$M(1 + 1/2 + 1/3 + ... + 1/M) = O(M\mathsf{\,log\,}M)$$
 $$\phi(p^j) = p^j - p^{j - 1}$$
 Since $\phi$ is multiplicative, we can compute $\phi(x)$ for all $x$ upto a number $N$ using the Sieve. This can be done using the following code. 
 
-\begin{lstlisting}
+\begin{lstlisting}[language=C++]
     void phi_1_to_n(int n) {
         vector<int> phi(n + 1);
         phi[0] = 0;
@@ -1096,7 +1154,7 @@ Since $\phi$ is multiplicative, we can compute $\phi(x)$ for all $x$ upto a numb
 
 \subsection{Computing Multiplicative Functions Using the Sieve} Suppose $f$ is a multiplicative function. It follows that $f$ is completely determined by its values on prime powers. Using this idea, we can efficiently compute the values of $f$ for all numbers upto an integer $N$. The idea is to use the Sieve using smallest prime factors. 
 
-\begin{lstlisting}
+\begin{lstlisting}[language=C++]
     //we want to compute f[i] for each i upto n
     for (x = 2; x <= n; x++){
         sieve[x] = 1;
@@ -1159,5 +1217,5 @@ is also a multiplicative function. This is actually pretty useful; in some probl
 $$v - e + f = 1 + k$$
 The problem \href{https://discuss.codechef.com/t/rctexscc-editorial/83502}{RCTEXSCC} is a great example of this. 
 
-
+\section{Computational Geometry} 
 \end{document}

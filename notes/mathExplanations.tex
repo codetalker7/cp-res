@@ -1,0 +1,169 @@
+\documentclass[12pt,a4paper]{amsart}
+\usepackage{mathtools}% http://ctan.org/pkg/mathtools
+\usepackage{amsfonts}
+\usepackage{amsthm}
+\usepackage[section]{placeins}
+\usepackage{relsize}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amscd}
+\usepackage{caption} 
+\usepackage[utf8]{inputenc}
+\usepackage{setspace}
+\usepackage[mathscr]{eucal}
+\usepackage{indentfirst}
+\usepackage{graphicx}
+\graphicspath{{./images/}}
+
+%preamble for including inkscape figures
+\usepackage{import}
+\usepackage{xifthen}
+\usepackage{pdfpages}
+\usepackage{transparent}
+
+\usepackage{graphics}
+\usepackage{tikz}
+\usepackage{pict2e}
+\usepackage{epic}
+\usepackage{mathrsfs}
+\numberwithin{equation}{section}
+\usepackage[margin=2.8cm]{geometry}
+\usepackage{epstopdf} 
+
+%the following code is for a good table of contents for amsart. Finding it was not easy. for more information, check out the following two links
+%https://tex.stackexchange.com/questions/51760/table-of-contents-with-indents-and-dots
+%https://tex.stackexchange.com/questions/58324/adding-indents-to-the-toc-without-adding-dotted-lines-between-sections
+\makeatletter
+\def\@tocline#1#2#3#4#5#6#7{\relax
+  \ifnum #1>\c@tocdepth % then omit
+  \else
+    \par \addpenalty\@secpenalty\addvspace{#2}%
+    \begingroup \hyphenpenalty\@M
+    \@ifempty{#4}{%
+      \@tempdima\csname r@tocindent\number#1\endcsname\relax
+    }{%
+      \@tempdima#4\relax
+    }%
+    \parindent\z@ \leftskip#3\relax \advance\leftskip\@tempdima\relax
+    \rightskip\@pnumwidth plus4em \parfillskip-\@pnumwidth
+    #5\leavevmode\hskip-\@tempdima
+      \ifcase #1
+       \or\or \hskip 1em \or \hskip 2em \else \hskip 3em \fi%
+      #6\nobreak\relax
+    \dotfill\hbox to\@pnumwidth{\@tocpagenum{#7}}\par
+    \nobreak
+    \endgroup
+  \fi}
+\makeatother
+%table of contents code finished
+
+%packages for adding code. use \begin{lstlisting}[language=C++]\end{lstlisting} environment to write code. In text, can also use \verb|something|
+\usepackage{listings}
+\usepackage{color}
+\usepackage{listings}
+\usepackage{xcolor}
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+\lstset{style=mystyle}
+
+%all about hyperlinks. include this package as the final package to avoid any problems
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=cyan,
+}
+    
+%to create a new numbered environment, use the syntax
+%\newtheorem{name}{display}
+%to start renumbering say at every section, add a [section] in the end. To have the same numbering for two environments, do as I did with Lemma below, i.e add [Th] in between.
+
+%let the thoerems have italic text
+\newtheorem{Th}{Theorem}[section]
+\newtheorem{Lemma}[Th]{Lemma}
+\newtheorem{Cor}{Corollary}[Th]
+\newtheorem{Prop}[Th]{Proposition}
+
+%definitions, examples, remarks and exercises will have normal text
+\theoremstyle{definition}
+\newtheorem{Def}{Definition}[section]
+\newtheorem{Ex}{Example}[section]
+\newtheorem{Remark}{Remark}[Th]
+\newtheorem{Exercise}{Exercise}[section]
+
+%using an unnumbered section for solutions
+\newtheorem*{solution}{Solution}
+
+%use the proof environment for writing proofs. I'm using a black square for QED. 
+\renewcommand\qedsymbol{$\blacksquare$}
+
+
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Ztwo}{\mathbb{Z}_2}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\CC}{\mathbb{C}}
+\newcommand{\E}{\mathbb{E}}
+\renewcommand{\P}{\mathbb{P}}
+    
+%package for fonts
+\usepackage{fontspec}
+%main font
+%\setmainfont{Chivo}
+
+\begin{document}
+
+\title{Mathematical Explanations}
+\author{Siddhant Chaudhary}
+\date{December 2019}
+
+\maketitle
+    
+\begin{abstract}
+In this document, we will mathematically explore all of the concepts being used. 
+\end{abstract}
+    
+\tableofcontents
+
+\section{Non-Linear Data Structures}
+\subsection{Binary Indexed Trees} \textit{Fenwick Trees} are used to solve the problem of dynamic range sum queries efficiently. They are useful because they are much simpler to code and much faster than segment trees. Let's begin with a lemma.
+
+\begin{Lemma}
+    For any integer type \verb|i|, \verb|i&(-i)| produces the least significant bit in \verb|i|.
+\end{Lemma}
+\begin{proof}
+    Note that negative integers are stored using the two's complement. So, if we have an $N$-bit positive integer $x$, $-x$ will have the binary representation of $2^N - x$ (equivalently, one flips the bits of $x$, and adds a $1$ to obtain the representation of $-x$). Now, suppose the least significant bit of $x$ is $l$ steps from the right. This means that all positions $0,1,...,l - 1$ steps from the right are $0$s in the binary representation of $x$. So, if we flip the bits of $x$, all these positions will be $1$. Adding a $1$, we see that the bit at position $l$ is set to $1$, and positions $0,...,l - 1$ from the right are all $0$s. Taking the and, we see that the result has only a $1$ at position $l$, proving the claim. 
+\end{proof}
+
+Moving on, we now describe the Fenwick Tree. Suppose we have an array $A[1,...,n]$ (we use one-based indexing). Let $FT[1,...,n]$ be another array; $FT[i]$, for any $i$, will store the sum of all elements in the range $[i - LS(i) + 1, i]$, where $LS(i)$ is the \textit{least-significant bit} of $i$. For example, if $i$ is a power of $2$, then $LS(i) = i$, and hence $FT[i]$ will be the sum 
+$$FT[i] = \sum_{k = 1}^i A[k]$$
+Here is the nice trick: given an index $b$, we want to compute 
+$$\sum_{k = 1}^b A[k]$$
+To do this, we compute the values $\{FT[b_0], FT[b_1],...,FT[b_k]\}$. Here, $b_0 = b$ and $b_i = b_{i - 1} - LS(b_{i - 1})$ for each suitable $i$. In simple words, starting with $b$, we strip off the least significant bit one by one. We only need to do this for $O(\log b)$ many steps. Using this, given the function $FT$ is \textit{good enough} (for example, here $FT$ is the sum function, which has many nice properties), we can compute range queries in logarithmic time. 
+
+Let's see how this structure handles update queries. Suppose we want to update the element at index $k$. So, we want to change $A[k]$ to some new value. So, we will have to update $FT[i]$ for all those indices $i$ which include the index $k$ in their summation. In other words, we want to update all $i$ such that 
+$$i - LS(i) + 1 \le k \le i$$
+Then, by doing casework on $LS(i)$, we see that all such $i$ are obtained by the sequence $\{c_0,...,c_k\}$, where $c_0 = k$ and $c_{i + 1} = c_i + LS(k)$. In other words, starting from $k$, we add least significant digits \textcolor{red}{(this is one of the beautiful connections between these operations)}. So again, we only need to update $O(\log n)$ many values. 
+\end{document}

@@ -57,29 +57,32 @@
 \makeatother
 %table of contents code finished
 
-%packages for adding code. use \begin{lstlisting}\end{lstlisting} environment to write code. In text, can also use \verb|something|
+%packages for adding code. use \begin{lstlisting}[language=C++]\end{lstlisting} environment to write code. In text, can also use \verb|something|
 \usepackage{listings}
 \usepackage{color}
-\definecolor{dkgreen}{rgb}{0,0.6,0}
-\definecolor{gray}{rgb}{0.5,0.5,0.5}
-\definecolor{mauve}{rgb}{0.58,0,0.82}
-
-\lstset{frame=tb,
-  language=Java,
-  aboveskip=3mm,
-  belowskip=3mm,
-  showstringspaces=false,
-  columns=flexible,
-  basicstyle={\small\ttfamily},
-  numbers=none,
-  numberstyle=\tiny\color{gray},
-  keywordstyle=\color{blue},
-  commentstyle=\color{dkgreen},
-  stringstyle=\color{mauve},
-  breaklines=true,
-  breakatwhitespace=true,
-  tabsize=3
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
 }
+\lstset{style=mystyle}
 
 %all about hyperlinks. include this package as the final package to avoid any problems
 \usepackage{hyperref}
@@ -126,7 +129,7 @@
 %package for fonts
 \usepackage{fontspec}
 %main font
-\setmainfont{Chivo}
+%\setmainfont{Chivo}
 
 \begin{document}
 
@@ -143,7 +146,7 @@ This is a reference sheet for the STL in C++.
 \tableofcontents
 
 \subsection{Iterators} In all STL classes, we use \textit{iterators} instead of \textit{pointers}. Iterators are used to point to elements in an STL class; for instance, if \verb|v| is a vector, then the iterator \verb|v.begin()| points to the first element of the vector \verb|v|. Iterators work just like pointers; so the first element of the vector \verb|v| will be \verb|*(v.begin())|. To store the iterator in a variable, we can do something like \verb|stl_class::iterator p|. For instance, in maps of the type \verb|map <int , int>|, we can do the following.  
-\begin{lstlisting}
+\begin{lstlisting}[language=C++]
     map <int , int> mymap;
     map <int , int>::iterator p; p = mymap.begin();
     cout << *(p).first; //prints the key of the first element in the map
@@ -209,7 +212,7 @@ A similar line can be used to declare iterators for other STL classes.
 \end{enumerate}
 If you want to pass a general comparison function to a \verb|set| or \verb|multiset|, then you can do something like this. 
 
-\begin{lstlisting}
+\begin{lstlisting}[language=C++]
     struct my_structure{
         ll x , y , z;
     };
@@ -240,7 +243,7 @@ If you want to pass a general comparison function to a \verb|set| or \verb|multi
 \end{enumerate}
 \noindent As usual, we can pass a custom key comparison function to a map. So you can do something like this. 
 
-\begin{lstlisting}
+\begin{lstlisting}[language=C++]
     struct key_type{
         ll x , y , z;
     };
@@ -257,7 +260,7 @@ If you want to pass a general comparison function to a \verb|set| or \verb|multi
 \end{lstlisting}
 
 \subsection{Priority Queue} Look at this example. 
-    \begin{lstlisting}  
+    \begin{lstlisting}[language=C++]  
         struct Node {
             int x , y , value;
         };
@@ -308,7 +311,7 @@ Declare a \verb|bitset| like this: \verb|bitset <size> mybitset|. Given two bits
 \end{enumerate}
 
 The good thing about bitsets is that you can apply the usual bitwise operations to them. We can also construct a bitset from integers or strings, as follows. 
-\begin{lstlisting}
+\begin{lstlisting}[language=C++]
     bitset<100> a(17);
     bitset<100> b("1010");
 \end{lstlisting}
@@ -317,26 +320,26 @@ The good thing about bitsets is that you can apply the usual bitwise operations 
 \noindent These are specially defined in the STL. See the \href{http://www.cplusplus.com/reference/string/string/}{documentation} for more information. 
 
 \subsection{scanf and printf with strings} The functions \verb|scanf| and \verb|printf| do not support any C++ class. In particular, we cannot take input using this function to a \verb|string| object. For example, the following code will not make sense.
-\begin{lstlisting}
+\begin{lstlisting}[language=C++]
     string temp;
     scanf("%s" , &temp); //will not work
 \end{lstlisting}
 Instead, the following can be used. 
-\begin{lstlisting}
+\begin{lstlisting}[language=C++]
     char temp1[100];
     scanf("%s" , &temp1);
     string temp = temp1; //this works
 \end{lstlisting}
 
 \subsection{Comparing strings} NEVER try to compare two strings using the \verb|==| operator. For instance, both of the below snippets are not encouraged. 
-\begin{lstlisting}
+\begin{lstlisting}[language=C++]
     char temp1[100]; char temp2[100];
     if (temp1 == temp2){ \\don't do this
         ...
     }
 \end{lstlisting}
 
-\begin{lstlisting}
+\begin{lstlisting}[language=C++]
     string temp1; string temp2;
     if (temp1 == temp2){ \\don't do this
         ...
@@ -345,7 +348,7 @@ Instead, the following can be used.
 Instead, convert the given strings to a \verb|string| object, and then use the \verb|std::string.compare| function. 
 
 \subsection{scanf return values are useful} The \verb|scanf| function returns the number of items of the argument list successfully filled (see \url{https://www.cplusplus.com/reference/cstdio/scanf/}). This means the return value of \verb|scanf| can be very useful in parsing input. For instance, consider the problem \href{https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=623&page=show_problem&problem=166}{UVa230}, in which we have to consider a specific input format. In order to input the whole library of books, we can do something as follows.
-\begin{lstlisting}
+\begin{lstlisting}[language=C++]
     //taking the library books
     char title[81], author[81];
         
@@ -356,7 +359,7 @@ Instead, convert the given strings to a \verb|string| object, and then use the \
 \end{lstlisting}
 
 \subsection{memcpy and memset with strings} Using \verb|memcpy| and \verb|memset| with strings is very useful. For example, do something like this. 
-\begin{lstlisting}
+\begin{lstlisting}[language=C++]
     char my_string[80];
     memset(my_string, 'a', 80); //my_string becomes aaaa..aa (80 a's)
     char another_string[80];
@@ -386,7 +389,7 @@ Here are the meaning of the optional specifiers.
     \item \verb|length| alters the expected type of the storage pointed by the corresponding argument. \verb|length| has to be one of \verb|hh, h, l, ll, j, z, t, L|. 
 \end{enumerate}
 Some cool examples of string parsing are given below. 
-\begin{lstlisting}
+\begin{lstlisting}[language=C++]
     scanf("\"%s\"\n"); //reads a string  without whitespace within quotation marks
     scanf("\"[^\"]\"\n"); //reads a string (with white space possibly) without the " character within quotation marks
     scanf("[^\n]\n"); //reads a line, without the \n character
@@ -396,19 +399,19 @@ Some cool examples of string parsing are given below.
 \subsection{Reference blog} Check out this reference blog to know more: \url{https://codeforces.com/blog/entry/61587}. 
 
 \subsection{Initialising the Mersenne Twister Generator in C++} To initialise the generator, we will use the current system time as the seed (using a fixed seed is not recommended for competitive programming, as it might results in hacks and someone challenging your code). 
-\begin{lstlisting}
+\begin{lstlisting}[language=C++]
     mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 \end{lstlisting}
 Use \verb|mt19937_64| to generate 64-bit numbers. 
 
 \subsection{The uniform integer distribution} To generate a random integer in a given range $[a , b]$ uniformly, you can do the following. 
-\begin{lstlisting}
+\begin{lstlisting}[language=C++]
     <type> x = uniform_int_distribution<type>(a , b)(rng)
 \end{lstlisting}
 Here \verb|type| must be an integer type (\verb|int|, \verb|long long int| etc). \verb|rng| is the generator that we initialised before. 
 
 \subsection{Random shuffle} To randomly shuffle a vector, you can do something like this. 
-\begin{lstlisting}
+\begin{lstlisting}[language=C++]
     vector <long long int> v;
     shuffle(v.begin(), v.end(), rng);
 \end{lstlisting}
