@@ -92,7 +92,7 @@
     colorlinks=true,
     linkcolor=blue,
     filecolor=magenta,      
-    urlcolor=cyan,
+    urlcolor=blue,
 }
     
 %to create a new numbered environment, use the syntax
@@ -239,6 +239,23 @@ Then, \verb|y| will \textit{not} be 0. Instead, it will be a different integer, 
 \begin{lstlisting}[language=C++]
     //memcpy( void * destination, const void * source, size_t num )
     //copy num bytes from source to desination
+\end{lstlisting}
+
+\section{Working with floats and precision}
+
+\noindent There are many problems in contests which require one to work with arbitrary precision \verb|floats|. In such problems, not knowing the right way to handle floats can lead to a WA verdict. For example, try out this problem, which involves probability: \url{https://codeforces.com/contest/1543/problem/C}. 
+
+\subsection{Data Types for such problems} One can use \verb|double| for such problems. However, for some problem, \verb|long double| is required. So, in general, use \verb|long double|. 
+
+\subsection{printf/scanf with long doubles} The identifier for \verb|long double| while using \verb|printf| or \verb|scanf| functions is \verb|%Lf| (note the capital \verb|L|). The identifier for \verb|double| is \verb|%lf|. The good thing about these is that you can set the precision is well: something like \verb|%.12Lf|. 
+
+\subsection{Use scaling!} Again, consider the problem which is linked above (for safety, the link is \url{https://codeforces.com/contest/1543/problem/C}). In the problem constraints, we are given that the numbers will have atmost 4 decimal places. In such situations, one can \textit{scale} the numbers to integers. In general, one picks a large enough constant, something like $10^6$, and scales all the doubles by this constant. The results are integers, and the comparisons/other operations can be done on the integers. This removes any error that can occur as a result of operations on floats. The final answer ofcourse can be obtained by dividing out by the scale. 
+
+\subsection{The round() function} Finally, I want to mention the \verb|round()| function. If you're scaling numbers, always use the \verb|round| function. This ensures that the error is minimal.
+\begin{lstlisting}[language=C++]
+    //assume x is a double
+    long long int y = 1e6*x; //don't do this 
+    long long int z = round(1e6*x); //do this instead
 \end{lstlisting}
 
 \section{Bit Manipulation}
@@ -994,6 +1011,14 @@ This clearly takes time $O(m\mathsf{\,log\,}n)$.
 \end{lstlisting}
 
 \section{Tree Algorithms}
+
+\subsection{Euler Tours and Tree Traversal Arrays} The \textit{euler tour array} of a tree $T$ is the array obtained after traversing the tree using DFS via a preorder traversal of the tree. There are various types of euler tours in a tree, but here we mention the most important ones.
+\begin{enumerate}
+    \item The first kind of euler tours are as follows: we begin by rooting the tree at a vertex. Then, we start a DFS on the tree, and each time we visit a new node, we push the node onto the array. Note that in this method, a node can occupy various positions in the array. We can use this kind to solve the \textit{least common ancestor} problem, as we discuss in a subsection ahead. 
+    \item One can modify the above array to push a node only when one enters the node, and when one exits the node. 
+    \item In the third type of euler tours, we push a node onto the array \textit{only once}. If $\verb|pos[v]|$ represents the position of node \verb|v| in the array, then the subtree of the tree rooted at \verb|v| occupies the range \verb|[v, v + subtree[v] - 1]|, where \verb|subtree[v]| represents the number of nodes in the subtree of \verb|v|. This array is called the \textit{tree traversal array}, and is used along with range query structures to efficiently compute subtree queries on trees.
+\end{enumerate}
+Check this problem to see an application of the tree traversal array: \href{https://www.codechef.com/LTIME99B/problems/BNYHOP}{BNYHOP}.
 
 \subsection{LCA using Euler Tour} Suppose we have a rooted tree $G$ with $N$ vertices. Then do the following. 
 \begin{enumerate}
