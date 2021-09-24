@@ -1,3 +1,11 @@
+
+/*
+	 template by: codetalker7
+	 editor: sublime text 3
+	 file name: 1.cpp
+	 date created: 2021-09-09 19:06:03
+	 problem link: 
+*/
 #include<iostream>
 #include<vector>
 #include<string>
@@ -74,9 +82,6 @@ const ldb PI = 3.14159265359;
 	returns an unsigned integer
 */
 #define ssz(x) (int)x.size()
-#define forll(i, start, end, step) for(ll i = start; i <= end; i += step)
-#define forllrev(i, start, end, step) for(ll i = start; i >= end; i -= step)
-#define fortype(type, i, start, end, step) for(type i = start; i != end; i += step)
 
 //some useful algos
 template <class T> T mceil(T a, T b){return (a % b == 0) ? a/b : a/b + 1;}
@@ -88,8 +93,33 @@ template <class T> T signed_floor(T a , T b){if (a >= 0 && b >= 0) return a/b; e
 template <class T> pair<T,T> log_base_2(T n){T temp = 1 , k = 0; while(temp <= n){temp <<= 1; k++;} temp >>= 1; k--; return {k , temp};}
 //define global variables here
 
-void solve(ll mcase){
 
+void solve(ll mcase){
+    string input = "";
+    string answer = "";
+
+    ll n;
+    cin >> n;
+    cin >> input;
+
+    ll i = 0;
+    while(i < n){
+        if (input[i] == 'U'){
+            answer.push_back('D');
+            i++;
+        }
+        else if (input[i] == 'D'){
+            answer.push_back('U');
+            i++;
+        }
+        //in this case, input[i + 1] == R must be true
+        else{
+            answer.push_back('L');
+            answer.push_back('R');
+            i += 2;
+        }
+    }
+    cout << answer << "\n";
 }
 
 //main function
@@ -122,18 +152,15 @@ int main(){
 
 
     //for testcases, use the below format
-    /*
+    
     ll t , mcase = 1; //testcases
-    scanf("%lld\n", &t);
+    cin >> t;
     while(t > 0){
     	solve(mcase); //write a separate solve function
     	t--;
     	mcase++;
     }
-    */
-    forllrev(i, 5, 1, 1){
-        printf("%lld\n", i);
-    }
+    
     cerr << "time taken : " << (float)clock() / CLOCKS_PER_SEC << "seconds" << "\n";
     return 0;
 }

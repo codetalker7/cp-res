@@ -1,3 +1,11 @@
+
+/*
+	 template by: codetalker7
+	 editor: sublime text 3
+	 file name: 2.cpp
+	 date created: 2021-09-24 22:52:05
+	 problem link: https://codeforces.com/contest/1557/problem/B
+*/
 #include<iostream>
 #include<vector>
 #include<string>
@@ -75,7 +83,6 @@ const ldb PI = 3.14159265359;
 */
 #define ssz(x) (int)x.size()
 #define forll(i, start, end, step) for(ll i = start; i <= end; i += step)
-#define forllrev(i, start, end, step) for(ll i = start; i >= end; i -= step)
 #define fortype(type, i, start, end, step) for(type i = start; i != end; i += step)
 
 //some useful algos
@@ -87,9 +94,43 @@ template <class T> T modinv (T a , T m , T &x , T &y){T g = extgcd(a , m , x , y
 template <class T> T signed_floor(T a , T b){if (a >= 0 && b >= 0) return a/b; else if (a < 0 & b < 0) return (-a)/(-b); else if (a < 0 & b >= 0){if (a % b == 0) return -((-a)/b); else return -((-a)/b) - 1;} else if (a >= 0 && b < 0){if(a % b == 0) return -(a/(-b)); else return -(a/(-b)) - 1;}}
 template <class T> pair<T,T> log_base_2(T n){T temp = 1 , k = 0; while(temp <= n){temp <<= 1; k++;} temp >>= 1; k--; return {k , temp};}
 //define global variables here
+ll a[100000 + 1];
+ll b[100000 + 1];
 
 void solve(ll mcase){
+    ll n, k;
+    scanf("%lld %lld", &n, &k);
 
+    map<ll, ll> pos;
+
+    forll(i, 1, n, 1){
+        scanf("%lld", &a[i]);
+        b[i] = a[i];
+        pos[a[i]] = i;
+    }
+
+    //sort b
+    sort(b + 1, b + n + 1);
+
+    //take max contiguous segments from b
+    ll curr_k = 0, i = 1;
+    while(i <= n){
+        //figure out max for current i
+        ll j = i;
+        while(j < n AND pos[b[j + 1]] == pos[b[j]] + 1)
+            j++;
+
+        //take sub_segment from i to j
+        if (curr_k < k)
+            curr_k++;
+        else{
+            printf("NO\n");
+            return;
+        }
+        i = j + 1;
+    }
+    printf("YES\n");
+    return;
 }
 
 //main function
@@ -122,7 +163,7 @@ int main(){
 
 
     //for testcases, use the below format
-    /*
+    
     ll t , mcase = 1; //testcases
     scanf("%lld\n", &t);
     while(t > 0){
@@ -130,10 +171,7 @@ int main(){
     	t--;
     	mcase++;
     }
-    */
-    forllrev(i, 5, 1, 1){
-        printf("%lld\n", i);
-    }
+    
     cerr << "time taken : " << (float)clock() / CLOCKS_PER_SEC << "seconds" << "\n";
     return 0;
 }

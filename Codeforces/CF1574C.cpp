@@ -1,3 +1,11 @@
+
+/*
+	 template by: codetalker7
+	 editor: sublime text 3
+	 file name: 3.cpp
+	 date created: 2021-09-20 20:00:27
+	 problem link: https://codeforces.com/contests/1574/C
+*/
 #include<iostream>
 #include<vector>
 #include<string>
@@ -74,9 +82,6 @@ const ldb PI = 3.14159265359;
 	returns an unsigned integer
 */
 #define ssz(x) (int)x.size()
-#define forll(i, start, end, step) for(ll i = start; i <= end; i += step)
-#define forllrev(i, start, end, step) for(ll i = start; i >= end; i -= step)
-#define fortype(type, i, start, end, step) for(type i = start; i != end; i += step)
 
 //some useful algos
 template <class T> T mceil(T a, T b){return (a % b == 0) ? a/b : a/b + 1;}
@@ -87,8 +92,78 @@ template <class T> T modinv (T a , T m , T &x , T &y){T g = extgcd(a , m , x , y
 template <class T> T signed_floor(T a , T b){if (a >= 0 && b >= 0) return a/b; else if (a < 0 & b < 0) return (-a)/(-b); else if (a < 0 & b >= 0){if (a % b == 0) return -((-a)/b); else return -((-a)/b) - 1;} else if (a >= 0 && b < 0){if(a % b == 0) return -(a/(-b)); else return -(a/(-b)) - 1;}}
 template <class T> pair<T,T> log_base_2(T n){T temp = 1 , k = 0; while(temp <= n){temp <<= 1; k++;} temp >>= 1; k--; return {k , temp};}
 //define global variables here
+ll a[200000 + 1];
+ll prefix[200000 + 1];
+
+void query(ll n, ll x, ll y){
+    ll lo = 1, hi = n, flag = 0, mid;
+
+    while (lo <= hi){
+        mid = lo + (hi - lo + 1)/2;
+        if (a[mid] < x){
+            if (lo == mid){
+                flag = 1;
+                break;
+            }
+            else
+                lo = mid;
+        }
+        else{
+            hi = mid - 1;
+        }
+    }
+
+
+    ll ans = 0, ans1 = 0;
+    if (flag == 0){
+        //all values are greater than or equal to x
+        //send the first soldier
+        ans += max((ll)0, y - (prefix[n] - a[1]));
+        printf("%lld\n", ans);
+        return;
+    }
+
+    //there is a value less than x
+    if (mid == n){
+        //all values are strictly less
+        //send the largest soldier
+        ans += x - a[n] + max((ll)0, y - prefix[n - 1]);
+        printf("%lld\n", ans);
+        return;
+    }
+
+    //first try sending in solder mid + 1
+    ans += max((ll)0, y - (prefix[n] - a[mid + 1]));
+
+    //try sending in soldier mid
+    ans1 += x - a[mid] + max((ll)0, y - (prefix[n] - a[mid]));
+
+    printf("%lld\n", (ll)min(ans, ans1));
+    return;
+}
 
 void solve(ll mcase){
+    ll n;
+    scanf("%lld", &n);
+
+    for (ll i = 1; i <= n; i++)
+        scanf("%lld", &a[i]);
+
+    sort(a + 1, a + n + 1);
+
+    //compute prefix sums
+    prefix[0] = 0;
+    for (ll i = 1; i <= n; i++)
+        prefix[i] = prefix[i - 1] + a[i];
+
+    ll m;
+    scanf("%lld", &m);
+    
+    for (ll i = 1; i <= m; i++){
+        ll x, y;
+        scanf("%lld %lld", &x, &y);
+        query(n, x, y);
+    }     
 
 }
 
@@ -131,9 +206,7 @@ int main(){
     	mcase++;
     }
     */
-    forllrev(i, 5, 1, 1){
-        printf("%lld\n", i);
-    }
+    solve(1);
     cerr << "time taken : " << (float)clock() / CLOCKS_PER_SEC << "seconds" << "\n";
     return 0;
 }

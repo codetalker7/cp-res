@@ -1,3 +1,11 @@
+
+/*
+	 template by: codetalker7
+	 editor: sublime text 3
+	 file name: 2.cpp
+	 date created: 2021-09-20 20:00:21
+	 problem link: https://codeforces.com/contests/1574/B
+*/
 #include<iostream>
 #include<vector>
 #include<string>
@@ -74,9 +82,6 @@ const ldb PI = 3.14159265359;
 	returns an unsigned integer
 */
 #define ssz(x) (int)x.size()
-#define forll(i, start, end, step) for(ll i = start; i <= end; i += step)
-#define forllrev(i, start, end, step) for(ll i = start; i >= end; i -= step)
-#define fortype(type, i, start, end, step) for(type i = start; i != end; i += step)
 
 //some useful algos
 template <class T> T mceil(T a, T b){return (a % b == 0) ? a/b : a/b + 1;}
@@ -89,7 +94,63 @@ template <class T> pair<T,T> log_base_2(T n){T temp = 1 , k = 0; while(temp <= n
 //define global variables here
 
 void solve(ll mcase){
+    ll a, b, c, m;
+    scanf("%lld %lld %lld %lld", &a, &b, &c, &m);
 
+    ll mmax = max(a - 1,(ll)0) + max(b - 1,(ll)0) + max(c - 1,(ll)0);
+    ll mmin = INF; 
+
+    ll lowest = min(a , b);
+    lowest = min(lowest, c);
+
+    a -= lowest;
+    b -= lowest;
+    c -= lowest;
+
+    debugln(a);
+    debugln(b);
+    debugln(c);
+
+    if (a == 0){
+        if (c <= b){
+            b -= c + lowest;
+            mmin = max(b - 1,  (ll)0);
+        }
+        else {
+            c -= b + lowest;
+            mmin = max(c - 1, (ll)0);
+        }
+    }
+    else if (b == 0){
+        if (c <= a){
+            a -= c + lowest;
+            mmin = max(a - 1,  (ll)0);
+        }
+        else {
+            c -= a + lowest;
+            mmin = max(c - 1, (ll)0);
+        }
+    }
+    else{
+    //c == 0
+        if (a <= b){
+            b -= a + lowest;
+            mmin = max(b - 1,  (ll)0);
+        }
+        else {
+            a -= b + lowest;
+            mmin = max(a - 1, (ll)0);
+        }
+    }
+
+    if (mmin <= m AND m <= mmax){
+        printf("YES\n");
+        return;
+    }
+    else{
+        printf("NO\n");
+        return;
+    }
 }
 
 //main function
@@ -122,7 +183,7 @@ int main(){
 
 
     //for testcases, use the below format
-    /*
+    
     ll t , mcase = 1; //testcases
     scanf("%lld\n", &t);
     while(t > 0){
@@ -130,10 +191,7 @@ int main(){
     	t--;
     	mcase++;
     }
-    */
-    forllrev(i, 5, 1, 1){
-        printf("%lld\n", i);
-    }
+    
     cerr << "time taken : " << (float)clock() / CLOCKS_PER_SEC << "seconds" << "\n";
     return 0;
 }

@@ -1,3 +1,11 @@
+
+/*
+	 template by: codetalker7
+	 editor: sublime text 3
+	 file name: 4.cpp
+	 date created: 2021-09-12 20:55:57
+	 problem link: https://codeforces.com/contest/1566/problem/D1
+*/
 #include<iostream>
 #include<vector>
 #include<string>
@@ -74,9 +82,6 @@ const ldb PI = 3.14159265359;
 	returns an unsigned integer
 */
 #define ssz(x) (int)x.size()
-#define forll(i, start, end, step) for(ll i = start; i <= end; i += step)
-#define forllrev(i, start, end, step) for(ll i = start; i >= end; i -= step)
-#define fortype(type, i, start, end, step) for(type i = start; i != end; i += step)
 
 //some useful algos
 template <class T> T mceil(T a, T b){return (a % b == 0) ? a/b : a/b + 1;}
@@ -87,9 +92,49 @@ template <class T> T modinv (T a , T m , T &x , T &y){T g = extgcd(a , m , x , y
 template <class T> T signed_floor(T a , T b){if (a >= 0 && b >= 0) return a/b; else if (a < 0 & b < 0) return (-a)/(-b); else if (a < 0 & b >= 0){if (a % b == 0) return -((-a)/b); else return -((-a)/b) - 1;} else if (a >= 0 && b < 0){if(a % b == 0) return -(a/(-b)); else return -(a/(-b)) - 1;}}
 template <class T> pair<T,T> log_base_2(T n){T temp = 1 , k = 0; while(temp <= n){temp <<= 1; k++;} temp >>= 1; k--; return {k , temp};}
 //define global variables here
+ll sights[301];
+ll arrangement[301];
+ll pos[301];
+ll prefix[301];
 
+bool comp(ll x, ll y){
+    if (sights[x] == sights[y]){
+        return x > y;
+    }
+    else{
+        return sights[x] < sights[y];
+    }
+}
 void solve(ll mcase){
+    ll n, m;
+    scanf("%lld %lld", &n, &m);
 
+    prefix[0] = 0;
+    //n = 1 in this case
+    for (ll i = 1; i <= m; i++){
+        scanf("%lld", &sights[i]);
+        prefix[i] = 0;
+        arrangement[i] = i;
+    }
+
+    //permute arrangement
+    sort(arrangement + 1, arrangement + m + 1, comp);
+
+    //set pos
+    for (ll i = 1; i <= m; i++){
+        pos[arrangement[i]] = i;
+    }
+
+    //get the ans
+    ll ans = 0; 
+    for (ll i = 1; i <= m; i++){
+        //add the sum in range [1,pos[i])
+        for (ll j = 1; j < pos[i]; j++)
+            ans += prefix[j];
+        prefix[pos[i]] = 1;
+    }
+
+    printf("%lld\n", ans);
 }
 
 //main function
@@ -122,7 +167,7 @@ int main(){
 
 
     //for testcases, use the below format
-    /*
+    
     ll t , mcase = 1; //testcases
     scanf("%lld\n", &t);
     while(t > 0){
@@ -130,10 +175,7 @@ int main(){
     	t--;
     	mcase++;
     }
-    */
-    forllrev(i, 5, 1, 1){
-        printf("%lld\n", i);
-    }
+    
     cerr << "time taken : " << (float)clock() / CLOCKS_PER_SEC << "seconds" << "\n";
     return 0;
 }

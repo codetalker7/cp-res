@@ -1,3 +1,11 @@
+
+/*
+	 template by: codetalker7
+	 editor: sublime text 3
+	 file name: 1.cpp
+	 date created: 2021-09-12 20:08:37
+	 problem link: https://codeforces.com/contest/1566/problem/0
+*/
 #include<iostream>
 #include<vector>
 #include<string>
@@ -74,9 +82,6 @@ const ldb PI = 3.14159265359;
 	returns an unsigned integer
 */
 #define ssz(x) (int)x.size()
-#define forll(i, start, end, step) for(ll i = start; i <= end; i += step)
-#define forllrev(i, start, end, step) for(ll i = start; i >= end; i -= step)
-#define fortype(type, i, start, end, step) for(type i = start; i != end; i += step)
 
 //some useful algos
 template <class T> T mceil(T a, T b){return (a % b == 0) ? a/b : a/b + 1;}
@@ -89,6 +94,30 @@ template <class T> pair<T,T> log_base_2(T n){T temp = 1 , k = 0; while(temp <= n
 //define global variables here
 
 void solve(ll mcase){
+    ll n, s;
+    scanf("%lld %lld", &n, &s);
+
+    /*
+        if n is even, set the first n/2 - 1 things to 0
+        remaining -> n/2 elements
+        sum = s
+        let each element = x
+        x*n/2 = s
+
+        n/2k <= s
+    */
+    //if n is odd, set the first n/2 things to 0
+
+    if (n % 2 == 0){
+        ll x = (2*s)/(n + 2);
+        printf("%lld\n", x);
+        return;
+    }
+    else{
+        ll x = (2*s)/(n + 1);
+        printf("%lld\n", x);
+        return;
+    }
 
 }
 
@@ -122,7 +151,7 @@ int main(){
 
 
     //for testcases, use the below format
-    /*
+    
     ll t , mcase = 1; //testcases
     scanf("%lld\n", &t);
     while(t > 0){
@@ -130,10 +159,7 @@ int main(){
     	t--;
     	mcase++;
     }
-    */
-    forllrev(i, 5, 1, 1){
-        printf("%lld\n", i);
-    }
+    
     cerr << "time taken : " << (float)clock() / CLOCKS_PER_SEC << "seconds" << "\n";
     return 0;
 }

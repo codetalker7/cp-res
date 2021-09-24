@@ -241,6 +241,11 @@ Then, \verb|y| will \textit{not} be 0. Instead, it will be a different integer, 
     //copy num bytes from source to desination
 \end{lstlisting}
 
+\section{Debugging Tricks}
+\subsection{Using debug functions} Try to use \verb|debug| functions in your code, and use these to output the error messages on standard error. 
+
+\subsection{Assertions} The \verb|assert()| function in C++ is very useful for debugging. Check out the \href{https://www.cplusplus.com/reference/cassert/assert/}{documentation} to know more about how this works.
+
 \section{Working with floats and precision}
 
 \noindent There are many problems in contests which require one to work with arbitrary precision \verb|floats|. In such problems, not knowing the right way to handle floats can lead to a WA verdict. For example, try out this problem, which involves probability: \url{https://codeforces.com/contest/1543/problem/C}. 

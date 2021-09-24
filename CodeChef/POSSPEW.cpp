@@ -1,3 +1,11 @@
+
+/*
+	 template by: codetalker7
+	 editor: sublime text 3
+	 file name: 3.cpp
+	 date created: 2021-09-15 20:11:44
+	 problem link: https://www.codechef.com/START11B/problems/POSSPEW
+*/
 #include<iostream>
 #include<vector>
 #include<string>
@@ -74,9 +82,6 @@ const ldb PI = 3.14159265359;
 	returns an unsigned integer
 */
 #define ssz(x) (int)x.size()
-#define forll(i, start, end, step) for(ll i = start; i <= end; i += step)
-#define forllrev(i, start, end, step) for(ll i = start; i >= end; i -= step)
-#define fortype(type, i, start, end, step) for(type i = start; i != end; i += step)
 
 //some useful algos
 template <class T> T mceil(T a, T b){return (a % b == 0) ? a/b : a/b + 1;}
@@ -87,8 +92,107 @@ template <class T> T modinv (T a , T m , T &x , T &y){T g = extgcd(a , m , x , y
 template <class T> T signed_floor(T a , T b){if (a >= 0 && b >= 0) return a/b; else if (a < 0 & b < 0) return (-a)/(-b); else if (a < 0 & b >= 0){if (a % b == 0) return -((-a)/b); else return -((-a)/b) - 1;} else if (a >= 0 && b < 0){if(a % b == 0) return -(a/(-b)); else return -(a/(-b)) - 1;}}
 template <class T> pair<T,T> log_base_2(T n){T temp = 1 , k = 0; while(temp <= n){temp <<= 1; k++;} temp >>= 1; k--; return {k , temp};}
 //define global variables here
+ll a[100000 + 1];
+ll activationTime[100000 + 1];
+ll activationRight[100000 + 1];
+ll activationLeft[100000 + 1];
 
 void solve(ll mcase){
+    ll n, k;
+    scanf("%lld %lld", &n, &k);
+
+    ll ans = 0, first = -1;
+    for (ll i = 1; i <= n; i++){
+        scanf("%lld", &a[i]);
+        activationTime[i] = INF;
+        activationLeft[i] = INF;
+        activationLeft[i] = INF;
+
+        //all non-zero terms will be added here
+        ans += a[i];
+
+        //set first
+        if (a[i] > 0 AND first == -1){
+            first = i;
+        }
+    }   
+
+    //deal with boundary case
+    if (ans == 0){
+        printf("0\n");
+        return;
+    }
+
+    //setting right activation times
+    activationRight[first] = 0;
+    for (ll i = first - 1; i >= 1; i--){
+        if (a[i] > 0){
+            activationRight[i] = 0;
+        }
+        else{
+            activationRight[i] = activationRight[i + 1] + 1;
+        }
+    }
+    for (ll i = n; i > first; i--){
+        if (i == n){
+            if (a[i] > 0){
+                activationRight[i] = 0;
+            }
+            else{
+                activationRight[i] = activationRight[1] + 1;
+            }
+        }
+        else{
+            if (a[i] > 0){
+                activationRight[i] = 0;
+            }
+            else{
+                activationRight[i] = activationRight[i + 1] + 1;
+            }
+        }
+    }
+
+    //setting left activation times
+    activationLeft[first] = 0;
+    for (ll i = first + 1; i <= n; i++){
+        if (a[i] > 0){
+            activationLeft[i] = 0;
+        }
+        else{
+            activationLeft[i] = activationLeft[i - 1] + 1;
+        }
+    }
+    for (ll i = 1; i < first; i++){
+        if (i == 1){
+            if (a[i] > 0){
+                activationLeft[i] = 0;
+            }
+            else{
+                activationLeft[i] = activationLeft[n] + 1;
+            }
+        }
+        else{
+            if (a[i] > 0){
+                activationLeft[i] = 0;
+            }
+            else{
+                activationLeft[i] = activationLeft[i - 1] + 1;
+            }
+        }
+    }
+
+    //setting activation times
+    for (ll i = 1; i <= n; i++){
+        activationTime[i] = min(activationRight[i], activationLeft[i]);
+    }
+
+    //add the contributions of each element to ans
+    for (ll i = 1; i <= n; i++){
+        //i activates after activationTime[i] seconds
+        ans += max((ll)0, k - activationTime[i]) * 2;
+    }
+
+    printf("%lld\n", ans);
 
 }
 
@@ -122,7 +226,7 @@ int main(){
 
 
     //for testcases, use the below format
-    /*
+    
     ll t , mcase = 1; //testcases
     scanf("%lld\n", &t);
     while(t > 0){
@@ -130,10 +234,7 @@ int main(){
     	t--;
     	mcase++;
     }
-    */
-    forllrev(i, 5, 1, 1){
-        printf("%lld\n", i);
-    }
+    
     cerr << "time taken : " << (float)clock() / CLOCKS_PER_SEC << "seconds" << "\n";
     return 0;
 }

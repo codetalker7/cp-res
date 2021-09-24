@@ -32,18 +32,21 @@ input_file = open('input.txt' , 'w')
 
 
 #only make changes below this code
-t = random.randint(1 , 1)
+t = random.randint(10 , 10)
 input_file.write(str(t) + "\n")
 
 while (t > 0):
 	#change code only here
-	n = random.randint(2000, 2000)
-	input_file.write(str(n) + "\n")
+	n = random.randint(3, 10)
+	input_file.write(str(n) + " ")
     
+	k = random.randint(0, 10)
+	input_file.write(str(n) + "\n")
+
 	for i in range(1, n + 1):
-		input_file.write(str(1000000) + " ")
-
-
+		q = random.randint(0, 10)
+		input_file.write(str(q) + " ")
+	input_file.write("\n")
     #do not change this
 	t = t - 1
 

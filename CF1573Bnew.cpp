@@ -1,3 +1,11 @@
+
+/*
+	 template by: codetalker7
+	 editor: sublime text 3
+	 file name: 2.cpp
+	 date created: 2021-09-18 20:19:43
+	 problem link: https://codeforces.com/contest/1573/problem/B
+*/
 #include<iostream>
 #include<vector>
 #include<string>
@@ -74,9 +82,6 @@ const ldb PI = 3.14159265359;
 	returns an unsigned integer
 */
 #define ssz(x) (int)x.size()
-#define forll(i, start, end, step) for(ll i = start; i <= end; i += step)
-#define forllrev(i, start, end, step) for(ll i = start; i >= end; i -= step)
-#define fortype(type, i, start, end, step) for(type i = start; i != end; i += step)
 
 //some useful algos
 template <class T> T mceil(T a, T b){return (a % b == 0) ? a/b : a/b + 1;}
@@ -87,10 +92,68 @@ template <class T> T modinv (T a , T m , T &x , T &y){T g = extgcd(a , m , x , y
 template <class T> T signed_floor(T a , T b){if (a >= 0 && b >= 0) return a/b; else if (a < 0 & b < 0) return (-a)/(-b); else if (a < 0 & b >= 0){if (a % b == 0) return -((-a)/b); else return -((-a)/b) - 1;} else if (a >= 0 && b < 0){if(a % b == 0) return -(a/(-b)); else return -(a/(-b)) - 1;}}
 template <class T> pair<T,T> log_base_2(T n){T temp = 1 , k = 0; while(temp <= n){temp <<= 1; k++;} temp >>= 1; k--; return {k , temp};}
 //define global variables here
+ll a[100000 + 1];
+ll b[100000 + 1];
+ll dp[100000 + 1];
+ll pos[200000 + 1];
+ll segtree[200000 + 1];
+
+void build(ll n){
+    for (ll i = 0; i < n; i++){
+        segtree[i + n] = a[i + 1];
+    }
+    for (ll i = n - 1;i > 0; i--){
+        segtree[i] = min(segtree[i << 1], segtree[i << 1 | 1]);
+    }
+}
+
+ll query(ll n, ll l, ll r){
+    ll res = INF;
+    l += n; r += n;
+    while (l < r){
+        if (l & 1){
+            res = min(res, segtree[l]); l+=1; l >>= 1;
+        }
+        else{
+            l >>= 1;
+        }
+        if (r & 1){
+            res = min(res, segtree[r - 1]); r >>= 1;
+        }
+        else{
+            r >>= 1;
+        }
+    }
+    return res;
+}
 
 void solve(ll mcase){
+    ll n;
+    scanf("%lld", &n);
 
+    for (ll i = 1; i <= n; i++){
+        scanf("%lld", &a[i]);
+        pos[a[i]] = i;
+    }
+
+    for (ll i = 1; i <= n; i++){
+        scanf("%lld", &b[i]);
+        pos[b[i]] = INF;
+    }
+
+    if (a[1] < b[1]){
+        printf("%lld\n", (ll)0);
+        return;
+    }
+
+    ll i;
+    for (i = 1; i <= n; i++){
+        if (a[i] < b[1])
+            break;
+    }
+    printf("%lld\n", i - 1);
 }
+
 
 //main function
 int main(){
@@ -122,7 +185,7 @@ int main(){
 
 
     //for testcases, use the below format
-    /*
+    
     ll t , mcase = 1; //testcases
     scanf("%lld\n", &t);
     while(t > 0){
@@ -130,10 +193,7 @@ int main(){
     	t--;
     	mcase++;
     }
-    */
-    forllrev(i, 5, 1, 1){
-        printf("%lld\n", i);
-    }
+    
     cerr << "time taken : " << (float)clock() / CLOCKS_PER_SEC << "seconds" << "\n";
     return 0;
 }

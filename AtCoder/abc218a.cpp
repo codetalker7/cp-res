@@ -1,3 +1,11 @@
+
+/*
+	 template by: codetalker7
+	 editor: sublime text 3
+	 file name: abc218a.cpp
+	 date created: 2021-09-11 17:30:52
+	 problem link: 
+*/
 #include<iostream>
 #include<vector>
 #include<string>
@@ -74,9 +82,6 @@ const ldb PI = 3.14159265359;
 	returns an unsigned integer
 */
 #define ssz(x) (int)x.size()
-#define forll(i, start, end, step) for(ll i = start; i <= end; i += step)
-#define forllrev(i, start, end, step) for(ll i = start; i >= end; i -= step)
-#define fortype(type, i, start, end, step) for(type i = start; i != end; i += step)
 
 //some useful algos
 template <class T> T mceil(T a, T b){return (a % b == 0) ? a/b : a/b + 1;}
@@ -89,6 +94,20 @@ template <class T> pair<T,T> log_base_2(T n){T temp = 1 , k = 0; while(temp <= n
 //define global variables here
 
 void solve(ll mcase){
+    ll n;
+    scanf("%lld", &n);
+
+    char str[7];
+    scanf("%s", str);
+
+    if (str[n - 1] == 'o'){
+        printf("Yes\n");
+        return;
+    }
+    else{
+        printf("No\n");
+        return;
+    }
 
 }
 
@@ -131,9 +150,7 @@ int main(){
     	mcase++;
     }
     */
-    forllrev(i, 5, 1, 1){
-        printf("%lld\n", i);
-    }
+    solve(1);
     cerr << "time taken : " << (float)clock() / CLOCKS_PER_SEC << "seconds" << "\n";
     return 0;
 }

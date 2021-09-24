@@ -1,3 +1,11 @@
+
+/*
+	 template by: codetalker7
+	 editor: sublime text 3
+	 file name: 4.cpp
+	 date created: 2021-09-15 21:16:30
+	 problem link: https://www.codechef.com/START11B/problems/COUNTA
+*/
 #include<iostream>
 #include<vector>
 #include<string>
@@ -74,9 +82,6 @@ const ldb PI = 3.14159265359;
 	returns an unsigned integer
 */
 #define ssz(x) (int)x.size()
-#define forll(i, start, end, step) for(ll i = start; i <= end; i += step)
-#define forllrev(i, start, end, step) for(ll i = start; i >= end; i -= step)
-#define fortype(type, i, start, end, step) for(type i = start; i != end; i += step)
 
 //some useful algos
 template <class T> T mceil(T a, T b){return (a % b == 0) ? a/b : a/b + 1;}
@@ -87,8 +92,104 @@ template <class T> T modinv (T a , T m , T &x , T &y){T g = extgcd(a , m , x , y
 template <class T> T signed_floor(T a , T b){if (a >= 0 && b >= 0) return a/b; else if (a < 0 & b < 0) return (-a)/(-b); else if (a < 0 & b >= 0){if (a % b == 0) return -((-a)/b); else return -((-a)/b) - 1;} else if (a >= 0 && b < 0){if(a % b == 0) return -(a/(-b)); else return -(a/(-b)) - 1;}}
 template <class T> pair<T,T> log_base_2(T n){T temp = 1 , k = 0; while(temp <= n){temp <<= 1; k++;} temp >>= 1; k--; return {k , temp};}
 //define global variables here
+ll b[100000 + 1];
+ll a[100000 + 1];
+ll dp[100000 + 1];
+ll dp_prev[100000 + 1];
+ll dp_great[100000 + 1];
 
 void solve(ll mcase){
+    ll n;
+    scanf("%lld", &n);
+
+    for (ll i = 1; i <= n; i++){
+        if (i < n)
+            scanf("%lld", &b[i]);
+        a[i] = -1;
+    }
+
+    //calculating dp_prev and dp
+    dp_prev[n] = 1;
+    dp_great[n] = (100000 - b[n - 1] + 1) % MOD;
+
+    for (ll i = n - 1; i >= 1; i--){
+        if (i == n - 1){
+            //when both a[n - 1] and a[n] equal to b[n - 1]
+            dp[i] = 1;
+
+            //when a[n - 1] = b[n - 1]
+            dp[i] = (dp[i] + (100000 - b[n - 1]) % MOD) % MOD;
+
+            //when a[n] = b[n - 1]
+            dp[i] = (dp[i] + ((100000 - b[n - 1]) % MOD)) % MOD;
+        }
+        else{
+            if (b[i] < b[i + 1]){
+                dp[i] = dp[i + 1] % MOD;
+            }
+            else if (b[i] > b[i + 1]){
+                //a[i + 2] must be equal to b[i + 1]
+                dp[i] = ((dp_prev[i + 2] % MOD)*((1 + 2*(100000 - b[i])) % MOD)) % MOD;
+            }
+            else{
+                //b[i] == b[i + 1]
+                if (i < n - 2){
+                    dp[i] = (dp[i + 1] + (((100000 - b[i]) % MOD)*dp_great[i + 2]) % MOD) % MOD;
+                }
+                else{
+                    dp[i] = (dp[i + 1] + (((100000 - b[i]) % MOD)*((100000 - b[i + 1] + 1) % MOD)) % MOD);
+                }
+            }
+        }
+
+        //dp_prev calculation
+        if (i >= 2){
+            if (b[i - 1] < b[i])
+                dp_prev[i] = 0;
+            else if (b[i - 1] == b[i]){
+                if (i == n - 1){
+                    dp_prev[i] = (100000 - b[i] + 1) % MOD;
+                }
+                else{
+                    dp_prev[i] = dp_great[i + 1] % MOD;
+                }
+            }
+            else{
+                dp_prev[i] = dp_prev[i + 1] % MOD;
+            }
+        }
+
+        //dp_great
+        if (i >= 2){
+            if (b[i - 1] <= b[i])
+                dp_great[i] = dp[i];
+            else{
+                dp_great[i] = (dp_prev[i + 1]*((100000 - b[i - 1] + 1) % MOD)) % MOD;
+            }
+        }
+    }
+    printf("%lld\n", dp[1]);
+
+    /*for (ll i = 1; i < n - 1; i++){
+        if (b[i] < b[i + 1]){
+            //a[i] must be b[i]
+            if (a[i] == -1){
+                a[i] = b[i];
+            }
+            else{
+                //a[i] is already set
+                if (a[i] != b[i]){
+                    printf("0\n");
+                    return;
+                }
+            }
+        }
+        else if (b[i] > b[i + 1]){
+            //a[i + 2] must be equal to b[i + 1]
+            a[i + 2] = b[i];
+        }
+    }*/
+
 
 }
 
@@ -122,7 +223,7 @@ int main(){
 
 
     //for testcases, use the below format
-    /*
+    
     ll t , mcase = 1; //testcases
     scanf("%lld\n", &t);
     while(t > 0){
@@ -130,10 +231,7 @@ int main(){
     	t--;
     	mcase++;
     }
-    */
-    forllrev(i, 5, 1, 1){
-        printf("%lld\n", i);
-    }
+    
     cerr << "time taken : " << (float)clock() / CLOCKS_PER_SEC << "seconds" << "\n";
     return 0;
 }

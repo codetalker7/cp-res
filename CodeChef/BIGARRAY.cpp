@@ -1,3 +1,11 @@
+
+/*
+	 template by: codetalker7
+	 editor: sublime text 3
+	 file name: 1.cpp
+	 date created: 2021-09-15 20:01:51
+	 problem link: https://www.codechef.com/START11B/problems/BIGARRAY
+*/
 #include<iostream>
 #include<vector>
 #include<string>
@@ -74,9 +82,6 @@ const ldb PI = 3.14159265359;
 	returns an unsigned integer
 */
 #define ssz(x) (int)x.size()
-#define forll(i, start, end, step) for(ll i = start; i <= end; i += step)
-#define forllrev(i, start, end, step) for(ll i = start; i >= end; i -= step)
-#define fortype(type, i, start, end, step) for(type i = start; i != end; i += step)
 
 //some useful algos
 template <class T> T mceil(T a, T b){return (a % b == 0) ? a/b : a/b + 1;}
@@ -89,7 +94,18 @@ template <class T> pair<T,T> log_base_2(T n){T temp = 1 , k = 0; while(temp <= n
 //define global variables here
 
 void solve(ll mcase){
+    ll n, s;
+    scanf("%lld %lld", &n, &s);
 
+    ll i = n*(n + 1)/2 - s;
+
+    if (1 <= i AND i <= n){
+        printf("%lld\n", i);
+        return;
+    }
+    else{
+        printf("-1\n");
+    }
 }
 
 //main function
@@ -122,7 +138,7 @@ int main(){
 
 
     //for testcases, use the below format
-    /*
+    
     ll t , mcase = 1; //testcases
     scanf("%lld\n", &t);
     while(t > 0){
@@ -130,10 +146,7 @@ int main(){
     	t--;
     	mcase++;
     }
-    */
-    forllrev(i, 5, 1, 1){
-        printf("%lld\n", i);
-    }
+    
     cerr << "time taken : " << (float)clock() / CLOCKS_PER_SEC << "seconds" << "\n";
     return 0;
 }

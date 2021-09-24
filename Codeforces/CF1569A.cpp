@@ -1,3 +1,11 @@
+
+/*
+	 template by: codetalker7
+	 editor: sublime text 3
+	 file name: 1.cpp
+	 date created: 2021-09-14 20:40:36
+	 problem link: https://codeforces.com/contest/1569/problem/A
+*/
 #include<iostream>
 #include<vector>
 #include<string>
@@ -74,9 +82,6 @@ const ldb PI = 3.14159265359;
 	returns an unsigned integer
 */
 #define ssz(x) (int)x.size()
-#define forll(i, start, end, step) for(ll i = start; i <= end; i += step)
-#define forllrev(i, start, end, step) for(ll i = start; i >= end; i -= step)
-#define fortype(type, i, start, end, step) for(type i = start; i != end; i += step)
 
 //some useful algos
 template <class T> T mceil(T a, T b){return (a % b == 0) ? a/b : a/b + 1;}
@@ -89,7 +94,38 @@ template <class T> pair<T,T> log_base_2(T n){T temp = 1 , k = 0; while(temp <= n
 //define global variables here
 
 void solve(ll mcase){
+    ll n;
+    scanf("%lld", &n);
 
+    char s[51];
+    scanf("%s", s);
+
+    ll prefa[51], prefb[51];
+    prefa[0] = 0, prefb[0] = 0;
+
+    for (ll i = 1; i <= n; i++){
+        if (s[i - 1] == 'a'){
+            prefa[i] = 1 + prefa[i - 1];
+            prefb[i] = prefb[i - 1];
+        }
+        else{
+            prefa[i] = prefa[i - 1];
+            prefb[i] = 1 + prefb[i - 1];
+        }
+    }
+
+    //try each pair
+    ll l = -1, r = -1;
+    for (ll i = 1; i <= n; i++){
+        for (ll j = i + 1; j <= n; j++){
+            //number of a's in [i, j]
+            if (prefa[j] - prefa[i - 1] == prefb[j] - prefb[i - 1]){
+                l = i;
+                r = j;
+            }
+        }
+    }
+    printf("%lld %lld\n", l, r);
 }
 
 //main function
@@ -122,7 +158,7 @@ int main(){
 
 
     //for testcases, use the below format
-    /*
+    
     ll t , mcase = 1; //testcases
     scanf("%lld\n", &t);
     while(t > 0){
@@ -130,10 +166,7 @@ int main(){
     	t--;
     	mcase++;
     }
-    */
-    forllrev(i, 5, 1, 1){
-        printf("%lld\n", i);
-    }
+    
     cerr << "time taken : " << (float)clock() / CLOCKS_PER_SEC << "seconds" << "\n";
     return 0;
 }

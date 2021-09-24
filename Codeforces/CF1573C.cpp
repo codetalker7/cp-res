@@ -1,3 +1,11 @@
+
+/*
+	 template by: codetalker7
+	 editor: sublime text 3
+	 file name: CF1573C.cpp
+	 date created: 2021-09-22 22:06:40
+	 problem link: 
+*/
 #include<iostream>
 #include<vector>
 #include<string>
@@ -75,7 +83,6 @@ const ldb PI = 3.14159265359;
 */
 #define ssz(x) (int)x.size()
 #define forll(i, start, end, step) for(ll i = start; i <= end; i += step)
-#define forllrev(i, start, end, step) for(ll i = start; i >= end; i -= step)
 #define fortype(type, i, start, end, step) for(type i = start; i != end; i += step)
 
 //some useful algos
@@ -87,9 +94,80 @@ template <class T> T modinv (T a , T m , T &x , T &y){T g = extgcd(a , m , x , y
 template <class T> T signed_floor(T a , T b){if (a >= 0 && b >= 0) return a/b; else if (a < 0 & b < 0) return (-a)/(-b); else if (a < 0 & b >= 0){if (a % b == 0) return -((-a)/b); else return -((-a)/b) - 1;} else if (a >= 0 && b < 0){if(a % b == 0) return -(a/(-b)); else return -(a/(-b)) - 1;}}
 template <class T> pair<T,T> log_base_2(T n){T temp = 1 , k = 0; while(temp <= n){temp <<= 1; k++;} temp >>= 1; k--; return {k , temp};}
 //define global variables here
+vector <pair<ll, ll> > blank;
+vector <vector <pair<ll, ll> > > adj;
+ll color[200000 + 1];
+ll readings[200000 + 1];
+
+ll dfs(ll v){
+    ll cycle = 0;
+    color[v] = 1;
+
+    if (ssz(adj[v]) == 0){
+        color[v] = 2;
+        readings[v] = 0;
+        return 0;
+    }
+
+    for(pair<ll, ll> p : adj[v]){
+        ll u = p.first, w = p.second;
+        if (color[u] == 0){
+            cycle = cycle | dfs(u);
+        }
+        else if (color[u] == 1){
+            cycle = 1;
+        }
+        readings[v] = max(readings[v], readings[u] + w);
+    } 
+
+    color[v] = 2;
+    return cycle;
+}
+
 
 void solve(ll mcase){
+    ll n;
+    scanf("%lld", &n);
 
+    adj.assign(n + 1, blank);
+    memset(color, (ll)0, sizeof(ll)*(n + 1));
+    memset(readings, (ll)0, sizeof(ll)*(n + 1));
+
+    forll(i, 1, n, 1){
+        ll ki;
+        scanf("%lld", &ki);
+
+        forll(j, 1, ki, 1){
+            ll ai;
+            scanf("%lld", &ai);
+
+            if (ai > i){
+                adj[i].push_back({ai, 1});
+            }
+            else{
+                adj[i].push_back({ai, 0});
+            }
+        }
+    }
+
+    ll isCyclic = 0;
+    forll(i, 1, n, 1){
+        if (color[i] == 0){
+            isCyclic = isCyclic | dfs(i); 
+        }
+    }
+
+    if (isCyclic){
+        printf("-1\n");
+        return;
+    }
+
+    ll ans = -INF;
+    forll(i, 1, n, 1){
+        ans = max(readings[i], ans);
+    }
+
+    printf("%lld\n", ans + 1);
 }
 
 //main function
@@ -122,7 +200,7 @@ int main(){
 
 
     //for testcases, use the below format
-    /*
+    
     ll t , mcase = 1; //testcases
     scanf("%lld\n", &t);
     while(t > 0){
@@ -130,10 +208,7 @@ int main(){
     	t--;
     	mcase++;
     }
-    */
-    forllrev(i, 5, 1, 1){
-        printf("%lld\n", i);
-    }
+    
     cerr << "time taken : " << (float)clock() / CLOCKS_PER_SEC << "seconds" << "\n";
     return 0;
 }

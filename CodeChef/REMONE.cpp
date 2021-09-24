@@ -1,3 +1,11 @@
+
+/*
+	 template by: codetalker7
+	 editor: sublime text 3
+	 file name: REMONE.cpp
+	 date created: 2021-09-14 01:25:28
+	 problem link: https://www.codechef.com/START10B/problems/REMONE
+*/
 #include<iostream>
 #include<vector>
 #include<string>
@@ -74,9 +82,6 @@ const ldb PI = 3.14159265359;
 	returns an unsigned integer
 */
 #define ssz(x) (int)x.size()
-#define forll(i, start, end, step) for(ll i = start; i <= end; i += step)
-#define forllrev(i, start, end, step) for(ll i = start; i >= end; i -= step)
-#define fortype(type, i, start, end, step) for(type i = start; i != end; i += step)
 
 //some useful algos
 template <class T> T mceil(T a, T b){return (a % b == 0) ? a/b : a/b + 1;}
@@ -87,9 +92,75 @@ template <class T> T modinv (T a , T m , T &x , T &y){T g = extgcd(a , m , x , y
 template <class T> T signed_floor(T a , T b){if (a >= 0 && b >= 0) return a/b; else if (a < 0 & b < 0) return (-a)/(-b); else if (a < 0 & b >= 0){if (a % b == 0) return -((-a)/b); else return -((-a)/b) - 1;} else if (a >= 0 && b < 0){if(a % b == 0) return -(a/(-b)); else return -(a/(-b)) - 1;}}
 template <class T> pair<T,T> log_base_2(T n){T temp = 1 , k = 0; while(temp <= n){temp <<= 1; k++;} temp >>= 1; k--; return {k , temp};}
 //define global variables here
+ll a[100000 + 1];
+ll b[100000 + 1];
 
 void solve(ll mcase){
+    ll n;
+    scanf("%lld", &n);
 
+    for (ll i = 1; i <= n; i++)
+        scanf("%lld", &a[i]);
+
+    for (ll i = 1; i <= n - 1; i++){
+        scanf("%lld", &b[i]);
+    }
+
+    //sort the two arrays
+    sort(a + 1, a + n + 1);
+    sort(b + 1, b + n);
+
+    ll X = INF;
+
+    //try from 2 first
+    ll flag = 1, diff = b[1] - a[2];
+    if (diff <= 0){
+        flag = 0;
+    }
+    else{
+        for (ll i = 2; i <= n - 1; i++){
+            if (b[i] - a[i + 1] != diff){
+                flag = 0;
+                break;
+            }
+        }
+        if (flag == 1){
+            X = min(X, diff);
+        }
+    }
+
+    //else, X = b[1] - a[1]
+    //have to verify that this X works
+    ll flag2 = 1;
+
+    if (b[1] - a[1] > 0){
+        //try X = b[1] - a[1]
+        ll works_thus_far = 1;
+        for (ll i = 2; i <= n - 1; i++){
+            if (works_thus_far){
+                if (b[i] - a[i] == b[1] - a[1]){
+                    continue;
+                }
+                else{
+                    //unset works_thus_far, start over 
+                    //from current index
+                    works_thus_far = 0;
+                    i--;
+                }
+            }
+            else{
+                if (b[i] - a[i + 1] == b[1] - a[1])
+                    continue;
+                else{
+                    flag2 = 0;
+                    break;
+                }
+            }
+        }
+        if (flag2)
+            X = min(X, b[1] - a[1]);
+    }
+    printf("%lld\n", X);
 }
 
 //main function
@@ -122,7 +193,7 @@ int main(){
 
 
     //for testcases, use the below format
-    /*
+    
     ll t , mcase = 1; //testcases
     scanf("%lld\n", &t);
     while(t > 0){
@@ -130,10 +201,7 @@ int main(){
     	t--;
     	mcase++;
     }
-    */
-    forllrev(i, 5, 1, 1){
-        printf("%lld\n", i);
-    }
+    
     cerr << "time taken : " << (float)clock() / CLOCKS_PER_SEC << "seconds" << "\n";
     return 0;
 }

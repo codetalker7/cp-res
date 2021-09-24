@@ -1,3 +1,11 @@
+
+/*
+	 template by: codetalker7
+	 editor: sublime text 3
+	 file name: 2.cpp
+	 date created: 2021-09-14 20:46:10
+	 problem link: https://codeforces.com/contest/1569/problem/B
+*/
 #include<iostream>
 #include<vector>
 #include<string>
@@ -74,9 +82,6 @@ const ldb PI = 3.14159265359;
 	returns an unsigned integer
 */
 #define ssz(x) (int)x.size()
-#define forll(i, start, end, step) for(ll i = start; i <= end; i += step)
-#define forllrev(i, start, end, step) for(ll i = start; i >= end; i -= step)
-#define fortype(type, i, start, end, step) for(type i = start; i != end; i += step)
 
 //some useful algos
 template <class T> T mceil(T a, T b){return (a % b == 0) ? a/b : a/b + 1;}
@@ -89,7 +94,62 @@ template <class T> pair<T,T> log_base_2(T n){T temp = 1 , k = 0; while(temp <= n
 //define global variables here
 
 void solve(ll mcase){
+    ll n;
+    scanf("%lld", &n);
 
+    char final_matrix[51][51];
+    //initialise final_matrix
+    for (ll i = 1; i <= n; i++){
+        for (ll j = 1; j <= n; j++){
+            if (i == j){
+                final_matrix[i][i] = 'X';
+            }
+            else{
+                final_matrix[i][j] = '?';   
+            }
+        }
+    }
+
+    char s[51];
+    scanf("%s", s);
+    
+    //get those vertices which want to win atleast 1
+    vll win;
+    for (ll i = 0; i < n; i++){
+        if (s[i] == '2')
+            win.push_back(i + 1);
+    }
+
+    //if 1 <= size of win <= 2, abort
+    if (ssz(win) <= 2 AND ssz(win) >= 1){
+        printf("NO\n");
+        return;
+    }
+
+    //otherwise print a yes
+    printf("YES\n");
+
+    for (ll i = 0; i < ssz(win); i++){
+        if (i < ssz(win) - 1){
+            //make i win against i + 1
+            final_matrix[win[i]][win[i + 1]] = '+';
+            final_matrix[win[i + 1]][win[i]] = '-';
+        }
+        else{
+            final_matrix[win[i]][win[0]] = '+';
+            final_matrix[win[0]][win[i]] = '-';
+        }
+    }
+
+    //fill the rest of the matrix with =
+    for (ll i = 1; i <= n; i++){
+        for (ll j = 1; j <= n; j++){
+            if(final_matrix[i][j] == '?')
+                final_matrix[i][j] = '=';
+            printf("%c", final_matrix[i][j]);
+        }
+        printf("\n");
+    }
 }
 
 //main function
@@ -122,7 +182,7 @@ int main(){
 
 
     //for testcases, use the below format
-    /*
+    
     ll t , mcase = 1; //testcases
     scanf("%lld\n", &t);
     while(t > 0){
@@ -130,10 +190,7 @@ int main(){
     	t--;
     	mcase++;
     }
-    */
-    forllrev(i, 5, 1, 1){
-        printf("%lld\n", i);
-    }
+    
     cerr << "time taken : " << (float)clock() / CLOCKS_PER_SEC << "seconds" << "\n";
     return 0;
 }

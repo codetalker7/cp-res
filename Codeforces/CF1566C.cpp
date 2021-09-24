@@ -1,3 +1,11 @@
+
+/*
+	 template by: codetalker7
+	 editor: sublime text 3
+	 file name: 3.cpp
+	 date created: 2021-09-12 20:34:20
+	 problem link: https://codeforces.com/contest/1566/problem/C
+*/
 #include<iostream>
 #include<vector>
 #include<string>
@@ -74,9 +82,6 @@ const ldb PI = 3.14159265359;
 	returns an unsigned integer
 */
 #define ssz(x) (int)x.size()
-#define forll(i, start, end, step) for(ll i = start; i <= end; i += step)
-#define forllrev(i, start, end, step) for(ll i = start; i >= end; i -= step)
-#define fortype(type, i, start, end, step) for(type i = start; i != end; i += step)
 
 //some useful algos
 template <class T> T mceil(T a, T b){return (a % b == 0) ? a/b : a/b + 1;}
@@ -89,8 +94,94 @@ template <class T> pair<T,T> log_base_2(T n){T temp = 1 , k = 0; while(temp <= n
 //define global variables here
 
 void solve(ll mcase){
+    ll n;
+    cin >> n;
 
-}
+    string row1, row2;
+    cin >> row1 >> row2;
+
+    vll first0(n, 0);
+    vll first1(n, 0);   
+    vll dp(n, 0);
+
+    //setting first0 and first1;   
+    for (ll i = n - 1; i >= 0; i--){
+        if (i == n - 1){
+            //setting first0
+            if (row1[i] == '0' OR row2[i] == '0')
+                first0[i] = i;
+            else
+                first0[i] = INF;
+
+            //setting first1
+            if (row1[i] == '1' OR row2[i] == '1')
+                first1[i] = i;
+            else
+                first1[i] = INF;
+        }
+        else{
+            //setting first0
+            if (row1[i] == '0' OR row2[i] == '0')
+                first0[i] = i;
+            else
+                first0[i] = first0[i + 1];
+
+            //setting first1
+            if (row1[i] == '1' OR row2[i] == '1')
+                first1[i] = i;
+            else
+                first1[i] = first1[i + 1];
+        }
+    }
+
+    //calculating dp
+    for (ll i = n - 1; i >= 0; i--){
+        if (i == n - 1){
+            if (row1[i] != row2[i])
+                dp[i] = 2;
+            else{
+                if (row1[i] == '1')
+                    dp[i] = 0;
+                else
+                    dp[i] = 1;
+            }
+        }
+        else{
+            if (row1[i] != row2[i]){
+                dp[i] = 2 + dp[i + 1];
+            }
+            else{
+                if (row1[i] == '1'){
+                    //leave this column as is
+                    dp[i] = dp[i + 1];
+
+                    //combine it with first 0
+                    if (first0[i] != INF){
+                        if (first0[i] == n - 1)
+                            dp[i] = max(dp[i], (ll)2);
+                        else{
+                            dp[i] = max(dp[i], 2 + dp[first0[i] + 1]);
+                        }
+                    }
+                }
+                else{
+                    //leave this column as is
+                    dp[i] = 1 + dp[i + 1];
+
+                    //combine it with first 1
+                    if (first1[i] != INF){
+                        if (first1[i] == n - 1)
+                            dp[i] = max(dp[i], (ll)2);
+                        else{
+                            dp[i] = max(dp[i], 2 + dp[first1[i] + 1]);
+                        }
+                    }
+                }
+            }
+        }
+    }   
+    printf("%lld\n", dp[0]);
+}   
 
 //main function
 int main(){
@@ -122,18 +213,15 @@ int main(){
 
 
     //for testcases, use the below format
-    /*
+    
     ll t , mcase = 1; //testcases
-    scanf("%lld\n", &t);
+    cin >> t;
     while(t > 0){
     	solve(mcase); //write a separate solve function
     	t--;
     	mcase++;
     }
-    */
-    forllrev(i, 5, 1, 1){
-        printf("%lld\n", i);
-    }
+    
     cerr << "time taken : " << (float)clock() / CLOCKS_PER_SEC << "seconds" << "\n";
     return 0;
 }

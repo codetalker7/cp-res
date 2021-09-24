@@ -1,3 +1,11 @@
+
+/*
+	 template by: codetalker7
+	 editor: sublime text 3
+	 file name: 2.cpp
+	 date created: 2021-09-09 19:27:19
+	 problem link: 
+*/
 #include<iostream>
 #include<vector>
 #include<string>
@@ -74,9 +82,6 @@ const ldb PI = 3.14159265359;
 	returns an unsigned integer
 */
 #define ssz(x) (int)x.size()
-#define forll(i, start, end, step) for(ll i = start; i <= end; i += step)
-#define forllrev(i, start, end, step) for(ll i = start; i >= end; i -= step)
-#define fortype(type, i, start, end, step) for(type i = start; i != end; i += step)
 
 //some useful algos
 template <class T> T mceil(T a, T b){return (a % b == 0) ? a/b : a/b + 1;}
@@ -87,9 +92,33 @@ template <class T> T modinv (T a , T m , T &x , T &y){T g = extgcd(a , m , x , y
 template <class T> T signed_floor(T a , T b){if (a >= 0 && b >= 0) return a/b; else if (a < 0 & b < 0) return (-a)/(-b); else if (a < 0 & b >= 0){if (a % b == 0) return -((-a)/b); else return -((-a)/b) - 1;} else if (a >= 0 && b < 0){if(a % b == 0) return -(a/(-b)); else return -(a/(-b)) - 1;}}
 template <class T> pair<T,T> log_base_2(T n){T temp = 1 , k = 0; while(temp <= n){temp <<= 1; k++;} temp >>= 1; k--; return {k , temp};}
 //define global variables here
+ll xors[300000 + 10];
+void preprocess(){
+    xors[0] = 0;
+    for (ll i = 1; i <= 300000; i++){
+        xors[i] = xors[i - 1] ^ i;
+    }
+}
 
 void solve(ll mcase){
+    ll a, b;
+    scanf("%lld %lld", &a, &b);
 
+    //take the xor of 0, 1,..., a - 1
+    ll x = xors[a - 1];
+
+    if (x == b){
+        printf("%lld\n", a);
+        return;
+    }
+    
+    if ((b ^ x) != a){
+        printf("%lld\n", a + 1);
+        return;
+    }
+    
+    printf("%lld\n", a + 2);  
+    return; 
 }
 
 //main function
@@ -122,7 +151,7 @@ int main(){
 
 
     //for testcases, use the below format
-    /*
+    preprocess();
     ll t , mcase = 1; //testcases
     scanf("%lld\n", &t);
     while(t > 0){
@@ -130,10 +159,7 @@ int main(){
     	t--;
     	mcase++;
     }
-    */
-    forllrev(i, 5, 1, 1){
-        printf("%lld\n", i);
-    }
+    
     cerr << "time taken : " << (float)clock() / CLOCKS_PER_SEC << "seconds" << "\n";
     return 0;
 }

@@ -1,3 +1,11 @@
+
+/*
+	 template by: codetalker7
+	 editor: sublime text 3
+	 file name: 2.cpp
+	 date created: 2021-09-12 20:19:00
+	 problem link: https://codeforces.com/contest/1566/problem/B
+*/
 #include<iostream>
 #include<vector>
 #include<string>
@@ -74,9 +82,6 @@ const ldb PI = 3.14159265359;
 	returns an unsigned integer
 */
 #define ssz(x) (int)x.size()
-#define forll(i, start, end, step) for(ll i = start; i <= end; i += step)
-#define forllrev(i, start, end, step) for(ll i = start; i >= end; i -= step)
-#define fortype(type, i, start, end, step) for(type i = start; i != end; i += step)
 
 //some useful algos
 template <class T> T mceil(T a, T b){return (a % b == 0) ? a/b : a/b + 1;}
@@ -89,7 +94,43 @@ template <class T> pair<T,T> log_base_2(T n){T temp = 1 , k = 0; while(temp <= n
 //define global variables here
 
 void solve(ll mcase){
+    string s;
+    cin >> s;
 
+    ll n = ssz(s);
+
+    //is mex 2?
+    ll flag1 = 0, flag0 = 0;
+    for (ll i = 0; i < n; i++){
+        if (s[i] == '0')
+            flag0 = 1;
+        if (s[i] == '1')
+            flag1 = 1;
+    }
+
+    if (flag0 == 0){
+        printf("%lld\n", (ll)0);
+        return;
+    }
+    if (flag1 == 0){
+        printf("%lld\n", (ll)1);
+        return;
+    }
+
+    ll ans = 2, sum = 0;
+    ll curr = 0;
+    for (ll i = 0; i < n; i++){
+        if (s[i] == '1'){
+            curr = 0;
+            continue;
+        }
+        if (curr == 0 && s[i] == '0'){
+            sum++;
+            curr = 1;
+        }   
+    }
+    ans = min(ans, sum);
+    printf("%lld\n", ans);
 }
 
 //main function
@@ -122,18 +163,15 @@ int main(){
 
 
     //for testcases, use the below format
-    /*
+    
     ll t , mcase = 1; //testcases
-    scanf("%lld\n", &t);
+    cin >> t;
     while(t > 0){
     	solve(mcase); //write a separate solve function
     	t--;
     	mcase++;
     }
-    */
-    forllrev(i, 5, 1, 1){
-        printf("%lld\n", i);
-    }
+    
     cerr << "time taken : " << (float)clock() / CLOCKS_PER_SEC << "seconds" << "\n";
     return 0;
 }
