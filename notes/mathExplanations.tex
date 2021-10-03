@@ -166,4 +166,243 @@ To do this, we compute the values $\{FT[b_0], FT[b_1],...,FT[b_k]\}$. Here, $b_0
 Let's see how this structure handles update queries. Suppose we want to update the element at index $k$. So, we want to change $A[k]$ to some new value. So, we will have to update $FT[i]$ for all those indices $i$ which include the index $k$ in their summation. In other words, we want to update all $i$ such that 
 $$i - LS(i) + 1 \le k \le i$$
 Then, by doing casework on $LS(i)$, we see that all such $i$ are obtained by the sequence $\{c_0,...,c_k\}$, where $c_0 = k$ and $c_{i + 1} = c_i + LS(k)$. In other words, starting from $k$, we add least significant digits \textcolor{red}{(this is one of the beautiful connections between these operations)}. So again, we only need to update $O(\log n)$ many values. 
-\end{document}
+
+\section{Flow Networks}
+\subsection{Definitions and the Set up} In this subsection, we will formally define flow networks and prove some of their useful properties. 
+
+\begin{Def}
+	A \textit{flow network} is a graph $G = (V, E)$ with two distinguished vertices $s$ and $t$, called the \textit{source} and \textit{sink} vertices respectively. Each edge $(u, v)\in E$ has a non-negative capacity, denoted by $C(u, v)$. If $(u, v)\notin E$, we say $C(u, v) = 0$. 
+\end{Def}
+
+\begin{Def}
+	A \textit{flow} on a flow network $G$ is a function $f:V\times V\to \textbf{R}$ that satisfies the following constraints. 
+	\begin{enumerate}
+		\item For all $u, v\in V$, $0\le f(u, v)\le c(u, v)$. This is called the \textit{capacity constraint}. 
+		\item For all $u, v\in V$, $f(u, v) = -f(v , u)$. This is called the \textit{skew symmetry constraint}.  
+		\item For all $u\in V - \{s, t\}$, we have 
+		$$\sum_{u\in V}f(u, v) = 0$$
+		This is the so called \textit{flow conservation law}. 
+	\end{enumerate}
+	Also, the following assumptions are made about the network $G$.
+	\begin{itemize}
+		\item There are no self-loops in $G$, i.e $f(u, u) = 0$ for every $u\in V$.
+		\item There are no \textit{two-cycles} in $G$; formally, there is no pair $u, v$ of vertices in $G$ such that both $(u, v)$ and $(v, u)$ is an edge in $G$. Note that this is \textit{enforced} by property (2) above, since we are assuming that flows along edges are non-negative. The reason to make this assumption is for \textbf{(i)} simplification and \textbf{(ii)} networks $G$ which have two-cycles can be converted to an equivalent network $G'$ which have no two-cycles; intuitively, this is achieved by adding a new vertex and creating a three cycle. Here, \textit{equivalence} of networks means that the \textit{max-flow} (which we will define in a moment) in the two networks will be the same.
+	\end{itemize}
+\end{Def}
+
+\newcommand{\netflow}[2]{f(#1, #2)}
+\newcommand{\netflowExpandSingle}[2]{\sum_{u\in #2} f(#1, u)}
+\newcommand{\netflowExpand}[2]{\sum_{u\in #1, v\in #2} f(u, v)}
+
+\begin{Def}
+	Let $A, B$ be any arbitrary subsets of $V$. Define the quantity $\netflow{A}{B}$ as follows. 
+	$$\netflow{A}{B} := \sum_{u\in A, v\in B}f(u, v)$$
+	We call this quantity the \textit{net flow} going from $A$ to $B$. The reasoning behind this naming will be proved later. 
+\end{Def}
+
+\newcommand{\flowValue}[1]{|#1|}
+\begin{Def}
+	The \textit{value} of a flow $f$, denoted by $\flowValue{f}$, is defined to be 
+	$$\flowValue{f} = \sum_{v\in V} f(s, v) = \netflow{s}{V}$$
+	Informally, this represents the net flow coming out of $s$, i.e the flow coming out of $s$ minus the flow going into $s$. This is a good definition of \textit{net flow}, as it will turn out that the net flow coming out of $s$ is equal to the net flow going into $t$. 
+\end{Def}
+
+\begin{Prop}
+	Let $f$ be any flow, and let $X, Y$ and $Z$ be arbitrary subsets of $V$. Then the following hold. 
+	\begin{enumerate}
+		\item $\netflow{X}{X} = 0$.
+		\item $\netflow{X}{Y} = -\netflow{Y}{X}$.
+		\item $\netflow{X\cup Y}{Z} = \netflow{X}{Z} + \netflow{Y}{Z}$ provided $X\cap Y = \phi$. 
+	\end{enumerate}
+\end{Prop}
+\begin{proof}
+	Let us begin with (1). There is nothing more to this than simply expanding things out. 
+	\begin{align*}
+		f(X, X) &= \sum_{u\in X, v\in X}f(u, v)\\
+		&= \sum_{u\in X}f(x, x) + \sum_{u\in X, v\in X, u \ne v}f(u , v)\\
+		&= 0 + \sum_{u\ne v} f(u, v) + f(v , u)\\
+		&= 0 + \sum_{u\ne v} f(u, v) - f(u , v)\\
+		&= 0
+	\end{align*}
+	Property (2) is immediate by the definition of net flow. Property (3) is also trivial and follows from the definition.
+\end{proof}
+
+\begin{Th}
+	$|f| = \netflow{V}{t}$. Informally, the flow coming out of the source is equal to the flow going into the sink.
+\end{Th}
+\begin{proof}
+	To begin with, consider the sets $\{s\}$ and $V - \{s\}$, which are clearly disjoint. So, 
+	$$\netflow{V}{V} = \netflow{s}{V} + \netflow{V - \{s\}}{V}$$
+	The left hand side is clearly zero. So, we get 
+	$$\netflow{s}{V} = -\netflow{V - \{s\}}{V} = \netflow{V}{V - \{s\}}$$
+	Now again, consider the sets $\{t\}$ and $V - \{s,t\}$, which are clearly disjoint. So, we have the following. 
+	\begin{align*}
+		\netflow{V}{V - \{s\}} &= \netflow{V}{t} + \netflow{V}{V - \{s, t\}}\\
+		&= \netflow{V}{t} - \netflow{V - \{s, t\}}{V}\\
+		&= \netflow{V}{t} - \netflowExpand{V - \{s, t\}}{V}\\
+		&= f(V, t) + 0
+	\end{align*}
+	where in the last step, we have used flow conservation law. 
+\end{proof}
+
+\newcommand{\cut}[2]{(#1, #2)}
+\newcommand{\capacity}[2]{C(#1, #2)}
+\newcommand{\capacityExpand}[2]{\sum_{u\in #1, v\in #2}c(u, v)}
+
+\begin{Def}
+	For a flow network $G$, an $\cut{S}{T}$ \textit{cut} of a flow network $G$ is a partition of $V$ such that $s\in S$ and $t\in T$. If $f$ is a flow of $G$, then the flow across the cut $\netflow{S}{T}$. The \textit{capacity} of a cut, denoted by $\capacity{S}{T}$, is defined as follows.
+	$$\capacity{S}{T} := \capacityExpand{S}{T}$$
+	Clearly, the flow across a cut cannot exceed the capacity of the cut, i.e 
+	$$\netflow{S}{T}\le \capacity{S}{T}$$
+\end{Def}
+
+\subsection{Flow value with Cuts} We begin by proving a simple lemma. 
+\begin{Lemma}
+	For any flow $f$ and any cut $\cut{S}{T}$, we have 
+	$$|f| = \netflow{S}{T}$$
+	Informally, this is true because the source is on one side of the cut, while the sink is on the other side. 
+\end{Lemma}
+\begin{proof}
+	The proof is straightforward. 
+	\begin{align*}
+		\netflow{S}{T} &= \netflow{S}{V} - \netflow{S}{S}\\
+		&= \netflow{S}{V} + 0\\
+		&= \netflow{s}{V} + \netflow{S - \{s\}}{V}\\
+		&= |f|
+	\end{align*}
+	as the second value is zero by conservation of flow. 
+\end{proof}
+
+\begin{Cor}
+	\label{flowUpperBound}
+	If $\cut{S}{T}$ is any cut, then $|f|\le \capacity{S}{T}$. Hence, $|f|$ is less than the minimum capacity over all the cuts. 
+\end{Cor}
+
+\newcommand{\residualCap}[2]{c_f(#1, #2)}
+\newcommand{\residualCapPath}[1]{c_f(#1)}
+\subsection{Residual Networks} Let $G(V, E)$ be a flow network. For any pair of vertices $(u, v)$, define the \textit{residual capacity} $\residualCap{u}{v}$ as
+$$\residualCap{u}{v} := c(u, v) - \netflow{u}{v}$$
+The \textit{residual network} is the graph $G_f(V, E_f)$, where $E_f$ is defined to be the set of all edges with \textit{positive} residual capacity. 
+
+\begin{Def}
+	An \textit{augmenting path} is any path from $s$ to $t$ in the residual network $G_f$. The \textit{residual capacity} of an augmenting path is the minimum value of any edge along the path. Formally, 
+	$$\residualCapPath{p} := \underset{(u, v)\in p}{\text{min}}\residualCap{u}{v}$$
+\end{Def}
+
+\subsection{How to augment a flow?} Suppose we are given a flow $f$, and suppose we have an augmenting path $p$ in residual network. The question is: using this augmenting path, can we somehow increase the flow? The answer is yes, and this is what we will prove in this section.
+
+Define a flow $f_p$ on the network $G_f$ as follows. 
+$$f_p(u, v) = 
+	\begin{cases}
+		\residualCapPath{p}\quad\quad &, \quad\text{if $(u, v)\in p$}\\
+		0\quad\quad &, \quad\text{otherwise}
+	\end{cases}
+$$
+That $f_p$ is really a flow on $G_f$ is not hard to see. Intuitively, we are just sending in the maximum possible flow that we can send along the path $p$, and nowhere else. 
+
+Next, we define a flow $f + f_p$ on the original network $G$ as follows. 
+$$(f + f_p)(u, v) = 
+	\begin{cases}
+		\netflow{u}{v} + f_p(u, v) - f_p(v, u)\quad\quad &,\quad\text{if $(u, v)\in E$}\\
+		0\quad\quad &,\quad \text{otherwise}
+	\end{cases}
+$$
+Try to prove that this is indeed a flow in the original network. Infact, it is also true that 
+$$|f + f_p| = |f| + |f_p|$$
+and hence this increments are flow. 
+
+\subsection{Max-Flow Min-Cut Theorem}  In this section, we will prove a very important theorem, which will enable us to devise a max flow algorithm.
+
+\begin{Th}[Max-Flow Min-Cut Theorem]
+	The following are equivalent. 
+	\begin{enumerate}
+		\item $|f| = \capacity{S}{T}$ for some cut $\cut{S}{T}$. 
+		\item $f$ is a maximum flow. 
+		\item $f$ admits no augmenting paths. 
+	\end{enumerate}
+\end{Th}
+\begin{proof}
+	First, let us show that $(1)\implies(2)$. But this is immediate from \textbf{Corollary} \ref{flowUpperBound}; since $|f| = \capacity{S}{T}$ for some cut $\cut{S}{T}$, $f$ has to be a max flow, because it can't be increased. This proves the claim. 
+	
+	Let us now consider $(2)\implies(3)$. Suppose $f$ is a max flow. If $f$ admits an augmenting path $p$, then clearly we can increase $f$ by $\residualCapPath{p}$ and get a strictly greater flow. So, there cannot be any augmenting paths. 
+	
+	Finally, let us prove $(3)\implies (1)$, and this will be a little more involved, but the argument is intuitive enough. Suppose $f$ admits no augmenting paths, i.e in the residual network $G_f$, there are no paths from $s$ to $t$. With this in mind, define the set $S$ as follows. 
+	$$S := \{u\in V\,\,|\,\,\text{$u$ is reachable from $s$ in $G_f$}\}$$
+	Then define $T := V - S$, and clearly $\cut{S}{T}$ is an $s-t$ cut. We will show that 
+	$$\netflow{S}{T} = \capacity{S}{T}$$
+	and as above in $(1)\implies (2)$, this will finish our proof. The argument is intuitive; suppose $u\in S$ and $v\in T$. Clearly, the edge $(u, v)$ cannot be a part of the residual network $G_f$, by the very definition of the cut. This means that $\residualCap{u}{v} = 0$, which in turn means 
+	$$\netflow{u}{v} = c(u, v)$$
+	Clearly, by the definition of $\netflow{S}{T}$ and $\capacity{S}{T}$, this means that 
+	$$\netflow{S}{T} = \capacity{S}{T}$$
+	and hence the proof is complete. 
+\end{proof}
+
+\subsection{Edmonds-Karp Algorithm} The \textit{Edmonds-Karp} algorithm is very similar to the naive \textit{Ford-Fulkerson} algorithm, but there is a key difference in how the Edmonds-Karp algorithm finds the augmenting path. In this section, we will analyse the Edmonds-Karp algorithm, and if not specified, the flows/capacities will be assumed to be integral. 
+
+The Edmonds-Karp algorithm can be described as follows. 
+\begin{enumerate}
+	\item Given $G$, compute $G_f$, the residual network.
+	\item Find a shortest path from $s$ to $t$ in the residual network; this can be done using BFS. Here by \textit{shortest} we mean that each edge was weight $1$. 
+	\item Having found a shortest path, augment the flow on that path. Get a new flow.
+	\item Repeat the algorithm from step (1). 
+\end{enumerate}
+Suppose $T$ is the number of steps for which the algorithm runs. Steps (2) and (3) take $O(E)$ time, which is trivial. So, the running time is $O(TE)$. We will now show that $T = O(VE)$. 
+
+\newcommand{\shortestResidualPath}[2]{\delta_{#1}(#2)}
+\begin{Def}
+	Given a residual network $G_f$, define $\shortestResidualPath{f}{v}$ to be the length of the shortest path from $s$ to $v$, for $v\in V$. 
+\end{Def}
+
+\begin{Lemma}[Monotonic]
+	$\shortestResidualPath{f}{v}$ does not decrease during the algorithm execution, for all $v\in V$. So, this quantity can only increase or stay the same.
+\end{Lemma}
+\begin{proof}
+	We prove this by contradiction. Suppose $f'$ is the new flow obtained from $f$ after a single step of the algorithm. Also, suppose there is some $v\in V$ such that 
+	$$\shortestResidualPath{f'}{v} < \shortestResidualPath{f}{v}$$
+	Among such violating vertices, let $\nu$ be the vertex such that $\shortestResidualPath{f'}{\nu}$ is minimum. So, there is some path $s\leadsto\nu$ in the residual graph $G_{f'}$, and suppose the path is $s\leadsto u\to\nu$, i.e $u$ is the predecessor of $\nu$ in this path. Clearly, we have 
+	$$\shortestResidualPath{f'}{\nu} = \shortestResidualPath{f'}{u} + 1$$
+	Also, by the definition of $\nu$, we have that 
+	$$\shortestResidualPath{f'}{u} + 1\ge \shortestResidualPath{f}{u} + 1$$
+	giving us the inequality 
+	$$\shortestResidualPath{f'}{\nu}\ge \shortestResidualPath{f}{u} + 1$$
+	Now, we will handle two cases. 
+	\begin{enumerate}
+		\item In the first case, suppose $(u, v)\in G_f$. In that case, by the triangle inequality of shortest paths, we have 
+		$$\shortestResidualPath{f}{u} + 1\ge \shortestResidualPath{f}{\nu}$$
+		which gives us the inequality 
+		$$\shortestResidualPath{f'}{\nu}\ge \shortestResidualPath{f}{\nu}$$
+		which is a contradiction to our assumption.
+		\item In the second case, we have $(u, \nu)\notin G_f$. Also, we clearly know that $(u, \nu)\in G_{f'}$. Clearly, this is only possible if $(\nu, u)\in G_f$ (and in fact this edge lies on the augmenting path we found to get $f'$). In this case, because Edmonds-Karp only augments shortest paths, we have 
+		$$\shortestResidualPath{f}{u} = \shortestResidualPath{f}{\nu} + 1$$
+		and this again is a contradiction to our assumption. 
+	\end{enumerate}
+\end{proof}
+
+\begin{Th}
+	The number of iterations in the Edmonds-Karp algorithm is $O(VE)$. 
+\end{Th}
+\begin{proof}
+	Let the minimum weight edge on an augmenting path be called the \textit{critical edge} of the path. We will show that each edge of $G$ can be critical atmost $O(V)$ times, and this will complete the proof. 
+	
+	Suppose the current flow is $f$, and we are augmenting a path that has critical edge $(u, v)$ (note that either $(u, v)\in E$ or $(v, u)\in E$, since residual graphs only have edges with positive flow). Suppose the new flow after augmenting the flow $f$ is $f'$. Since we are augmenting the edge $(u, v)$ of $G_f$, the new residual network $G_{f'}$ won't contain the edge $(u, v)$; to prove this, we consider the following two cases. 
+	\begin{enumerate}
+		\item In the first case, suppose $(u, v)\in E$. Here, since $(u, v)\in G_f$ and is the critical edge of the augmenting path, after augmentation, the flow on $(u, v)$ will be \textit{saturated}, i.e it will reach its full capacity. Hence, in the new residual $G_{f'}$, the edge $(u, v)$ won't be present. 
+		\item In the second case, suppose $(u, v)\notin E$. The only way $(u, v)$ can be in $G_f$ is when $(v, u)\in E$ and $\netflow{v}{u} > 0$. After augmenting this path, the new flow on the edge $(v, u)$ will become 
+		$$f'(v, u) = f(v, u) - f_p(u, v) = 0$$
+		where above $p$ is the augmenting path. So, in the new residual graph $G_{f'}$, edge $(u, v)$ won't be present.
+	\end{enumerate}
+	Since we are augmenting the edge $(u, v)$ on the flow $f$, we have 
+	$$\shortestResidualPath{v}{f} = \shortestResidualPath{u}{f} + 1$$
+	Now, suppose the edge $(u, v)$ is critical \textit{again} for some flow $f''$. Since $f'$, the flow immediately after $f$, does not contain the edge $(u, v)$, the only way for $f''$ to contain the edge $(u, v)$ again is when the edge $(v, u)$ was augmented at some point before the flow $f''$ was obtained. Suppose $f'''$ is the flow after $f$ and before $f''$ which augmented the edge $(v, u)$. So, 
+	$$\shortestResidualPath{u}{f'''} = \shortestResidualPath{v}{f'''} + 1 \ge \shortestResidualPath{v}{f} + 1 = \shortestResidualPath{u}{f} + 2$$
+	where above we have used the monotonicity of $\delta_f$. This proves that between two instances of $(u, v)$ to be a critical edge, $\shortestResidualPath{}{u}$ increases by atleast $2$. Since this value is bounded above by $|V|$, we see that each such edge can be a critical edge atmost $|V|/2 = O(V)$ times. Hence, over all edges, the number of iterations is atmost $O(VE)$, and this proves the claim. 
+\end{proof}
+
+\subsection{Bipartite Matching} We can use bipartite matchings to solve the \textit{maximum bipartite matching problem}. Suppose we have a bipartite graph $G = (V, E)$. Our goal is to find a \textit{maximum matching} on this graph. We will see how to frame this problem as a max flow problem on the graph. The algorithm is quite simple, and we now describe it.
+
+Suppose the graph is partitioned into sets $L, R$ ($L$ is the set of the vertices in the left partition, and similarly $R$ is the set of the vertices in the right partition). We create a corresponding flow network $G'$ as follows: introduce new vertices $s$ and $t$. For each $u\in L$, create a directed edge $(s, u)$. For each $v\in R$, create a directed edge $(v, t)$. Assign a capacity of $1$ to all the edges. 
+
+Then, any \textit{integer valued} flow in this graph corresponds to a matching. This is not  hard to show (try to do it as an exercise). Moreover, if we use Ford-Fulkerson on this graph, all flows obtained in the intermediate steps will be \textit{integer values}; this is the so called \textit{integrality theorem}, and this is not hard to show either (intuitively, at each step, all updates are integer valued, assuming the flow and the capacities are integers). Moreover, it is true that the max flow in this graph is equal to the cardinality of the maximum matching in the graph (again, try to prove all these facts).
+
+It follows that Ford-Fulkerson will give us the maximum matching. Note that a maximum matching can have size atmost $O(V)$, and hence Ford-Fulkerson runs in time $O(VE)$ on such a graph.  
+\end{document}  

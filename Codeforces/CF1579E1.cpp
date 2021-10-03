@@ -1,3 +1,11 @@
+
+/*
+	 template by: codetalker7
+	 editor: sublime text 3
+	 file name: 5.cpp
+	 date created: 2021-09-28 21:12:57
+	 problem link: https://codeforces.com/contest/1579/problem/E1
+*/
 #include<iostream>
 #include<vector>
 #include<string>
@@ -21,16 +29,7 @@
 #include<climits>
 #include<assert.h>
 #include<random>
-
-//for pbds
-//#include <ext/pb_ds/assoc_container.hpp> // Common file
-//#include <ext/pb_ds/tree_policy.hpp> // Including tree_order_statistics_node_update
-
-//namespaces
 using namespace std;
-
-//for pbds
-//using namespace __gnu_pbds;
 
 //debugging functions
 //var_name is used to give the variable name
@@ -62,15 +61,6 @@ using vs = vector<string>;
 using sll = set<ll>;
 using msll = multiset<ll>;
 using ldb = long double;
-
-//ordered set; to be used with pbds
-/*using ordered_set = tree<
-                        ll,
-                        null_type,
-                        less<ll>,
-                        rb_tree_tag,
-                        tree_order_statistics_node_update
-                    >;*/
 
 //constants
 const ll MOD = 1000000007;
@@ -105,9 +95,38 @@ template <class T> T modinv (T a , T m , T &x , T &y){T g = extgcd(a , m , x , y
 template <class T> T signed_floor(T a , T b){if (a >= 0 && b >= 0) return a/b; else if (a < 0 & b < 0) return (-a)/(-b); else if (a < 0 & b >= 0){if (a % b == 0) return -((-a)/b); else return -((-a)/b) - 1;} else if (a >= 0 && b < 0){if(a % b == 0) return -(a/(-b)); else return -(a/(-b)) - 1;}}
 template <class T> pair<T,T> log_base_2(T n){T temp = 1 , k = 0; while(temp <= n){temp <<= 1; k++;} temp >>= 1; k--; return {k , temp};}
 //define global variables here
+ll p[200000 + 1];
 
 void solve(ll mcase){
+    ll n;
+    scanf("%lld", &n);
 
+    forll(i, 1, n, 1){
+        scanf("%lld", &p[i]);
+    }
+
+    deque <ll> md;
+    
+    forll(i, 1, n, 1){
+        if (i == 1){
+            md.push_back(p[1]);
+        }
+        else{
+            //compare with first element
+            if (p[i] < md[0]){
+                md.push_front(p[i]);
+            }
+            else{   
+                md.push_back(p[i]);
+            }
+        }
+    }
+
+    //print
+    forll(i, 0, n - 1, 1){
+        printf("%lld ", md[i]);
+    }
+    printf("\n");
 }
 
 //main function
@@ -140,7 +159,7 @@ int main(){
 
 
     //for testcases, use the below format
-    /*
+    
     ll t , mcase = 1; //testcases
     scanf("%lld\n", &t);
     while(t > 0){
@@ -148,7 +167,7 @@ int main(){
     	t--;
     	mcase++;
     }
-    */
+    
     cerr << "time taken : " << (float)clock() / CLOCKS_PER_SEC << "seconds" << "\n";
     return 0;
 }

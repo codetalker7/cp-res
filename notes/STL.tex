@@ -395,6 +395,49 @@ Some cool examples of string parsing are given below.
     scanf("[^\n]\n"); //reads a line, without the \n character
 \end{lstlisting}
 
+
+\section{Policy Based Data Structures}
+\subsection{Reference blog} I used the following link to learn about this data structure:  \url{https://codeforces.com/blog/entry/11080}.
+
+\subsection{Order Statistics Tree} This data structure is also known as an \textit{ordered statistics tree}. For competitive programming, the best way to initialise this structure has the following template. 
+\begin{lstlisting}[language=C++]6
+	tree <
+		key_type,
+		mapped_type,
+		key_comparison_functor,
+		rb_tree_tag, //tree will be implemented as a red-black tree
+		tree_order_statistics_node_update
+	>	mytree;
+\end{lstlisting}
+Above, \verb|key_type| is the type for keys, \verb|mapped_type| is the type of the mapped values and \verb|key_comparison_functor| is the functor which will be used to compare keys; it can be defined in a very similar fashion as with \verb|priority_queue|, with a slight difference: the method \verb|operator()| of the comparison class must be declared to be \verb|const|, otherwise the compiler will complain. An example of a typical \verb|key_comparison_functor| is as follows. 
+\begin{lstlisting}[language=C++]
+	class compare{
+		public:
+			//declare method to be const
+			bool operator()(const pair<ll, ll> &a, const pair<ll, ll> &b) const{
+				//only compare based on first coordinates
+				return a.first < b.first;
+			}
+	};
+	typedef tree<
+		pair<ll, ll>,
+		null_type,
+		compare,
+		rb_tree_tag,
+		tree_order_statistics_node_update
+	> ordered set;
+
+\end{lstlisting} 
+
+If you want just a set, you can put \verb|mapped_type = null_type|. The following methods are supported.
+\begin{enumerate}
+	\item Methods supported by \verb|set|.
+	\item \verb|find_by_order(k)|: returns iterator to the \verb|k|th largest element (counting from 0). 
+	\item \verb|order_of_key(k)|: returns the number of items in the structure with key strictly less than key \verb|k|. 
+\end{enumerate}
+
+\subsection{Example Problem} To practice using this data structure, try this problem out: \url{https://codeforces.com/contest/1579/problem/E2}.
+
 \section{Random Number Generation}
 \subsection{Reference blog} Check out this reference blog to know more: \url{https://codeforces.com/blog/entry/61587}. 
 

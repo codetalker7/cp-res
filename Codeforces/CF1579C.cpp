@@ -2,9 +2,9 @@
 /*
 	 template by: codetalker7
 	 editor: sublime text 3
-	 file name: CF1543C.cpp
-	 date created: 2021-08-21 23:43:56
-	 problem link: 
+	 file name: 3.cpp
+	 date created: 2021-09-28 20:29:04
+	 problem link: https://codeforces.com/contest/1579/problem/C
 */
 #include<iostream>
 #include<vector>
@@ -82,6 +82,9 @@ const ldb PI = 3.14159265359;
 	returns an unsigned integer
 */
 #define ssz(x) (int)x.size()
+#define forll(i, start, end, step) for(ll i = start; i <= end; i += step)
+#define forllrev(i, start, end, step) for(ll i = start; i >= end; i -= step)
+#define fortype(type, i, start, end, step) for(type i = start; i != end; i += step)
 
 //some useful algos
 template <class T> T mceil(T a, T b){return (a % b == 0) ? a/b : a/b + 1;}
@@ -92,62 +95,96 @@ template <class T> T modinv (T a , T m , T &x , T &y){T g = extgcd(a , m , x , y
 template <class T> T signed_floor(T a , T b){if (a >= 0 && b >= 0) return a/b; else if (a < 0 & b < 0) return (-a)/(-b); else if (a < 0 & b >= 0){if (a % b == 0) return -((-a)/b); else return -((-a)/b) - 1;} else if (a >= 0 && b < 0){if(a % b == 0) return -(a/(-b)); else return -(a/(-b)) - 1;}}
 template <class T> pair<T,T> log_base_2(T n){T temp = 1 , k = 0; while(temp <= n){temp <<= 1; k++;} temp >>= 1; k--; return {k , temp};}
 //define global variables here
-ll volatility;
-ll scale = 1e+6;
+string field[11];
+string field_new[11];
 
-ldb expectedValue(ll c, ll m, ll p){
-    //the final expected value
-    ldb Ex = 0;
-
-    //add the probability of pinking a pink card in the first step
-    Ex += p/scale;
-
-    //simulate picking m 
-    if (m <= volatility AND m > 0){
-        if (c == 0){
-            Ex = Ex + 2*m;
-        }
-        else{
-            Ex = Ex + m*(1 + expectedValue(c + m/2, 0, p + m/2));
-        }
+ll canFill(ll x, ll y, ll n, ll m){
+    //if x, y is uncolored, return -1
+    if (field[x][y] == '.'){
+        return -1;
     }
-    else{
-        if (c == 0){
-            Ex = Ex +  m*(1 + expectedValue(0, m - volatility, p + volatility));
-        }
+
+    //test left diagonal
+    ll left_h = 0;
+    ll curr_x = x, curr_y = y;
+    while (curr_x - 1 >= 0 AND curr_y - 1 >= 0){
+        if (field[curr_x - 1][curr_y - 1] == '*'){
+            curr_x = curr_x - 1;
+            curr_y = curr_y - 1;
+            left_h++;
+        } 
         else{
-            Ex = Ex +  m*(1 + expectedValue(c + volatility/2, m - volatility, p + volatility/2));
+            break;
         }
     }
 
-    //simulate picking c
-    if (c <= volatility AND c > 0){
-        if (m == 0){
-            Ex += 2*c;
-        }
+    //test right diagonal
+    ll right_h = 0;
+    curr_x = x, curr_y = y;
+    while (curr_x - 1 >= 0 AND curr_y + 1 < m){
+        if (field[curr_x - 1][curr_y + 1] == '*'){
+            curr_x = curr_x - 1;
+            curr_y = curr_y + 1;
+            right_h++;
+        } 
         else{
-            Ex += c*(1 + expectedValue(0, m + c/2, p + c/2));
+            break;
         }
     }
-    else{
-        if (m == 0){
-            Ex += c*(1 + expectedValue(c - volatility, 0, p + volatility));
-        }
-        else{
-            Ex += c*(1 + expectedValue(c - volatility, m + volatility/2, p + volatility/2));
-        }
-    }
-    return Ex;
+
+    return min(left_h, right_h);
 }
 
 void solve(ll mcase){
-    ldb c, m, p, v;
-    scanf("%Lf %Lf %Lf %Lf", &c, &m, &p, &v);
-    ll c1 = c*scale;
-    ll m1 = m*scale;
-    ll p1 = p*scale;
-    volatility = v * scale;
-    printf("%Lf\n", expectedValue(c1, m1, p1));
+    ll n, m, k;
+    cin >> n >> m >> k;
+
+    forll(i, 0, n - 1, 1){
+        cin >> field[i];
+    }
+
+    forll(i, 0, n - 1, 1){
+        field_new[i] = "";
+        forll(j, 1, m, 1){
+            field_new[i].push_back('.');
+        }
+    }
+            
+    forll(i, 0, n - 1, 1){
+        forll(j, 0, m - 1, 1){
+            //test if cell i, j can be a center
+            //if yes, fill it 
+            ll returnval = canFill(i, j, n, m);
+            if (returnval > 0 AND returnval >= k){
+                //fill all left diagonal
+                forll(p, 0, returnval, 1){
+                    field_new[i - p][j - p] = '*';
+                }
+
+                //fill all right diagonal
+                forll(p, 0, returnval, 1){
+                    field_new[i - p][j + p] = '*';
+                }
+            }
+        }
+    }
+
+
+    //check if field_new == field
+    ll flag = 1;
+    forll(i, 0, n - 1, 1){
+        forll(j, 0, m - 1, 1){
+            if (field_new[i][j] != field[i][j]){
+                flag = 0;
+                break;
+            }
+        }
+    }
+
+    if (flag)
+        cout << "YES\n";
+    else
+        cout << "NO\n";
 }
 
 //main function
@@ -182,7 +219,7 @@ int main(){
     //for testcases, use the below format
     
     ll t , mcase = 1; //testcases
-    scanf("%lld\n", &t);
+    cin >> t;
     while(t > 0){
     	solve(mcase); //write a separate solve function
     	t--;

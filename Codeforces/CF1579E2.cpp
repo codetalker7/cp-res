@@ -2,9 +2,9 @@
 /*
 	 template by: codetalker7
 	 editor: sublime text 3
-	 file name: 2.cpp
-	 date created: 2021-09-18 20:19:43
-	 problem link: https://codeforces.com/contest/1573/problem/B
+	 file name: CF1579E2.cpp
+	 date created: 2021-10-03 17:00:18
+	 problem link: https://codeforces.com/contest/1579/problem/E2
 */
 #include<iostream>
 #include<vector>
@@ -29,7 +29,16 @@
 #include<climits>
 #include<assert.h>
 #include<random>
+
+//for pbds
+#include <ext/pb_ds/assoc_container.hpp> // Common file
+#include <ext/pb_ds/tree_policy.hpp> // Including tree_order_statistics_node_update
+
+//namespaces
 using namespace std;
+
+//for pbds
+using namespace __gnu_pbds;
 
 //debugging functions
 //var_name is used to give the variable name
@@ -62,6 +71,22 @@ using sll = set<ll>;
 using msll = multiset<ll>;
 using ldb = long double;
 
+class compare{
+    public:
+        bool operator()(const pair<ll, ll> &a, const pair<ll, ll> &b) const{
+            return a.first < b.first;
+        }
+};
+
+//ordered set; to be used with pbds
+using ordered_set = tree<
+                        pair<ll, ll>,
+                        null_type,
+                        less<pair<ll, ll>>,
+                        rb_tree_tag,
+                        tree_order_statistics_node_update
+                    >;
+
 //constants
 const ll MOD = 1000000007;
 const ll INF = 1e18;
@@ -82,6 +107,9 @@ const ldb PI = 3.14159265359;
 	returns an unsigned integer
 */
 #define ssz(x) (int)x.size()
+#define forll(i, start, end, step) for(ll i = start; i <= end; i += step)
+#define forllrev(i, start, end, step) for(ll i = start; i >= end; i -= step)
+#define fortype(type, i, start, end, step) for(type i = start; i != end; i += step)
 
 //some useful algos
 template <class T> T mceil(T a, T b){return (a % b == 0) ? a/b : a/b + 1;}
@@ -92,68 +120,44 @@ template <class T> T modinv (T a , T m , T &x , T &y){T g = extgcd(a , m , x , y
 template <class T> T signed_floor(T a , T b){if (a >= 0 && b >= 0) return a/b; else if (a < 0 & b < 0) return (-a)/(-b); else if (a < 0 & b >= 0){if (a % b == 0) return -((-a)/b); else return -((-a)/b) - 1;} else if (a >= 0 && b < 0){if(a % b == 0) return -(a/(-b)); else return -(a/(-b)) - 1;}}
 template <class T> pair<T,T> log_base_2(T n){T temp = 1 , k = 0; while(temp <= n){temp <<= 1; k++;} temp >>= 1; k--; return {k , temp};}
 //define global variables here
-ll a[100000 + 1];
-ll b[100000 + 1];
-ll dp[100000 + 1];
-ll pos[200000 + 1];
-ll segtree[200000 + 1];
-
-void build(ll n){
-    for (ll i = 0; i < n; i++){
-        segtree[i + n] = a[i + 1];
-    }
-    for (ll i = n - 1;i > 0; i--){
-        segtree[i] = min(segtree[i << 1], segtree[i << 1 | 1]);
-    }
-}
-
-ll query(ll n, ll l, ll r){
-    ll res = INF;
-    l += n; r += n;
-    while (l < r){
-        if (l & 1){
-            res = min(res, segtree[l]); l+=1; l >>= 1;
-        }
-        else{
-            l >>= 1;
-        }
-        if (r & 1){
-            res = min(res, segtree[r - 1]); r >>= 1;
-        }
-        else{
-            r >>= 1;
-        }
-    }
-    return res;
-}
 
 void solve(ll mcase){
     ll n;
     scanf("%lld", &n);
 
-    for (ll i = 1; i <= n; i++){
-        scanf("%lld", &a[i]);
-        pos[a[i]] = i;
-    }
+    ll ans = 0;
+    ordered_set X; 
+    map<ll, ll> freq;
+    map<ll, ll>::iterator it;
+    forll(i, 1, n, 1){
+        ll a;
+        scanf("%lld", &a);
 
-    for (ll i = 1; i <= n; i++){
-        scanf("%lld", &b[i]);
-        pos[b[i]] = INF;
-    }
+        it = freq.find(a);
+        //compute if i > 1
+        if (i > 1){
+            //compute number of elements less than a
+            ll equal = (it == freq.end())
+                ?   0
+                :   it->second;
+            ll greater = X.order_of_key({a, i}) - equal;
+            ll less = i - 1 - greater - equal;
+            ans += min(less, greater);
+        }
 
-    if (a[1] < b[1]){
-        printf("%lld\n", (ll)0);
-        return;
-    }
+        //insert into the ordered multiset
+        X.insert(pair<ll, ll>{a, i});
 
-    ll i;
-    for (i = 1; i <= n; i++){
-        if (a[i] < b[1])
-            break;
+        //update the frequency
+        if (it == freq.end()){
+            freq[a] = 1;
+        }   
+        else{
+            freq[a]++;
+        }
     }
-    printf("%lld\n", i - 1);
+    printf("%lld\n", ans);
 }
-
 
 //main function
 int main(){
