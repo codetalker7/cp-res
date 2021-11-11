@@ -241,6 +241,13 @@ Then, \verb|y| will \textit{not} be 0. Instead, it will be a different integer, 
     //copy num bytes from source to desination
 \end{lstlisting}
 
+\subsection{fill STL} The STL function \verb|fill| \textit{fills} a range with a certain value. An example is given below. 
+\begin{lstlisting}[language=C++]
+	vector<int> myvector(8);
+	fill(myvector.begin, myvector.end(), 1); //fills up the vector with value 1
+\end{lstlisting}
+So, the \verb|fill| function fills up the range \verb|[first, last)| with the given value.
+
 \section{Debugging Tricks}
 \subsection{Using debug functions} Try to use \verb|debug| functions in your code, and use these to output the error messages on standard error. 
 
@@ -1083,6 +1090,67 @@ Then, given any two vertices \verb|v1| and \verb|v2|, $\verb|LCA(v1,v2)|$ is the
         up.assign(n, vector<int>(l + 1));
         dfs(root, root);
     }
+\end{lstlisting}
+
+
+\section{Flow Networks}
+
+\subsection{Edmonds Karp} Here is a possible implementation of the Edmonds-Karp algorithm. The $V\times V$ matrix \verb|res| is used to store the \textit{residual capacities} of the edges in the network. \verb|adj| will be the adjacency list of the underlying \textit{undirected graph} (undirected because we also need to deal with reverse of the directed edges). The $V\times V$ matrix \verb|flow| will store the value of the flow in each edge. 
+
+\begin{lstlisting}[language=C++]
+	int n;
+	vector<vector<int>> res;
+	vector<vector<int>> flow;
+	vector<vector<int>> adj;
+	
+	int bfs(int s, int t, vector <int> &parent){
+		fill(parent.begin(), parent.end(), -1);
+		parent[s] = -1;
+		queue<pair<int, int> > q;
+		q.push({s, INF});
+		
+		while(!q.empty()){
+			int cur = q.front().first;
+			int flow = q.front().second;
+			q.pop();
+			
+			for (int next : adj[curr]){
+				if (parent[next] == -1 && res[cur][next]){
+					parent[next] = cur;
+					int new_flow = min(flow, res[cur][next]);
+					if (next == t)
+						return new_flow;
+					q.push({next, new_flow});
+				}
+			}
+		}
+		
+		return 0;
+	}
+	
+	int maxflow(int s, int t){
+		int flow = 0;
+		vector<int> parent(n);
+		int new_flow;
+		
+		//initialise flow to 0
+		//compute the residual capacities!
+		
+		while(new_flow = bfs(s, t, parent)){
+			flow += new_flow;
+			int cur = t;
+			while (cur != s){
+				int prev = parent[cur];
+				res[prev][cur] -= new_flow;
+				res[cur][prev] += new_flow;
+				
+				flow[prev][cur] += new_flow;
+				flow[cur][prev] -= new_flow;
+				cur = prev;
+			}
+		}
+		return flow;
+	}
 \end{lstlisting}
 
 \section{Numerical Methods}

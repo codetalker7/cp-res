@@ -15,6 +15,11 @@
 \usepackage{graphicx}
 \graphicspath{{./images/}}
 
+%pseudocode
+\usepackage{algpseudocode}
+\usepackage{algorithm}
+\algrenewcommand\algorithmicindent{1em}%
+
 %preamble for including inkscape figures
 \usepackage{import}
 \usepackage{xifthen}
@@ -405,4 +410,136 @@ Suppose the graph is partitioned into sets $L, R$ ($L$ is the set of the vertice
 Then, any \textit{integer valued} flow in this graph corresponds to a matching. This is not  hard to show (try to do it as an exercise). Moreover, if we use Ford-Fulkerson on this graph, all flows obtained in the intermediate steps will be \textit{integer values}; this is the so called \textit{integrality theorem}, and this is not hard to show either (intuitively, at each step, all updates are integer valued, assuming the flow and the capacities are integers). Moreover, it is true that the max flow in this graph is equal to the cardinality of the maximum matching in the graph (again, try to prove all these facts).
 
 It follows that Ford-Fulkerson will give us the maximum matching. Note that a maximum matching can have size atmost $O(V)$, and hence Ford-Fulkerson runs in time $O(VE)$ on such a graph.  
+
+\subsection{Dinic's Algorithm and Blocking Flows} A good resource for learning this is the following: \url{http://timroughgarden.org/w16/l/l2.pdf} 
+
+Now, we will explore a faster max flow algorithm, namely \textit{Dinic's Algorithm}. This algorithm runs in time $O(V^2E)$ instead of the usual $O(VE^2)$, and clearly this is a faster algorithm.
+
+The algorithm is pretty similar to Edmonds-Karp. 
+\begin{enumerate}
+	\item We start with a zero flow, i.e all edges have flow equal to $0$.
+	\item While there is an $s-t$ path in the residual graph $G_f$, we construct the \textit{layered graph} $L_f$ (which will be defined in a moment) from the residual graph $G_f$ via BFS.
+	\item We'll then compute the \textit{blocking flow} $g$ in the layered graph $L_f$ (again, we'll define this in a moment), and we augment the flow $f$ by $g$ (we'll see how to compute $g$).
+\end{enumerate}
+
+\begin{Remark}
+	Note that we are computing the blocking flow in the graph $L_f$ (the layered graph) and not $G_f$; this is a really important but subtle thing to note. 
+\end{Remark}
+
+\begin{Def}
+	Let $G$ be a flow network with a given flow $f$. Let $G_f$ be the residual graph. Assume that there is an $s-t$ path in $G_f$. The \textit{layered graph} $L_f$ is defined as follows: in the residual graph $G_f$, run a BFS from the source vertex $s$ until the vertex $t$ is reached. Let $\delta(s, t)$ denote the size of the \textit{shortest path} from $s$ to $t$. Then, for each $0\le i\le \delta(s, t)$, define the $i$th \textit{layer} to be the collection of all those vertices which are at a shortest distance of $i$ from $s$. Then, define $L_f$ to be the subgraph of $G_f$ consisting only of those edges of $G_f$ which go from layer $j$ to layer $j + 1$ for some $j$ (so we are not considering edges within the same layer and edges that go back). 
+\end{Def}
+So, the layered graph $L_f$ can really be thought of as \textit{layers} of vertices; the first layer consist of those vertices in $L_f$ that are at a distance of $1$ from $s$, and similarly for other layers. Clearly, all \textit{shortest paths} from $s$ to $t$ in graph $G_f$ are paths from $s$ to $t$ in $L_f$. Next, let us define \textit{blocking flows}. 
+
+\begin{Def}
+	A \textit{blocking flow} $g$ on a network $G$ is a flow such that, for every $s-t$ path $p$ of $G$, some edge of $p$ is saturated by $g$, i.e $f(u, v) = c(u, v)$ for some edge $(u, v)$ in $G$. So intuitively, a \textit{blocking flow} cancels out atleast one edge in \textit{every} $s-t$ path. 
+\end{Def}
+Just like in the proof of Edmonds-Karp, we will prove an assertion about shortest paths increasing if we augment our flow by a \textit{blocking flow}. First, we will prove a simple lemma. 
+
+\begin{Lemma}
+	\label{validDistanceLabel}
+	Let $d(i)$ denote the shortest distance of vertex $i$ to the source $s$ in the graph $G_f$. Then, $d$ is a valid distance labelling function on $G_h$; i.e, for all edges $(i, j)\in G_h$, we have
+	$$d(j)\le d(i) + 1$$
+\end{Lemma}
+\begin{proof}
+	Suppose $(i, j)$ is an edge of $G_h$. Clearly, either $(i, j)\in G_f$ or $(i, j)\notin G_f$. We will handle both of these cases. 
+	\begin{enumerate}
+		\item First, suppose $(i, j)\in G_f$. In this case, there is nothing to prove, because $d_j \le d_i + 1$ in this case by the definition of shortest paths. 
+		\item In the second case, we have that $(i, j)\notin G_f$. Then, the only way $(i, j)$ is introduced in $G_h$ is if we sent some flow on the edge $(j, i)$ in the previous iteration, i.e $(j, i)\in G_f$. Since $g$ is a blocking flow on $L_f$, this clearly means that $(j, i)\in L_f$, which in turn means that 
+		$$d(j) = d(i) - 1 \le d(i) + 1$$
+	\end{enumerate}
+\end{proof}
+
+
+\begin{Prop}
+	Let $G$ be a flow network, and let $f$ be a flow on $G$. Consider the graph $G_f$, the residual graph. Let $d(f)$ denote the shortest distance between $s$ and $t$ in $G_f$. Let $g$ be a blocking flow in $L_f$ (the layered graph). If $h = f + g$, i.e if flow $h$ is obtained by augmenting $f$ by $g$, then $d(h) > d(f)$. So, by augmenting a flow with a blocking flow, the shortest $s-t$ distance strictly increases.
+\end{Prop}
+\begin{proof}
+ 	Let $d$ be the distance from the source $s$ in $G_f$, and let $d'$ be the distance from the source $s$ in $G_h$. We will show that  
+	$$d(t) < d'(t)$$
+	i.e after every iteration, the shortest $s-t$ distance strictly increases. 
+	
+	First, let $P$ be \textit{any} $s-t$ path in the residual graph $G_h$. We claim that there is some edge $(u, v)\in P$ in the residual graph $G_h$ such that either $(u, v)\notin G_f$ or $d(v)\ne d(u) + 1$. We now prove this. Suppose all the edges in the path $P$ are \textit{old} edges, i.e if $(u, v)\in P$, then $(u, v)\in G_f$. For the sake of contradiction, suppose all the edges $(u, v)\in P$ satisfy $d(v) = d(u) + 1$. Then, it is clear that $P$ is actually a shortest $s-t$ path in $G_f$; moreover, all the edges of $P$ are actually edges in the layered graph $L_f$. Now, since $g$ is a \textit{blocking flow} on the layered graph $L_f$, there is some edge $(u, v)\in P$ that is completely saturated. But, this would imply that, after augmenting $f$ by $g$ (to obtain $h$), the edge $(u, v)$ won't be present in the new residual graph, i.e $(u, v)\notin G_h$; this is a contradiction.
+	
+	We now prove the main statement of the proposition, i.e $d(t) < d'(t)$. Again, let $P$ be any $s-t$ path in $G_h$. So, as we've shown above, there is some edge $(u, v)\in P$ such that either $(u, v)\notin G_f$ or $d(v)\ne d(u) + 1$. In the first case, i.e $(u, v)\notin G_f$, the only way the edge $(u, v)$ is present in $G_h$ is if we have sent some flow on the edge $(v, u)$; clearly, this implies that $(v, u)\in L_f$, which means that $d(v) < d(u)$. In the other case, namely that $d(v)\ne d(u) + 1$, we clearly have that $d(v)\le d(u)$ since by \textbf{Lemma} \ref{validDistanceLabel}, we have that $d(v)\le d(u) + 1$. In particular, we have shown that for any such path $P$, there is some edge $(u, v)\in P$ such that $d(v)\le d(u)$. This clearly implies that $|P| > d(t)$, and hence this means that $d'(t) > d(t)$, completing the proof. 
+\end{proof}
+\begin{Cor}
+	Dinic's algorithm takes atmost $O(V)$ iterations to run, and the time complexity of the algorithm is $O(V\cdot BF)$, where $BF$ is the time required to compute the blocking flow. 
+\end{Cor}
+\begin{proof}
+	This is clear; because the shortest $s-t$ distance is strictly increasing at after every iteration, there can be atmost $O(V)$ iterations since the maximum possible shortest distance is $O(V)$. The second statement clearly follows from the first. 
+\end{proof}
+\begin{Remark}
+	It follows that solving the blocking flow problem efficiently will give us a good algorithm to compute max flows. In the upcoming sections, we will see how to compute the blocking flow in $O(VE)$ time, giving us $O(V^2E)$ running time for Dinic's Algorithm. 
+\end{Remark}
+
+\subsection{Computing Blocking Flows Efficiently} Now we will see how to compute blocking flows efficiently in the layered graph $L_f$. The idea is simple: we will start a DFS from the source $s$. If at any point of time we reach $t$, we know that we have found a shortest $s-t$ path (since we are working in the graph $L_f$); we will then take the smallest capacity edge on this path, and we will augment the flow along this path. We will then repeat the same procedure, and we will make sure \textit{not to repeat edges} (which will be clear in the pseudocode). This is important because if we repeat edges, the time complexity wouldn't be $O(VE)$. To achieve this, for each vertex we will remember a \textit{pointer} which will store information about which edge of the vertex to process next. Please have a look at the pseudocode.
+
+Convince yourself that computing a blocking flow using the given procedure takes time $O(VE)$; as a hint, note that each augmentation causes an edge in $L_f$ to be completely saturated. 
+
+\begin{algorithm}
+	\caption{Computing Blocking Flows}
+	\begin{algorithmic}[1]
+		\State \textbf{Input}: Network $G$, layered graph $L_f$ (computed using BFS). 
+		\State For each $v$, $\text{degree}[v]$ denotes the number of edges from $v$ to the next level in $L_f$.
+		\State $N[v][i]$ denotes the $i$th neighbor of vertex $v$, where $0\le i < \text{degree}[v]$. 
+		\State $C[v]$ denotes the index of \textit{current} neighbor of $v$. Current neighbor is $N[v][C[v]]$. 
+		\State $\text{Res}[v][i]$ denotes  capacity of the $i$th edge of $v$ in $L_f$, computed beforehand. Note that these really are the residual capacities of the original edges in $G$. The result will be returned by decreasing these capacities.  
+		\State 
+		\State 
+		\State $\text{flow} \gets 0$. 
+		\For {each vertex $v$}
+			\State $C[v] = 0$
+		\EndFor
+		
+		\While{\textbf{true}}
+			\State $f\gets \text{DFS}(s)$
+			\If {f = 0}
+				\State \textbf{return} \text{flow} \Comment{Return the value of the blocking flow}
+			\Else
+				\State $\text{flow} \gets \text{flow} + f$
+				\State Augment the current $s-t$ path by $f$, i.e reduce all capacities on this \State path by $f$. The current path is just $s\to N[s][C[s]]\to \cdots \to t$. 
+			\EndIf
+		\EndWhile
+		
+		\Function{dfs}{v}
+			\State\Comment{Search a path from $v$ to $t$ of positive capacity.}
+			\State\Comment{If there is no such path, return 0.}
+			\State\Comment{As a side effect, this may increase $C[v]$.}
+			
+			\If{$v = t$}
+				\State \textbf{return} $\infty$
+			\EndIf
+			
+			\While{\textbf{true}}
+				\If{$C[v] = \text{degree}[v]$}
+					\State \textbf{return} $0$ \Comment{$v$ is \textit{dead}}
+				\EndIf
+				
+				\If{$\text{Res}[v][C[v]] = 0$}
+					\State $C[v] \gets C[v] + 1$ \Comment{Move to the next neighbor}
+				\Else
+					\State$f\gets \text{DFS}(N[v][C[v]])$
+					\If{$f > 0$}	
+						\State\textbf{return} $\min (f, \text{Res}[v][C[v]])$
+					\Else
+						\State $C[v]\gets C[v] + 1$
+					\EndIf
+				\EndIf
+			\EndWhile
+		\EndFunction
+	\end{algorithmic}
+\end{algorithm}
+
+\section{Push-Relabel Paradigm} 
+\subsection{Preflow} We will begin by defining a \textit{preflow}.
+
+\begin{Def}
+	A \textit{preflow} on a flow network $G$ is a function $f:V\times V\to \textbf{R}$ that satisfies the capacity constraint, and also satisfies a relaxed version of the conservation constraint. Formally, for all $(u, v)\in E$, we have $$0\le f(u, v)\le c(u, v)$$
+	and also for every $u\in V-\{s\}$, it is true that 
+	$$\sum_{v\in V}f(v, u)\ge 0$$
+	Ofcourse, we are still assuming that $f$ is anti-symmetric. The above equation just means that the flow into a vertex could be more than the flow out of a vertex (except the source $s$). This quantity is also called the \textit{excess flow} into vertex $u$. For a \textit{preflow} $f$, the \textit{residual network} $G_f$ is defined as before. 
+\end{Def}
+
+\textcolor{red}{Watch lecture from 10:30 mark.}
 \end{document}  
